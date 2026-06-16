@@ -47,7 +47,8 @@ const databases =
       )
     : null
 
-const parseDoc = (doc: { data?: string }): CaseStudy => JSON.parse(doc.data ?? '{}') as CaseStudy
+const parseDoc = (doc: Record<string, unknown>): CaseStudy =>
+  JSON.parse((doc.data as string) ?? '{}') as CaseStudy
 
 /* ── file fallback (local dev) ── */
 async function readFileStore(): Promise<Store> {
@@ -66,7 +67,7 @@ async function writeFileStore(store: Store): Promise<void> {
 export async function getCases(): Promise<CaseStudy[]> {
   if (databases) {
     const res = await databases.listDocuments(AW.db!, AW.col!, [Query.limit(100)])
-    return res.documents.map(parseDoc)
+    return res.documents.map((d) => parseDoc(d as Record<string, unknown>))
   }
   return (await readFileStore()).cases
 }
@@ -74,7 +75,7 @@ export async function getCases(): Promise<CaseStudy[]> {
 export async function getCase(slug: string): Promise<CaseStudy | null> {
   if (databases) {
     try {
-      return parseDoc(await databases.getDocument(AW.db!, AW.col!, slug))
+      return parseDoc((await databases.getDocument(AW.db!, AW.col!, slug)) as Record<string, unknown>)
     } catch {
       return null
     }
