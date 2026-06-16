@@ -2,7 +2,10 @@ import fs from 'fs/promises'
 import path from 'path'
 import { Client, TablesDB, Query } from 'node-appwrite'
 
-/* ── Section-based content model (the "builder" blocks) ── */
+/* ── Content types ── */
+export type ContentType = 'work' | 'case' | 'journal'
+
+/* Section-based content model (the case-study "builder" blocks) */
 export type Section =
   | { id: string; type: 'text'; eyebrow?: string; heading?: string; body?: string; align?: 'left' | 'center' }
   | { id: string; type: 'image'; src: string; caption?: string; full?: boolean }
@@ -10,28 +13,46 @@ export type Section =
   | { id: string; type: 'columns'; items: { heading?: string; body?: string }[] }
   | { id: string; type: 'grid'; columns?: number; items: { src: string; caption?: string }[] }
 
-export type CaseStudy = {
+export interface CaseStudy {
+  type?: 'work' | 'case'
   slug: string
   title: string
   client?: string
   category?: string
+  tab?: string // Work page filter (e.g. Branding / Web / Content)
   year?: string
-  accent?: string // hero background colour
-  cover?: string // hero image/video url (optional)
+  accent?: string
+  cover?: string
   intro?: string
   services?: string[]
   sections: Section[]
 }
 
-type Store = { cases: CaseStudy[] }
+export interface JournalPost {
+  type: 'journal'
+  slug: string
+  title: string
+  excerpt?: string
+  category?: string
+  author?: string
+  date?: string
+  cover?: string
+  size?: 'lg' | 'md' | 'sm'
+  featured?: boolean
+  body?: string
+}
+
+export type ContentItem = CaseStudy | JournalPost
+
+export function itemType(i: ContentItem): ContentType {
+  return (i as { type?: ContentType }).type ?? 'case'
+}
+
+type Store = { cases: ContentItem[] }
 
 const FILE = path.join(process.cwd(), 'data', 'cases.json')
 
-/* ──────────────────────────────────────────────────────────
-   Storage: Appwrite when configured, else local JSON file.
-   Each case is one Appwrite document (id = slug) with the full
-   CaseStudy serialised into a `data` string attribute.
-────────────────────────────────────────────────────────── */
+/* ── Storage: Appwrite TablesDB (rows) when configured, else local JSON file ── */
 const AW = {
   endpoint: process.env.APPWRITE_ENDPOINT,
   project: process.env.APPWRITE_PROJECT_ID,
@@ -40,17 +61,15 @@ const AW = {
   col: process.env.APPWRITE_COLLECTION_ID,
 }
 
-// TablesDB (rows) API — the modern Appwrite model. APPWRITE_COLLECTION_ID is
-// used as the table id (a collection and a table share the same id).
 const tables =
   AW.endpoint && AW.project && AW.apiKey && AW.db && AW.col
-    ? new TablesDB(
-        new Client().setEndpoint(AW.endpoint).setProject(AW.project).setKey(AW.apiKey),
-      )
+    ? new TablesDB(new Client().setEndpoint(AW.endpoint).setProject(AW.project).setKey(AW.apiKey))
     : null
 
-const parseRow = (row: Record<string, unknown>): CaseStudy =>
-  JSON.parse((row.data as string) ?? '{}') as CaseStudy
+const parseRow = (row: Record<string, unknown>): ContentItem =>
+  JSON.parse((row.data as string) ?? '{}') as ContentItem
+
+const toRow = (item: ContentItem) => ({ slug: item.slug, title: item.title, data: JSON.stringify(item) })
 
 /* ── file fallback (local dev) ── */
 async function readFileStore(): Promise<Store> {
@@ -65,44 +84,45 @@ async function writeFileStore(store: Store): Promise<void> {
   await fs.writeFile(FILE, JSON.stringify(store, null, 2), 'utf-8')
 }
 
-/* One-time seed: if the Appwrite collection is empty, populate it from the
-   committed data/cases.json. Idempotent (upsert by slug) and cached per runtime. */
+async function readAll(): Promise<ContentItem[]> {
+  if (tables) {
+    const res = await tables.listRows({ databaseId: AW.db!, tableId: AW.col!, queries: [Query.limit(200)] })
+    return res.rows.map((r) => parseRow(r as Record<string, unknown>))
+  }
+  return (await readFileStore()).cases
+}
+
+/* Seed any content TYPE that is missing from the store, from data/cases.json.
+   Lets us add Work/Journal dummy data even though Cases are already seeded. */
 let seedPromise: Promise<void> | null = null
 async function ensureSeeded(): Promise<void> {
   if (!tables) return
   if (!seedPromise) {
     seedPromise = (async () => {
       try {
-        const res = await tables.listRows({ databaseId: AW.db!, tableId: AW.col!, queries: [Query.limit(1)] })
-        if (res.total > 0) return
-        const { cases } = await readFileStore()
-        for (const c of cases) {
-          await tables.upsertRow({
-            databaseId: AW.db!,
-            tableId: AW.col!,
-            rowId: c.slug,
-            data: { slug: c.slug, title: c.title, data: JSON.stringify(c) },
-          })
+        const existing = await readAll()
+        const haveTypes = new Set(existing.map(itemType))
+        const seed = (await readFileStore()).cases
+        const toSeed = seed.filter((s) => !haveTypes.has(itemType(s)))
+        for (const it of toSeed) {
+          await tables.upsertRow({ databaseId: AW.db!, tableId: AW.col!, rowId: it.slug, data: toRow(it) })
         }
       } catch {
-        seedPromise = null // allow a retry on the next request
+        seedPromise = null // allow retry next request
       }
     })()
   }
   return seedPromise
 }
 
-/* ── public API (used by the route handlers) ── */
-export async function getCases(): Promise<CaseStudy[]> {
-  if (tables) {
-    await ensureSeeded()
-    const res = await tables.listRows({ databaseId: AW.db!, tableId: AW.col!, queries: [Query.limit(100)] })
-    return res.rows.map((r) => parseRow(r as Record<string, unknown>))
-  }
-  return (await readFileStore()).cases
+/* ── public API ── */
+export async function getItems(type?: ContentType): Promise<ContentItem[]> {
+  await ensureSeeded()
+  const all = tables ? await readAll() : (await readFileStore()).cases
+  return type ? all.filter((i) => itemType(i) === type) : all
 }
 
-export async function getCase(slug: string): Promise<CaseStudy | null> {
+export async function getItem(slug: string): Promise<ContentItem | null> {
   if (tables) {
     await ensureSeeded()
     try {
@@ -111,29 +131,23 @@ export async function getCase(slug: string): Promise<CaseStudy | null> {
       return null
     }
   }
-  const { cases } = await readFileStore()
-  return cases.find((c) => c.slug === slug) ?? null
+  return (await readFileStore()).cases.find((c) => c.slug === slug) ?? null
 }
 
-export async function upsertCase(input: CaseStudy): Promise<CaseStudy> {
+export async function upsertItem(item: ContentItem): Promise<ContentItem> {
   if (tables) {
-    await tables.upsertRow({
-      databaseId: AW.db!,
-      tableId: AW.col!,
-      rowId: input.slug,
-      data: { slug: input.slug, title: input.title, data: JSON.stringify(input) },
-    })
-    return input
+    await tables.upsertRow({ databaseId: AW.db!, tableId: AW.col!, rowId: item.slug, data: toRow(item) })
+    return item
   }
   const store = await readFileStore()
-  const idx = store.cases.findIndex((c) => c.slug === input.slug)
-  if (idx >= 0) store.cases[idx] = input
-  else store.cases.push(input)
+  const idx = store.cases.findIndex((c) => c.slug === item.slug)
+  if (idx >= 0) store.cases[idx] = item
+  else store.cases.push(item)
   await writeFileStore(store)
-  return input
+  return item
 }
 
-export async function deleteCase(slug: string): Promise<boolean> {
+export async function deleteItem(slug: string): Promise<boolean> {
   if (tables) {
     try {
       await tables.deleteRow({ databaseId: AW.db!, tableId: AW.col!, rowId: slug })

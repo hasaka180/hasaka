@@ -13,9 +13,9 @@ export default function CaseCollectionGrid() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/cases')
+    fetch('/api/cases?type=case')
       .then((r) => r.json())
-      .then((d: { cases?: CaseStudy[] }) => setCases(d.cases ?? []))
+      .then((d: { items?: CaseStudy[] }) => setCases(d.items ?? []))
       .catch(() => setCases([]))
       .finally(() => setLoading(false))
   }, [])

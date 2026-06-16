@@ -6,6 +6,7 @@ import ServiceCards from '@/components/ServiceCards'
 import Reveal from '@/components/RevealWrapper'
 import DesignPractice from '@/components/DesignPractice'
 import TextAnimateBlur from '@/components/TextAnimateBlur'
+import JournalFeatured from '@/components/JournalFeatured'
 
 export default function HomePage() {
   return (
@@ -153,43 +154,9 @@ export default function HomePage() {
         <aside className="blog">
           <div className="blog-hd">
             <h3><TextAnimateBlur text="From the journal" stagger={90} duration={650} /></h3>
-            <a href="#" className="blog-all">All →</a>
+            <Link href="/journal" className="blog-all">All →</Link>
           </div>
-          <div className="blog-list">
-            <a href="#" className="btile">
-              <div className="bt-img" style={{ backgroundImage: 'url(/blog-one.png)' }} />
-              <span className="bt-pill">Essay</span>
-              <div className="bt-title">Why most rebrands fail before the first sketch</div>
-              <div className="bt-author">Hasaka</div>
-            </a>
-            <a href="#" className="btile">
-              <span className="bt-pill">Interview</span>
-              <div className="bt-title">How a visual language holds a brand together</div>
-              <div className="bt-author">Studio Notes</div>
-            </a>
-            <a href="#" className="btile">
-              <div className="bt-img" style={{ backgroundImage: 'url(/Building.png)' }} />
-              <span className="bt-pill">Process</span>
-              <div className="bt-title">Building identity systems that scale across 20+ markets</div>
-              <div className="bt-author">Hasaka</div>
-            </a>
-            <a href="#" className="btile">
-              <span className="bt-pill">Interview</span>
-              <div className="bt-title">On craft, generative AI and the future of brand design</div>
-              <div className="bt-author">Studio Notes</div>
-            </a>
-            <a href="#" className="btile">
-              <div className="bt-img" style={{ backgroundImage: 'url(/amazonia.png)' }} />
-              <span className="bt-pill">Case Note</span>
-              <div className="bt-title">Inside the Amazonia's Rebrand identity system</div>
-              <div className="bt-author">Hasaka</div>
-            </a>
-            <a href="#" className="btile">
-              <span className="bt-pill">Field Note</span>
-              <div className="bt-title">Notes on colour, type and the discipline of restraint</div>
-              <div className="bt-author">Hasaka</div>
-            </a>
-          </div>
+          <JournalFeatured />
         </aside>
       </Reveal>
 

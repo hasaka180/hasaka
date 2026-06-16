@@ -14,7 +14,8 @@ export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
   const isStudio = pathname.startsWith('/studio')
   const isWrite = pathname.startsWith('/api/cases') && req.method !== 'GET'
-  if (!isStudio && !isWrite) return NextResponse.next()
+  const isUpload = pathname.startsWith('/api/upload')
+  if (!isStudio && !isWrite && !isUpload) return NextResponse.next()
 
   const password = process.env.STUDIO_PASSWORD
   if (!password) {
@@ -42,5 +43,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/studio/:path*', '/api/cases', '/api/cases/:path*'],
+  matcher: ['/studio/:path*', '/api/cases', '/api/cases/:path*', '/api/upload'],
 }

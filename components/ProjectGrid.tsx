@@ -1,117 +1,32 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import CaseStudyModal from './CaseStudyModal'
+import type { CaseStudy } from '@/lib/cases'
 
 type Tab = 'Branding' | 'Web' | 'Content'
-
-const projects = [
-  {
-    tab: 'Branding',
-    slug: 'clef-des-champs',
-    bg: 'linear-gradient(135deg,#d4fc79,#7bc67e)',
-    titleText: 'CLEF DES\nCHAMPS',
-    titleColor: '#1a3d1a',
-    titleSize: 20,
-    iconBg: '#2d7a3a',
-    iconLetter: 'C',
-    name: 'Clef des Champs',
-    category: 'Food & Drink',
-  },
-  {
-    tab: 'Branding',
-    slug: 'ditchfield',
-    bg: 'linear-gradient(135deg,#3d1c02,#6b3621)',
-    titleText: 'ditchfield',
-    titleSize: 20,
-    iconBg: '#6b3621',
-    iconLetter: 'D',
-    name: 'Ditchfield',
-    category: 'Food & Drink',
-  },
-  {
-    tab: 'Branding',
-    slug: 'cinema-cinema',
-    bg: 'linear-gradient(135deg,#8b1a00,#3d0000)',
-    titleText: 'CINEMA\nCINEMA',
-    titleSize: 18,
-    iconBg: '#111',
-    iconColor: '#ffd93d',
-    iconLetter: 'CC',
-    name: 'Cinéma Cinéma',
-    category: 'Entertainment',
-  },
-  {
-    tab: 'Web',
-    slug: 'sovimage',
-    bg: 'linear-gradient(135deg,#0a0a0a,#2a2a2a)',
-    titleText: 'SOViMAGE',
-    titleSize: 18,
-    iconBg: '#444',
-    iconLetter: 'S',
-    name: 'Sovimage',
-    category: 'Entertainment',
-  },
-  {
-    tab: 'Branding',
-    slug: 'quartier-molson',
-    bg: 'linear-gradient(135deg,#b8860b,#8b6914)',
-    titleText: 'QUARTIER\nMOLSON',
-    titleSize: 14,
-    iconBg: '#b8860b',
-    iconLetter: 'Q',
-    name: 'Quartier Molson',
-    category: 'Real Estate',
-  },
-  {
-    tab: 'Branding',
-    slug: 'maison-aurore',
-    bg: 'linear-gradient(135deg,#6c5ce7,#a29bfe)',
-    titleText: 'MAISON\nAUROE',
-    titleSize: 20,
-    iconBg: '#6c5ce7',
-    iconLetter: 'M',
-    name: 'Maison Aurore',
-    category: 'Fashion',
-  },
-  {
-    tab: 'Branding',
-    slug: 'lumara-hotels',
-    bg: 'linear-gradient(135deg,#1a1a3e,#3a2a6e)',
-    titleText: 'Lumara',
-    titleSize: 22,
-    titleStyle: 'italic' as const,
-    iconBg: '#2d7a3a',
-    iconLetter: 'L',
-    name: 'Lumara Hotels',
-    category: 'Hospitality',
-  },
-  {
-    tab: 'Web',
-    slug: 'soluna-labs',
-    bg: 'linear-gradient(135deg,#0d1117,#1a237e)',
-    titleText: 'SOLUNA LABS',
-    titleSize: 13,
-    titleColor: '#00ff88',
-    iconBg: '#0d1117',
-    iconBorder: '1px solid #333',
-    iconColor: '#00ff88',
-    iconLetter: 'S',
-    name: 'Soluna Labs',
-    category: 'Tech Startup',
-  },
-]
+const TABS: Tab[] = ['Branding', 'Web', 'Content']
 
 export default function ProjectGrid() {
   const [activeTab, setActiveTab] = useState<Tab>('Branding')
+  const [items, setItems] = useState<CaseStudy[]>([])
   const [openSlug, setOpenSlug] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
 
-  const filtered = projects.filter((p) => p.tab === activeTab)
+  useEffect(() => {
+    fetch('/api/cases?type=work')
+      .then((r) => r.json())
+      .then((d: { items?: CaseStudy[] }) => setItems(d.items ?? []))
+      .catch(() => setItems([]))
+      .finally(() => setLoading(false))
+  }, [])
+
+  const filtered = items.filter((p) => (p.tab ?? 'Branding') === activeTab)
 
   return (
     <div>
       <div className="ftabs">
-        {(['Branding', 'Web', 'Content'] as Tab[]).map((tab) => (
+        {TABS.map((tab) => (
           <button
             key={tab}
             className={`ftab${activeTab === tab ? ' active' : ''}`}
@@ -123,51 +38,27 @@ export default function ProjectGrid() {
       </div>
       <div className="pgrid2">
         {filtered.map((p) => (
-          <div
-            key={p.name}
-            className="pc2"
-            onClick={() => p.slug && setOpenSlug(p.slug)}
-            style={{ cursor: p.slug ? 'pointer' : 'default' }}
-          >
-            <div className="pth2" style={{ background: p.bg }}>
-              <div
-                className="ptxt"
-                style={{
-                  fontSize: p.titleSize,
-                  color: p.titleColor ?? '#fff',
-                  fontStyle: p.titleStyle,
-                }}
-              >
-                {p.titleText.split('\n').map((line, i) => (
-                  <span key={i}>
-                    {line}
-                    {i < p.titleText.split('\n').length - 1 && <br />}
-                  </span>
-                ))}
-              </div>
+          <div key={p.slug} className="pc2" onClick={() => setOpenSlug(p.slug)} style={{ cursor: 'pointer' }}>
+            <div
+              className="pth2"
+              style={{ background: p.cover ? `center / cover no-repeat url(${p.cover})` : p.accent ?? '#1a1a1a' }}
+            >
+              {!p.cover && <div className="ptxt">{p.title}</div>}
             </div>
             <div className="pme2">
-              <div
-                className="pio2"
-                style={{
-                  background: p.iconBg,
-                  border: p.iconBorder,
-                  color: p.iconColor ?? '#fff',
-                }}
-              >
-                {p.iconLetter}
-              </div>
+              <div className="pio2" style={{ background: p.accent ?? '#333' }}>{p.title.charAt(0).toUpperCase()}</div>
               <div>
-                <div className="pnm2">{p.name}</div>
-                <div className="pct2">{p.category}</div>
+                <div className="pnm2">{p.title}</div>
+                <div className="pct2">{p.category ?? 'Work'}</div>
               </div>
             </div>
           </div>
         ))}
-        {filtered.length === 0 && (
-          <div style={{ padding: '40px 0', color: '#aaa', fontSize: 14 }}>
-            No projects in this category yet.
-          </div>
+        {loading && (
+          <div style={{ padding: '40px 0', color: '#aaa', fontSize: 14 }}>Loading work…</div>
+        )}
+        {!loading && filtered.length === 0 && (
+          <div style={{ padding: '40px 0', color: '#aaa', fontSize: 14 }}>No projects in this category yet.</div>
         )}
       </div>
 

@@ -1,120 +1,118 @@
 {
   "cases": [
     {
-      "slug": "clef-des-champs",
-      "title": "Clef des Champs",
-      "client": "Clef des Champs",
-      "category": "Food & Drink",
-      "year": "2025",
-      "accent": "#7bc67e",
+      "type": "case", "slug": "clef-des-champs", "title": "Clef des Champs", "client": "Clef des Champs", "category": "Food & Drink", "year": "2025", "accent": "#7bc67e",
       "intro": "A farm-to-table identity rooted in soil, season, and ceremony — built to feel as alive as the produce it represents.",
       "services": ["Brand Strategy", "Identity", "Packaging", "Art Direction"],
       "sections": [
-        { "id": "s1", "type": "text", "eyebrow": "The Brief", "heading": "An identity that tastes like the land", "body": "We were asked to build a brand that holds both heritage and modernity — handmade in feel, yet able to scale across packaging, signage, and digital. The work began in the fields and ended in a flexible visual language." },
+        { "id": "s1", "type": "text", "eyebrow": "The Brief", "heading": "An identity that tastes like the land", "body": "We were asked to build a brand that holds both heritage and modernity — handmade in feel, yet able to scale across packaging, signage, and digital." },
         { "id": "s2", "type": "image", "src": "/brand-identity.jpg", "caption": "Primary logotype and seasonal mark", "full": true },
-        { "id": "s3", "type": "columns", "items": [ { "heading": "Approach", "body": "Strategy first. We mapped the rituals of harvest into a modular grid that flexes from a jar label to a billboard." }, { "heading": "Outcome", "body": "A 30% lift in shelf recognition and a system the in-house team can extend without us." } ] },
-        { "id": "s4", "type": "grid", "columns": 2, "items": [ { "src": "/creative-direction.jpg" }, { "src": "/design-system.jpg" } ] }
+        { "id": "s3", "type": "columns", "items": [ { "heading": "Approach", "body": "Strategy first. We mapped the rituals of harvest into a modular grid." }, { "heading": "Outcome", "body": "A 30% lift in shelf recognition and a system the team can extend." } ] }
       ]
     },
     {
-      "slug": "ditchfield",
-      "title": "Ditchfield",
-      "client": "Ditchfield & Co.",
-      "category": "Food & Drink",
-      "year": "2024",
-      "accent": "#6b3621",
+      "type": "case", "slug": "ditchfield", "title": "Ditchfield", "client": "Ditchfield & Co.", "category": "Food & Drink", "year": "2024", "accent": "#6b3621",
       "intro": "A heritage roastery rebrand — slow craft, deep warmth, and a wordmark built to age like the beans it sells.",
       "services": ["Identity", "Packaging", "Print"],
-      "sections": [
-        { "id": "s1", "type": "text", "eyebrow": "Overview", "heading": "Old soul, new shelf presence", "body": "Ditchfield needed to feel rooted without feeling dated. We leaned into a confident serif wordmark and a palette of roasted browns and cream." },
-        { "id": "s2", "type": "image", "src": "/brand-strategy.jpg", "full": true }
-      ]
+      "sections": [ { "id": "s1", "type": "text", "eyebrow": "Overview", "heading": "Old soul, new shelf presence", "body": "Ditchfield needed to feel rooted without feeling dated." }, { "id": "s2", "type": "image", "src": "/brand-strategy.jpg", "full": true } ]
     },
     {
-      "slug": "cinema-cinema",
-      "title": "Cinéma Cinéma",
-      "client": "Cinéma Cinéma",
-      "category": "Entertainment",
-      "year": "2025",
-      "accent": "#8b1a00",
+      "type": "case", "slug": "cinema-cinema", "title": "Cinéma Cinéma", "client": "Cinéma Cinéma", "category": "Entertainment", "year": "2025", "accent": "#8b1a00",
       "intro": "A repertory cinema brand that turns every screening into an event — bold, cinematic, and unapologetically loud.",
       "services": ["Brand Strategy", "Identity", "Motion"],
-      "sections": [
-        { "id": "s1", "type": "text", "eyebrow": "Concept", "heading": "Double feature energy", "body": "We doubled everything — the name, the marks, the marquee — into a system that feels like a title card for an indie classic." },
-        { "id": "s2", "type": "image", "src": "/motion.jpg", "full": true },
-        { "id": "s3", "type": "columns", "items": [ { "heading": "Identity", "body": "A flexible marquee system that adapts to any film, any night." }, { "heading": "Motion", "body": "Title-card animations that bookend every screening." } ] }
-      ]
+      "sections": [ { "id": "s1", "type": "text", "eyebrow": "Concept", "heading": "Double feature energy", "body": "We doubled everything — the name, the marks, the marquee." }, { "id": "s2", "type": "image", "src": "/motion.jpg", "full": true } ]
     },
     {
-      "slug": "sovimage",
-      "title": "Sovimage",
-      "client": "Sovimage Studios",
-      "category": "Entertainment",
-      "year": "2024",
-      "accent": "#1a1a1a",
+      "type": "case", "slug": "sovimage", "title": "Sovimage", "client": "Sovimage Studios", "category": "Entertainment", "year": "2024", "accent": "#1a1a1a",
       "intro": "A production house web platform built to showcase the reel first — fast, dark, and cinematic.",
       "services": ["Web Design", "Art Direction", "Build"],
-      "sections": [
-        { "id": "s1", "type": "text", "eyebrow": "The Brief", "heading": "Let the work play", "body": "Every decision served the footage. A near-black canvas, oversized type, and a player-first layout put the reel centre stage." },
-        { "id": "s2", "type": "image", "src": "/Digital.jpg", "full": true }
-      ]
+      "sections": [ { "id": "s1", "type": "text", "eyebrow": "The Brief", "heading": "Let the work play", "body": "Every decision served the footage." }, { "id": "s2", "type": "image", "src": "/Digital.jpg", "full": true } ]
     },
     {
-      "slug": "quartier-molson",
-      "title": "Quartier Molson",
-      "client": "Quartier Molson",
-      "category": "Real Estate",
-      "year": "2025",
-      "accent": "#b8860b",
+      "type": "case", "slug": "quartier-molson", "title": "Quartier Molson", "client": "Quartier Molson", "category": "Real Estate", "year": "2025", "accent": "#b8860b",
       "intro": "A neighbourhood brand for a former brewery district — industrial heritage reframed as a place to live and gather.",
       "services": ["Brand Strategy", "Identity", "Signage"],
-      "sections": [
-        { "id": "s1", "type": "text", "eyebrow": "Placemaking", "heading": "From brewery to belonging", "body": "We built a wayfinding-led identity that honours the brick-and-copper past while signalling a warm, modern community." },
-        { "id": "s2", "type": "image", "src": "/Storytelling.jpg", "full": true }
-      ]
+      "sections": [ { "id": "s1", "type": "text", "eyebrow": "Placemaking", "heading": "From brewery to belonging", "body": "A wayfinding-led identity honouring the brick-and-copper past." }, { "id": "s2", "type": "image", "src": "/Storytelling.jpg", "full": true } ]
     },
     {
-      "slug": "maison-aurore",
-      "title": "Maison Aurore",
-      "client": "Maison Aurore",
-      "category": "Fashion",
-      "year": "2025",
-      "accent": "#6c5ce7",
+      "type": "case", "slug": "maison-aurore", "title": "Maison Aurore", "client": "Maison Aurore", "category": "Fashion", "year": "2025", "accent": "#6c5ce7",
       "intro": "A fashion house identity poised between couture restraint and a dawn-lit optimism.",
       "services": ["Identity", "Art Direction", "Visual System"],
-      "sections": [
-        { "id": "s1", "type": "text", "eyebrow": "Overview", "heading": "Light, made wearable", "body": "Aurore means dawn. The system trades on soft gradients, generous space, and a wordmark that feels stitched rather than set." },
-        { "id": "s2", "type": "image", "src": "/rebranding.jpg", "full": true }
-      ]
+      "sections": [ { "id": "s1", "type": "text", "eyebrow": "Overview", "heading": "Light, made wearable", "body": "Aurore means dawn. The system trades on soft gradients and generous space." }, { "id": "s2", "type": "image", "src": "/rebranding.jpg", "full": true } ]
     },
     {
-      "slug": "lumara-hotels",
-      "title": "Lumara Hotels",
-      "client": "Lumara",
-      "category": "Hospitality",
-      "year": "2024",
-      "accent": "#3a2a6e",
+      "type": "case", "slug": "lumara-hotels", "title": "Lumara Hotels", "client": "Lumara", "category": "Hospitality", "year": "2024", "accent": "#3a2a6e",
       "intro": "A luxury hospitality identity designed to feel quiet, warm, and unmistakably modern.",
       "services": ["Brand Strategy", "Identity", "Visual System"],
-      "sections": [
-        { "id": "s1", "type": "text", "eyebrow": "Overview", "heading": "Understated luxury, end to end", "body": "From wayfinding to the booking flow, every touchpoint was tuned for calm. The wordmark sets the tone — a slow, confident italic that reads as effortless." },
-        { "id": "s2", "type": "image", "src": "/Storytelling.jpg", "full": true }
-      ]
+      "sections": [ { "id": "s1", "type": "text", "eyebrow": "Overview", "heading": "Understated luxury, end to end", "body": "Every touchpoint was tuned for calm." }, { "id": "s2", "type": "image", "src": "/Storytelling.jpg", "full": true } ]
     },
     {
-      "slug": "soluna-labs",
-      "title": "Soluna Labs",
-      "client": "Soluna Labs",
-      "category": "Tech Startup",
-      "year": "2025",
-      "accent": "#0d1117",
+      "type": "case", "slug": "soluna-labs", "title": "Soluna Labs", "client": "Soluna Labs", "category": "Tech Startup", "year": "2025", "accent": "#0d1117",
       "intro": "A deep-tech startup brand engineered for trust — precise, technical, and quietly futuristic.",
       "services": ["Brand Strategy", "Identity", "Web Design"],
-      "sections": [
-        { "id": "s1", "type": "text", "eyebrow": "The Brief", "heading": "Make the complex feel inevitable", "body": "Soluna needed to look like it had already won. We built a monochrome system with a single electric-green accent and a grid that reads as engineering." },
-        { "id": "s2", "type": "image", "src": "/AI.jpg", "full": true },
-        { "id": "s3", "type": "columns", "items": [ { "heading": "Brand", "body": "A confident monospace-adjacent wordmark and a strict mono palette." }, { "heading": "Web", "body": "A fast, dark product site that turns specs into story." } ] }
-      ]
+      "sections": [ { "id": "s1", "type": "text", "eyebrow": "The Brief", "heading": "Make the complex feel inevitable", "body": "A monochrome system with a single electric-green accent." }, { "id": "s2", "type": "image", "src": "/AI.jpg", "full": true } ]
+    },
+
+    {
+      "type": "work", "slug": "nexera-robotics", "title": "Nexera Robotics", "client": "Nexera", "category": "Tech Brand", "tab": "Branding", "year": "2025", "accent": "#1f6f3a",
+      "intro": "Brand identity for an industrial robotics company — engineered precision with a human touch.",
+      "services": ["Identity", "Visual System"],
+      "sections": [ { "id": "s1", "type": "text", "eyebrow": "Work", "heading": "Precision, made approachable", "body": "A confident mark and a technical grid system for a robotics leader." }, { "id": "s2", "type": "image", "src": "/nexe.jpg", "full": true } ]
+    },
+    {
+      "type": "work", "slug": "riixo", "title": "Riixo", "client": "Riixo", "category": "Product Design", "tab": "Branding", "year": "2024", "accent": "#0a3d62",
+      "intro": "Recovery-wear product brand — performance energy balanced with clinical trust.",
+      "services": ["Identity", "Packaging"],
+      "sections": [ { "id": "s1", "type": "text", "eyebrow": "Work", "heading": "Built for the comeback", "body": "Bold athletic identity for a compression-wear startup." }, { "id": "s2", "type": "image", "src": "/riixo.jpg", "full": true } ]
+    },
+    {
+      "type": "work", "slug": "scoutx", "title": "ScoutX", "client": "ScoutX", "category": "UI/UX", "tab": "Web", "year": "2025", "accent": "#2d3436",
+      "intro": "Product platform UI for a talent-scouting app — data-dense, yet calm.",
+      "services": ["Web Design", "Product UI"],
+      "sections": [ { "id": "s1", "type": "text", "eyebrow": "Work", "heading": "Signal over noise", "body": "An interface that makes scouting data feel effortless." }, { "id": "s2", "type": "image", "src": "/scoutx.jpg", "full": true } ]
+    },
+    {
+      "type": "work", "slug": "gathr", "title": "Gathr", "client": "Gathr", "category": "Packaging", "tab": "Content", "year": "2024", "accent": "#c0392b",
+      "intro": "Gifting brand campaign and packaging system — warmth you can unbox.",
+      "services": ["Packaging", "Content"],
+      "sections": [ { "id": "s1", "type": "text", "eyebrow": "Work", "heading": "Engineered to delight", "body": "A modular gifting system and launch content." }, { "id": "s2", "type": "image", "src": "/gathr.jpg", "full": true } ]
+    },
+    {
+      "type": "work", "slug": "steggys", "title": "Steggys", "client": "Steggys", "category": "Brand Identity", "tab": "Branding", "year": "2025", "accent": "#8e5572",
+      "intro": "Playful F&B identity with a prehistoric wink — bold, friendly, instantly recognisable.",
+      "services": ["Identity", "Illustration"],
+      "sections": [ { "id": "s1", "type": "text", "eyebrow": "Work", "heading": "Big character, small package", "body": "A mascot-led identity built for a fast-casual brand." }, { "id": "s2", "type": "image", "src": "/steggys.jpg", "full": true } ]
+    },
+
+    {
+      "type": "journal", "slug": "rebrands-fail-first-sketch", "title": "Why most rebrands fail before the first sketch", "category": "Essay", "author": "Hasaka", "date": "2026-05-12", "cover": "/creative-direction.jpg", "size": "lg", "featured": true,
+      "excerpt": "Strategy debt is the silent killer of brand projects. Here is how to spot it before you ever open the design tool.",
+      "body": "Most rebrands don't fail in execution — they fail in the gap between what a business says it is and what it actually does. When we skip the uncomfortable strategy conversations, we end up decorating a problem instead of solving it. This piece walks through the questions we ask before any visual work begins."
+    },
+    {
+      "type": "journal", "slug": "visual-language-holds-brand", "title": "How a visual language holds a brand together", "category": "Process", "author": "Studio Notes", "date": "2026-04-28", "cover": "/design-system.jpg", "size": "md", "featured": true,
+      "excerpt": "A logo is a handshake; a system is the relationship. Notes on building identities that survive contact with the real world.",
+      "body": "Consistency isn't sameness. The strongest brand systems give teams a clear set of rules and the confidence to break them. We look at the components that make a visual language durable across 20+ markets."
+    },
+    {
+      "type": "journal", "slug": "craft-ai-future-brand", "title": "On craft, generative AI and the future of brand design", "category": "Interview", "author": "Studio Notes", "date": "2026-04-02", "cover": "/AI.jpg", "size": "md", "featured": true,
+      "excerpt": "Where the tools end and taste begins — a conversation about staying useful in an AI-saturated industry.",
+      "body": "Generative tools collapse the cost of producing options. That makes judgement — knowing which option is right — the scarce, valuable skill. We talk through how the studio integrates AI without outsourcing its point of view."
+    },
+    {
+      "type": "journal", "slug": "notes-on-colour-restraint", "title": "Notes on colour, type and the discipline of restraint", "category": "Field Note", "author": "Hasaka", "date": "2026-03-15", "cover": "/Digital.jpg", "size": "sm", "featured": false,
+      "excerpt": "The hardest part of a system is everything you choose to leave out.",
+      "body": "Restraint reads as confidence. A short field note on editing palettes and type ramps down to the essentials."
+    },
+    {
+      "type": "journal", "slug": "inside-lumara-identity", "title": "Inside the Lumara Hotels identity system", "category": "Case Note", "author": "Hasaka", "date": "2026-02-20", "cover": "/Storytelling.jpg", "size": "sm", "featured": false,
+      "excerpt": "A behind-the-scenes look at building calm into every hospitality touchpoint.",
+      "body": "From wayfinding to the booking flow, we tuned every detail for quiet. A short case note on the decisions behind Lumara."
+    },
+    {
+      "type": "journal", "slug": "motion-as-brand-voice", "title": "Motion as a brand's second voice", "category": "Essay", "author": "Studio Notes", "date": "2026-01-30", "cover": "/motion.jpg", "size": "sm", "featured": false,
+      "excerpt": "Static identities are only half the story. How movement communicates personality.",
+      "body": "Timing, easing, and rhythm carry as much meaning as colour and type. An argument for treating motion as a core part of identity, not an afterthought."
     }
   ]
 }

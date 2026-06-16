@@ -41,6 +41,19 @@ const navItems = [
     ),
   },
   {
+    href: '/journal',
+    label: 'Journal',
+    short: 'Journal',
+    icon: (
+      <svg viewBox="0 0 20 20" fill="none">
+        <rect x="3" y="2.5" width="14" height="15" rx="2" fill="#111" opacity=".85" />
+        <rect x="6" y="6" width="8" height="1.6" rx="0.8" fill="#f3f1ee" />
+        <rect x="6" y="9.5" width="8" height="1.6" rx="0.8" fill="#f3f1ee" />
+        <rect x="6" y="13" width="5" height="1.6" rx="0.8" fill="#f3f1ee" />
+      </svg>
+    ),
+  },
+  {
     href: '/services',
     label: 'Services',
     short: 'Services',

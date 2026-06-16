@@ -1,35 +1,25 @@
 import { NextResponse } from 'next/server'
-import { getCases, upsertCase, type CaseStudy } from '@/lib/cases'
+import { getItems, upsertItem, type ContentItem, type ContentType } from '@/lib/cases'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
-    const cases = await getCases()
-    return NextResponse.json({ cases })
+    const type = new URL(req.url).searchParams.get('type') as ContentType | null
+    const items = await getItems(type ?? undefined)
+    return NextResponse.json({ items })
   } catch (e) {
     console.error('GET /api/cases failed:', e)
-    return NextResponse.json({ error: 'Failed to load cases' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to load content' }, { status: 500 })
   }
 }
 
 export async function POST(req: Request) {
-  const body = (await req.json()) as Partial<CaseStudy>
+  const body = (await req.json()) as Partial<ContentItem>
   if (!body.slug || !body.title) {
     return NextResponse.json({ error: 'slug and title are required' }, { status: 400 })
   }
-  const created = await upsertCase({
-    slug: body.slug,
-    title: body.title,
-    client: body.client,
-    category: body.category,
-    year: body.year,
-    accent: body.accent,
-    cover: body.cover,
-    intro: body.intro,
-    services: body.services ?? [],
-    sections: body.sections ?? [],
-  })
+  const created = await upsertItem(body as ContentItem)
   return NextResponse.json(created, { status: 201 })
 }

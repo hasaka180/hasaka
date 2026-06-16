@@ -32,6 +32,29 @@
   font-size: 12px;
   cursor: pointer;
 }
+/* content-type tabs */
+.typeTabs { display: flex; gap: 4px; margin-bottom: 18px; background: rgba(0,0,0,0.05); padding: 4px; border-radius: 10px; }
+.typeTab { flex: 1; border: none; background: transparent; border-radius: 7px; padding: 7px 6px; font-size: 12px; font-weight: 600; color: #6a645c; cursor: pointer; transition: background 0.15s, color 0.15s; }
+.typeTab:hover { color: #161310; }
+.typeActive { background: #fff; color: #161310; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+
+/* image upload field */
+.uploadRow { display: flex; gap: 8px; align-items: stretch; }
+.uploadRow input { flex: 1; }
+.uploadBtn {
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-direction: row !important; gap: 0;
+  padding: 0 14px; font-size: 12px; font-weight: 600; letter-spacing: 0;
+  text-transform: none; color: #fff; background: #161310; border-radius: 8px;
+  cursor: pointer; white-space: nowrap;
+}
+.uploadBtn:hover { background: #2c2620; }
+.thumbPrev {
+  margin-top: 8px; width: 100%; max-width: 240px; aspect-ratio: 16 / 9;
+  background-size: cover; background-position: center; border-radius: 8px;
+  background-color: #e6e4e1;
+}
+
 .list { list-style: none; display: flex; flex-direction: column; gap: 4px; }
 .listItem {
   width: 100%;
