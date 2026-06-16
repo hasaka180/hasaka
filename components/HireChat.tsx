@@ -4,10 +4,20 @@ import { useState, useRef, useEffect } from 'react'
 
 type Msg = { from: 'you' | 'hasaka'; text: string }
 
+const GREETING = ['Hey there 👋', "Hope you're doing well today.", 'How may I help you?']
+
 export default function HireChat() {
   const [input, setInput] = useState('')
   const [messages, setMessages] = useState<Msg[]>([])
+  const [shown, setShown] = useState(0) // how many greeting bubbles are revealed
   const endRef = useRef<HTMLDivElement>(null)
+
+  // reveal the greeting bubbles one after another on load
+  useEffect(() => {
+    if (shown >= GREETING.length) return
+    const t = setTimeout(() => setShown((n) => n + 1), shown === 0 ? 400 : 900)
+    return () => clearTimeout(t)
+  }, [shown])
 
   // keep the latest message in view
   useEffect(() => {
@@ -44,11 +54,11 @@ export default function HireChat() {
           Hasaka <span className="crl">Creative Director &amp; Brand Architect</span>
         </div>
 
-        {/* automated greeting */}
+        {/* automated greeting — revealed one after another */}
         <div className="bubs">
-          <div className="bub">Hey there 👋</div>
-          <div className="bub">Hope you&apos;re doing well today.</div>
-          <div className="bub">How may I help you?</div>
+          {GREETING.slice(0, shown).map((g, i) => (
+            <div key={i} className="bub bub-in">{g}</div>
+          ))}
         </div>
 
         {/* live conversation */}
