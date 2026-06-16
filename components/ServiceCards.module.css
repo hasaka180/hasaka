@@ -1,0 +1,171 @@
+.card {
+  position: relative;
+  overflow: hidden;
+  background: #111;
+}
+
+.cardBg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+  transition: transform 0.5s ease;
+}
+
+.card:hover .cardBg {
+  transform: scale(1.04);
+}
+
+/* White frosted cloud that slides up on hover */
+.cardHover {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 22px 20px 20px;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  pointer-events: none;
+}
+
+.card:hover .cardHover {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.cardHoverTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.cardHoverNum {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: rgba(0, 0, 0, 0.35);
+}
+
+.cardHoverIcon {
+  font-size: 20px;
+  opacity: 0.25;
+  line-height: 1;
+  color: #111;
+}
+
+.cardHoverBody {
+  flex: 1;
+  padding: 14px 0 8px;
+}
+
+.cardHoverTitle {
+  font-family: var(--font-helvetica-now), Georgia, serif;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: 2em;
+  color: #111;
+  margin-bottom: 8px;
+}
+
+.cardHoverDesc {
+  font-size: 12px;
+  line-height: 1.65;
+  color: rgba(0, 0, 0, 0.45);
+  max-width: 210px;
+}
+
+/* "Read more" brush-style button */
+.cardHoverFoot {
+  display: flex;
+  align-items: center;
+}
+
+.readMore {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-helvetica-now), Georgia, serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: #111;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  position: relative;
+  text-decoration: none;
+}
+
+/* Thick brush underline */
+.readMore::after {
+  content: "";
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #111;
+  border-radius: 2px;
+  transform: scaleX(0.4);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+
+.readMore:hover::after {
+  transform: scaleX(1);
+}
+
+/* Default (non-hover) card content */
+.cardContent {
+  position: relative;
+  z-index: 1;
+}
+
+.cardNum {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.cardIcon {
+  font-size: 20px;
+  opacity: 0.5;
+  line-height: 1;
+  color: #fff;
+}
+
+.cardTitle {
+  font-family: var(--font-helvetica-now), Georgia, serif;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: 3;
+  color: #fff;
+  margin-bottom: 8px;
+}
+
+.cardDesc {
+  font-size: 12px;
+  line-height: 1.65;
+  color: rgba(0, 0, 0, 0.45);
+  max-width: 150px;
+}
+
+.cardArrow {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.5);
+  transition: transform 0.18s;
+}

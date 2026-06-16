@@ -1,0 +1,217 @@
+.wrapper {
+  position: relative;
+  height: 600vh;
+  width: 100%;
+}
+
+.sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  background: #050812;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Background atmosphere ── */
+.bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.bgGlow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+}
+
+.bgGlow1 {
+  width: 700px;
+  height: 700px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(80, 20, 10, 0.6) 0%, transparent 70%);
+  opacity: 0;
+}
+
+.bgGlow2 {
+  width: 900px;
+  height: 500px;
+  bottom: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: radial-gradient(ellipse, rgba(20, 30, 100, 0.5) 0%, transparent 70%);
+  opacity: 0;
+}
+
+.bgGlow3 {
+  width: 500px;
+  height: 500px;
+  top: 10%;
+  right: 10%;
+  background: radial-gradient(circle, rgba(60, 20, 80, 0.35) 0%, transparent 70%);
+  opacity: 0;
+}
+
+/* ── Scene ── */
+.scene {
+  position: relative;
+  width: 700px;
+  height: 700px;
+  flex-shrink: 0;
+}
+
+/* ── Central sphere ── */
+.sphereWrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 220px;
+  height: 220px;
+  opacity: 0;
+  z-index: 4;
+}
+
+.sphere {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 32%,
+    rgba(200, 80, 60, 0.9) 0%,
+    rgba(140, 30, 20, 0.85) 35%,
+    rgba(60, 10, 30, 0.95) 70%,
+    rgba(10, 5, 20, 1) 100%
+  );
+  box-shadow:
+    0 0 60px rgba(220, 60, 40, 0.5),
+    0 0 120px rgba(180, 40, 20, 0.3),
+    inset 0 0 40px rgba(255, 100, 60, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.sphereSheen {
+  position: absolute;
+  top: 8%;
+  left: 12%;
+  width: 45%;
+  height: 38%;
+  background: radial-gradient(ellipse, rgba(255,180,140,0.25) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.sphereRim {
+  position: absolute;
+  inset: -1px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 100, 60, 0.25);
+}
+
+/* ── SVG rings ── */
+.ringsSvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 3;
+  overflow: visible;
+}
+
+/* ── Label nodes ── */
+.labelsWrap {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.labelDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(220, 140, 120, 0.9);
+  box-shadow: 0 0 8px rgba(220, 100, 80, 0.8);
+  flex-shrink: 0;
+}
+
+.labelLine {
+  width: 28px;
+  height: 1px;
+  background: linear-gradient(to right, rgba(220,140,120,0.8), transparent);
+  flex-shrink: 0;
+}
+
+.labelText {
+  font-family: var(--font-helvetica-now), 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(220, 180, 170, 0.9);
+}
+
+/* ── Particles ── */
+.particles {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+/* ── Scroll progress indicator ── */
+.progress {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 10;
+  opacity: 0;
+}
+
+.progressDot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  transition: background 0.3s;
+}
+
+.progressDotActive {
+  background: rgba(220, 100, 80, 0.9);
+  box-shadow: 0 0 6px rgba(220, 100, 80, 0.6);
+}
+
+/* ── Ambient stars ── */
+.stars {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  opacity: 0;
+}

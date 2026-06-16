@@ -1,0 +1,128 @@
+.section {
+  padding: 32px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.07);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+  background: #eeece9;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  contain: layout;
+}
+
+.eyebrow {
+  text-align: center;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #bbb;
+  margin-bottom: 24px;
+  font-family: var(--font-helvetica-now), var(--font-inter), sans-serif;
+}
+
+.trackWrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Edge fade masks */
+.trackWrap::before,
+.trackWrap::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100px;
+  z-index: 2;
+  pointer-events: none;
+}
+.trackWrap::before {
+  left: 0;
+  background: linear-gradient(to right, #eeece9 0%, transparent 100%);
+}
+.trackWrap::after {
+  right: 0;
+  background: linear-gradient(to left, #eeece9 0%, transparent 100%);
+}
+
+.row {
+  display: flex;
+  width: max-content;
+  gap: 10px;
+  align-items: center;
+}
+
+.trackRight {
+  animation: scrollRight 36s linear infinite;
+}
+.trackLeft {
+  animation: scrollLeft 30s linear infinite;
+}
+
+@keyframes scrollRight {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes scrollLeft {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+
+/* ── Logo card ── */
+.card {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #f7f5f2;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  border-radius: 14px;
+  padding: 14px 28px;
+  flex-shrink: 0;
+  cursor: default;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+  height: 64px;
+  min-width: 140px;
+}
+
+.card:hover {
+  background: #fff;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  transform: translateY(-1px);
+}
+
+.logoImg {
+  height: 26px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  opacity: 0.65;
+  filter: grayscale(1);
+  transition: opacity 0.2s;
+}
+
+.card:hover .logoImg {
+  opacity: 0.85;
+}
+
+@media (max-width: 860px) {
+  .section {
+    padding: 28px 0;
+  }
+  .trackWrap::before,
+  .trackWrap::after {
+    width: 48px;
+  }
+  .card {
+    padding: 12px 20px;
+    height: 54px;
+    min-width: 110px;
+    border-radius: 12px;
+  }
+  .logoImg {
+    height: 20px;
+  }
+}

@@ -1,0 +1,286 @@
+/* ── Wrapper: tall scroll container ── */
+.wrapper {
+  position: relative;
+  height: 700vh;
+  width: 100%;
+}
+
+/* ── Sticky viewport ── */
+.sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  background: #eeece9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* ── Ambient background blobs ── */
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+.blob1 {
+  width: 420px;
+  height: 420px;
+  top: -80px;
+  left: -60px;
+  background: radial-gradient(circle, rgba(200, 230, 180, 0.5) 0%, transparent 70%);
+}
+
+.blob2 {
+  width: 380px;
+  height: 380px;
+  bottom: -80px;
+  right: -40px;
+  background: radial-gradient(circle, rgba(180, 200, 240, 0.45) 0%, transparent 70%);
+}
+
+.blob3 {
+  width: 300px;
+  height: 300px;
+  bottom: 10%;
+  left: 8%;
+  background: radial-gradient(circle, rgba(240, 200, 200, 0.4) 0%, transparent 70%);
+}
+
+/* ── Scene ── */
+.scene {
+  position: relative;
+  width: min(86vw, 820px);
+  height: min(86vw, 820px);
+  flex-shrink: 0;
+}
+
+/* ── SVG fills scene ── */
+.svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* ── Center text ── */
+.center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 6;
+  pointer-events: none;
+  width: 240px;
+}
+
+.centerEyebrow {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(80, 70, 50, 0.45);
+  margin-bottom: 10px;
+}
+
+.centerTitle {
+  font-family: var(--font-helvetica-now), Georgia, serif;
+  font-size: clamp(28px, 4vw, 44px);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: #1a1710;
+  margin-bottom: 14px;
+}
+
+.centerDesc {
+  font-size: 11px;
+  line-height: 1.7;
+  color: rgba(60, 55, 40, 0.5);
+  letter-spacing: 0.01em;
+  max-width: 190px;
+  margin: 0 auto 18px;
+}
+
+.centerScroll {
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(80, 70, 50, 0.35);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.chevron {
+  width: 10px;
+  height: 6px;
+  border-left: 1.5px solid rgba(80, 70, 50, 0.3);
+  border-bottom: 1.5px solid rgba(80, 70, 50, 0.3);
+  transform: rotate(-45deg) translate(2px, -2px);
+}
+
+/* ── Node labels ── */
+.node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  width: 130px;
+}
+
+.nodeNum {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  margin-bottom: 0px;
+}
+
+.nodeTitle {
+  font-family: var(--font-helvetica-now), Georgia, serif;
+  font-size: clamp(14px, 1.6vw, 18px);
+  font-weight: 500;
+  line-height: 1.25;
+  color: #1a1710;
+  margin-bottom: 6px;
+  letter-spacing: -0.01em;
+}
+
+.nodeDesc {
+  font-size: 10px;
+  line-height: 1.65;
+  color: rgba(60, 55, 40, 0.5);
+  letter-spacing: 0.01em;
+}
+
+@media (max-width: 768px) {
+
+  /* Taller wrapper to give scroll room for ring + list */
+  .wrapper {
+    height: 900vh;
+  }
+
+  /* Sticky panel — keep sticky + full height, just reflow as column */
+  .sticky {
+    flex-direction: column;
+    justify-content: center;
+    padding-top: 0;
+    overflow: hidden;
+  }
+
+  /* Ring scene */
+  .scene {
+    width: 68vw;
+    height: 68vw;
+    max-width: 280px;
+    max-height: 280px;
+    flex-shrink: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  /* Hide floating labels — replaced by mobile list */
+  .node {
+    display: none !important;
+  }
+
+  /* Center text tighter */
+  .center {
+    width: 120px;
+  }
+
+  .centerEyebrow {
+    font-size: 7px;
+    margin-bottom: 4px;
+  }
+
+  .centerTitle {
+    font-size: 18px;
+    margin-bottom: 6px;
+  }
+
+  .centerDesc {
+    display: none;
+  }
+
+  .centerScroll {
+    display: none;
+  }
+}
+
+/* ── Mobile node list (below ring) ── */
+.mobileList {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobileList {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 0 24px;
+    box-sizing: border-box;
+    margin-top: 4px;
+    flex-shrink: 0;
+    gap: 0;
+    overflow-y: auto;
+    max-height: calc(100vh - 68vw - 20px);
+  }
+}
+
+.mobileItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(80, 70, 50, 0.1);
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.mobileItem:last-child {
+  border-bottom: none;
+}
+
+.mobileItem.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mobileItemNum {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  min-width: 24px;
+  padding-top: 3px;
+}
+
+.mobileItemText {
+  flex: 1;
+}
+
+.mobileItemTitle {
+  font-family: var(--font-helvetica-now), Georgia, serif;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: #1a1710;
+  letter-spacing: -0.01em;
+  margin-bottom: 3px;
+}
+
+.mobileItemDesc {
+  font-size: 11px;
+  line-height: 1.6;
+  color: rgba(60, 55, 40, 0.5);
+}

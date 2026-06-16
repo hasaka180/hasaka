@@ -1,0 +1,91 @@
+{
+  "cases": [
+    {
+      "slug": "clef-des-champs",
+      "title": "Clef des Champs",
+      "client": "Clef des Champs",
+      "category": "Food & Drink",
+      "year": "2025",
+      "accent": "#7bc67e",
+      "intro": "A farm-to-table identity rooted in soil, season, and ceremony — built to feel as alive as the produce it represents.",
+      "services": [
+        "Brand Strategy",
+        "Identity",
+        "Packaging",
+        "Art Direction"
+      ],
+      "sections": [
+        {
+          "id": "s1",
+          "type": "text",
+          "eyebrow": "The Brief",
+          "heading": "An identity that tastes like the land",
+          "body": "We were asked to build a brand that could hold both heritage and modernity — a system that feels handmade yet scales across packaging, signage, and digital. The work began in the fields and ended in a flexible visual language."
+        },
+        {
+          "id": "s2",
+          "type": "image",
+          "src": "/brand-identity.jpg",
+          "caption": "Primary logotype and seasonal mark",
+          "full": true
+        },
+        {
+          "id": "s3",
+          "type": "columns",
+          "items": [
+            {
+              "heading": "Approach",
+              "body": "Strategy first. We mapped the rituals of harvest into a modular grid that flexes from a jar label to a billboard."
+            },
+            {
+              "heading": "Outcome",
+              "body": "A 30% lift in shelf recognition and a system the in-house team can extend without us."
+            }
+          ]
+        },
+        {
+          "id": "s4",
+          "type": "grid",
+          "columns": 2,
+          "items": [
+            {
+              "src": "/creative-direction.jpg"
+            },
+            {
+              "src": "/design-system.jpg"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "lumara-hotels",
+      "title": "Lumara Hotels",
+      "client": "Lumara",
+      "category": "Hospitality",
+      "year": "2024",
+      "accent": "#3a2a6e",
+      "intro": "A luxury hospitality identity designed to feel quiet, warm, and unmistakably modern.",
+      "services": [
+        "Brand Strategy",
+        "Identity",
+        "Visual System"
+      ],
+      "sections": [
+        {
+          "id": "s1",
+          "type": "text",
+          "eyebrow": "Overview",
+          "heading": "Understated luxury, end to end",
+          "body": "From wayfinding to the booking flow, every touchpoint was tuned for calm. The wordmark sets the tone — a slow, confident italic that reads as effortless."
+        },
+        {
+          "id": "s2",
+          "type": "image",
+          "src": "/Storytelling.jpg",
+          "full": true
+        }
+      ]
+    }
+  ]
+}
