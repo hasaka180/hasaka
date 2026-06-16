@@ -9,10 +9,8 @@ export async function GET() {
     const cases = await getCases()
     return NextResponse.json({ cases })
   } catch (e) {
-    return NextResponse.json(
-      { error: e instanceof Error ? e.message : String(e) },
-      { status: 500 },
-    )
+    console.error('GET /api/cases failed:', e)
+    return NextResponse.json({ error: 'Failed to load cases' }, { status: 500 })
   }
 }
 
