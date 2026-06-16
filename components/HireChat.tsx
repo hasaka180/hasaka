@@ -2,29 +2,57 @@
 
 import { useState, useRef, useEffect } from 'react'
 
-type Step = 'name' | 'project' | 'done'
+type Msg = { from: 'you' | 'hasaka'; text: string }
 
 export default function HireChat() {
-  const [step, setStep] = useState<Step>('name')
+  const [started, setStarted] = useState(false)
   const [name, setName] = useState('')
-  const [project, setProject] = useState('')
   const [submittedName, setSubmittedName] = useState('')
-  const cardRef = useRef<HTMLDivElement>(null)
+  const [input, setInput] = useState('')
+  const [messages, setMessages] = useState<Msg[]>([])
+  const endRef = useRef<HTMLDivElement>(null)
 
+  // keep the latest message in view
   useEffect(() => {
-    if (step !== 'name') {
-      cardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+  }, [messages, started])
+
+  // stream operator replies (sent from the Crisp iOS app) into this UI
+  useEffect(() => {
+    const c = typeof window !== 'undefined' ? window.$crisp : undefined
+    if (!c) return
+    const onReceived = (msg: { type?: string; content?: unknown } | undefined) => {
+      if (msg?.type === 'text' && typeof msg.content === 'string') {
+        setMessages((m) => [...m, { from: 'hasaka', text: msg.content as string }])
+      }
     }
-  }, [step])
+    c.push(['on', 'message:received', onReceived])
+    return () => { try { c.push(['off', 'message:received']) } catch { /* noop */ } }
+  }, [])
+
+  const crispOn = () => (typeof window !== 'undefined' ? window.$crisp : undefined)
 
   const handleName = () => {
     const val = name.trim() || 'there'
     setSubmittedName(val)
-    setStep('project')
+    const c = crispOn()
+    if (c) c.push(['set', 'user:nickname', [val]])
+    setStarted(true)
+    setMessages([{ from: 'hasaka', text: `Great to meet you, ${val}! What are you working on?` }])
   }
 
-  const handleProject = () => {
-    setStep('done')
+  const send = () => {
+    const text = input.trim()
+    if (!text) return
+    setMessages((m) => [...m, { from: 'you', text }])
+    setInput('')
+    const c = crispOn()
+    if (c) {
+      c.push(['do', 'message:send', ['text', text]])
+    } else {
+      // Crisp not configured → graceful fallback
+      setTimeout(() => setMessages((m) => [...m, { from: 'hasaka', text: "Thanks! I'll get back to you at hello@hasaka.io" }]), 500)
+    }
   }
 
   return (
@@ -35,6 +63,7 @@ export default function HireChat() {
           Hasaka <span className="crl">Creative Director &amp; Brand Architect</span>
         </div>
 
+        {/* intro */}
         <div className="bubs">
           <div className="bub">Hello, hello 🙂</div>
           <div className="bub">I&apos;m Hasaka 👋</div>
@@ -46,23 +75,23 @@ export default function HireChat() {
           <div className="bub r">Nice to meet you, Hasaka!</div>
         </div>
 
-        {/* Step: name submitted */}
-        {(step === 'project' || step === 'done') && (
+        {/* once started, the name shows as the visitor's reply */}
+        {started && (
           <div className="bubs">
             <div className="bub r">{submittedName}</div>
           </div>
         )}
 
-        {/* Step: project submitted */}
-        {step === 'done' && project && (
-          <div className="bubs">
-            <div className="bub r">{project}</div>
+        {/* live conversation */}
+        {messages.map((m, i) => (
+          <div key={i} className="bubs">
+            <div className={`bub${m.from === 'you' ? ' r' : ''}`}>{m.text}</div>
           </div>
-        )}
+        ))}
 
-        {/* Active card */}
-        <div ref={cardRef} className="chcard" id="chcard">
-          {step === 'name' && (
+        {/* composer */}
+        <div ref={endRef} className="chcard" id="chcard">
+          {!started ? (
             <>
               <label htmlFor="chi">My name is</label>
               <input
@@ -77,33 +106,22 @@ export default function HireChat() {
               />
               <div className="chok" onClick={handleName}>OK &nbsp;⇥</div>
             </>
-          )}
-
-          {step === 'project' && (
+          ) : (
             <>
-              <label htmlFor="chi2">Tell me about your project</label>
+              <label htmlFor="chi2">Message</label>
               <input
                 className="chinp"
                 type="text"
                 id="chi2"
-                placeholder="I need a brand identity for..."
-                value={project}
-                onChange={(e) => setProject(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleProject()}
+                placeholder="Type your message…"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && send()}
                 autoFocus
                 autoComplete="off"
               />
-              <div className="chok" onClick={handleProject}>OK &nbsp;⇥</div>
+              <div className="chok" onClick={send}>Send &nbsp;⇥</div>
             </>
-          )}
-
-          {step === 'done' && (
-            <div style={{ textAlign: 'center', padding: 14 }}>
-              <div style={{ fontSize: 22, marginBottom: 6 }}>✅</div>
-              <div style={{ fontSize: 13, fontWeight: 600, color: '#333' }}>
-                Got it! I&apos;ll be in touch at hello@hasaka.io
-              </div>
-            </div>
           )}
         </div>
 

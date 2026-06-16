@@ -19,6 +19,13 @@ export default function CrispChat() {
     window.$crisp = window.$crisp || []
     window.CRISP_WEBSITE_ID = id
 
+    // Headless mode: hide Crisp's own launcher/bubble — the custom chat UI
+    // drives the conversation via the SDK. Re-hide whenever Crisp tries to show.
+    window.$crisp.push(['safe', true])
+    window.$crisp.push(['do', 'chat:hide'])
+    window.$crisp.push(['on', 'message:received', () => window.$crisp!.push(['do', 'chat:hide'])])
+    window.$crisp.push(['on', 'chat:opened', () => window.$crisp!.push(['do', 'chat:hide'])])
+
     const s = document.createElement('script')
     s.id = 'crisp-loader'
     s.src = 'https://client.crisp.chat/l.js'
