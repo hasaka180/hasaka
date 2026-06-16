@@ -8,54 +8,83 @@
       "year": "2025",
       "accent": "#7bc67e",
       "intro": "A farm-to-table identity rooted in soil, season, and ceremony — built to feel as alive as the produce it represents.",
-      "services": [
-        "Brand Strategy",
-        "Identity",
-        "Packaging",
-        "Art Direction"
-      ],
+      "services": ["Brand Strategy", "Identity", "Packaging", "Art Direction"],
       "sections": [
-        {
-          "id": "s1",
-          "type": "text",
-          "eyebrow": "The Brief",
-          "heading": "An identity that tastes like the land",
-          "body": "We were asked to build a brand that could hold both heritage and modernity — a system that feels handmade yet scales across packaging, signage, and digital. The work began in the fields and ended in a flexible visual language."
-        },
-        {
-          "id": "s2",
-          "type": "image",
-          "src": "/brand-identity.jpg",
-          "caption": "Primary logotype and seasonal mark",
-          "full": true
-        },
-        {
-          "id": "s3",
-          "type": "columns",
-          "items": [
-            {
-              "heading": "Approach",
-              "body": "Strategy first. We mapped the rituals of harvest into a modular grid that flexes from a jar label to a billboard."
-            },
-            {
-              "heading": "Outcome",
-              "body": "A 30% lift in shelf recognition and a system the in-house team can extend without us."
-            }
-          ]
-        },
-        {
-          "id": "s4",
-          "type": "grid",
-          "columns": 2,
-          "items": [
-            {
-              "src": "/creative-direction.jpg"
-            },
-            {
-              "src": "/design-system.jpg"
-            }
-          ]
-        }
+        { "id": "s1", "type": "text", "eyebrow": "The Brief", "heading": "An identity that tastes like the land", "body": "We were asked to build a brand that holds both heritage and modernity — handmade in feel, yet able to scale across packaging, signage, and digital. The work began in the fields and ended in a flexible visual language." },
+        { "id": "s2", "type": "image", "src": "/brand-identity.jpg", "caption": "Primary logotype and seasonal mark", "full": true },
+        { "id": "s3", "type": "columns", "items": [ { "heading": "Approach", "body": "Strategy first. We mapped the rituals of harvest into a modular grid that flexes from a jar label to a billboard." }, { "heading": "Outcome", "body": "A 30% lift in shelf recognition and a system the in-house team can extend without us." } ] },
+        { "id": "s4", "type": "grid", "columns": 2, "items": [ { "src": "/creative-direction.jpg" }, { "src": "/design-system.jpg" } ] }
+      ]
+    },
+    {
+      "slug": "ditchfield",
+      "title": "Ditchfield",
+      "client": "Ditchfield & Co.",
+      "category": "Food & Drink",
+      "year": "2024",
+      "accent": "#6b3621",
+      "intro": "A heritage roastery rebrand — slow craft, deep warmth, and a wordmark built to age like the beans it sells.",
+      "services": ["Identity", "Packaging", "Print"],
+      "sections": [
+        { "id": "s1", "type": "text", "eyebrow": "Overview", "heading": "Old soul, new shelf presence", "body": "Ditchfield needed to feel rooted without feeling dated. We leaned into a confident serif wordmark and a palette of roasted browns and cream." },
+        { "id": "s2", "type": "image", "src": "/brand-strategy.jpg", "full": true }
+      ]
+    },
+    {
+      "slug": "cinema-cinema",
+      "title": "Cinéma Cinéma",
+      "client": "Cinéma Cinéma",
+      "category": "Entertainment",
+      "year": "2025",
+      "accent": "#8b1a00",
+      "intro": "A repertory cinema brand that turns every screening into an event — bold, cinematic, and unapologetically loud.",
+      "services": ["Brand Strategy", "Identity", "Motion"],
+      "sections": [
+        { "id": "s1", "type": "text", "eyebrow": "Concept", "heading": "Double feature energy", "body": "We doubled everything — the name, the marks, the marquee — into a system that feels like a title card for an indie classic." },
+        { "id": "s2", "type": "image", "src": "/motion.jpg", "full": true },
+        { "id": "s3", "type": "columns", "items": [ { "heading": "Identity", "body": "A flexible marquee system that adapts to any film, any night." }, { "heading": "Motion", "body": "Title-card animations that bookend every screening." } ] }
+      ]
+    },
+    {
+      "slug": "sovimage",
+      "title": "Sovimage",
+      "client": "Sovimage Studios",
+      "category": "Entertainment",
+      "year": "2024",
+      "accent": "#1a1a1a",
+      "intro": "A production house web platform built to showcase the reel first — fast, dark, and cinematic.",
+      "services": ["Web Design", "Art Direction", "Build"],
+      "sections": [
+        { "id": "s1", "type": "text", "eyebrow": "The Brief", "heading": "Let the work play", "body": "Every decision served the footage. A near-black canvas, oversized type, and a player-first layout put the reel centre stage." },
+        { "id": "s2", "type": "image", "src": "/Digital.jpg", "full": true }
+      ]
+    },
+    {
+      "slug": "quartier-molson",
+      "title": "Quartier Molson",
+      "client": "Quartier Molson",
+      "category": "Real Estate",
+      "year": "2025",
+      "accent": "#b8860b",
+      "intro": "A neighbourhood brand for a former brewery district — industrial heritage reframed as a place to live and gather.",
+      "services": ["Brand Strategy", "Identity", "Signage"],
+      "sections": [
+        { "id": "s1", "type": "text", "eyebrow": "Placemaking", "heading": "From brewery to belonging", "body": "We built a wayfinding-led identity that honours the brick-and-copper past while signalling a warm, modern community." },
+        { "id": "s2", "type": "image", "src": "/Storytelling.jpg", "full": true }
+      ]
+    },
+    {
+      "slug": "maison-aurore",
+      "title": "Maison Aurore",
+      "client": "Maison Aurore",
+      "category": "Fashion",
+      "year": "2025",
+      "accent": "#6c5ce7",
+      "intro": "A fashion house identity poised between couture restraint and a dawn-lit optimism.",
+      "services": ["Identity", "Art Direction", "Visual System"],
+      "sections": [
+        { "id": "s1", "type": "text", "eyebrow": "Overview", "heading": "Light, made wearable", "body": "Aurore means dawn. The system trades on soft gradients, generous space, and a wordmark that feels stitched rather than set." },
+        { "id": "s2", "type": "image", "src": "/rebranding.jpg", "full": true }
       ]
     },
     {
@@ -66,25 +95,25 @@
       "year": "2024",
       "accent": "#3a2a6e",
       "intro": "A luxury hospitality identity designed to feel quiet, warm, and unmistakably modern.",
-      "services": [
-        "Brand Strategy",
-        "Identity",
-        "Visual System"
-      ],
+      "services": ["Brand Strategy", "Identity", "Visual System"],
       "sections": [
-        {
-          "id": "s1",
-          "type": "text",
-          "eyebrow": "Overview",
-          "heading": "Understated luxury, end to end",
-          "body": "From wayfinding to the booking flow, every touchpoint was tuned for calm. The wordmark sets the tone — a slow, confident italic that reads as effortless."
-        },
-        {
-          "id": "s2",
-          "type": "image",
-          "src": "/Storytelling.jpg",
-          "full": true
-        }
+        { "id": "s1", "type": "text", "eyebrow": "Overview", "heading": "Understated luxury, end to end", "body": "From wayfinding to the booking flow, every touchpoint was tuned for calm. The wordmark sets the tone — a slow, confident italic that reads as effortless." },
+        { "id": "s2", "type": "image", "src": "/Storytelling.jpg", "full": true }
+      ]
+    },
+    {
+      "slug": "soluna-labs",
+      "title": "Soluna Labs",
+      "client": "Soluna Labs",
+      "category": "Tech Startup",
+      "year": "2025",
+      "accent": "#0d1117",
+      "intro": "A deep-tech startup brand engineered for trust — precise, technical, and quietly futuristic.",
+      "services": ["Brand Strategy", "Identity", "Web Design"],
+      "sections": [
+        { "id": "s1", "type": "text", "eyebrow": "The Brief", "heading": "Make the complex feel inevitable", "body": "Soluna needed to look like it had already won. We built a monochrome system with a single electric-green accent and a grid that reads as engineering." },
+        { "id": "s2", "type": "image", "src": "/AI.jpg", "full": true },
+        { "id": "s3", "type": "columns", "items": [ { "heading": "Brand", "body": "A confident monospace-adjacent wordmark and a strict mono palette." }, { "heading": "Web", "body": "A fast, dark product site that turns specs into story." } ] }
       ]
     }
   ]

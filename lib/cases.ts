@@ -63,9 +63,36 @@ async function writeFileStore(store: Store): Promise<void> {
   await fs.writeFile(FILE, JSON.stringify(store, null, 2), 'utf-8')
 }
 
+/* One-time seed: if the Appwrite collection is empty, populate it from the
+   committed data/cases.json. Idempotent (upsert by slug) and cached per runtime. */
+let seedPromise: Promise<void> | null = null
+async function ensureSeeded(): Promise<void> {
+  if (!databases) return
+  if (!seedPromise) {
+    seedPromise = (async () => {
+      try {
+        const res = await databases.listDocuments(AW.db!, AW.col!, [Query.limit(1)])
+        if (res.total > 0) return
+        const { cases } = await readFileStore()
+        for (const c of cases) {
+          await databases.upsertDocument(AW.db!, AW.col!, c.slug, {
+            slug: c.slug,
+            title: c.title,
+            data: JSON.stringify(c),
+          })
+        }
+      } catch {
+        seedPromise = null // allow a retry on the next request
+      }
+    })()
+  }
+  return seedPromise
+}
+
 /* ── public API (used by the route handlers) ── */
 export async function getCases(): Promise<CaseStudy[]> {
   if (databases) {
+    await ensureSeeded()
     const res = await databases.listDocuments(AW.db!, AW.col!, [Query.limit(100)])
     return res.documents.map((d) => parseDoc(d as Record<string, unknown>))
   }
@@ -74,6 +101,7 @@ export async function getCases(): Promise<CaseStudy[]> {
 
 export async function getCase(slug: string): Promise<CaseStudy | null> {
   if (databases) {
+    await ensureSeeded()
     try {
       return parseDoc((await databases.getDocument(AW.db!, AW.col!, slug)) as Record<string, unknown>)
     } catch {

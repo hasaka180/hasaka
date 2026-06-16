@@ -20,6 +20,7 @@ const projects = [
   },
   {
     tab: 'Branding',
+    slug: 'ditchfield',
     bg: 'linear-gradient(135deg,#3d1c02,#6b3621)',
     titleText: 'ditchfield',
     titleSize: 20,
@@ -30,6 +31,7 @@ const projects = [
   },
   {
     tab: 'Branding',
+    slug: 'cinema-cinema',
     bg: 'linear-gradient(135deg,#8b1a00,#3d0000)',
     titleText: 'CINEMA\nCINEMA',
     titleSize: 18,
@@ -41,6 +43,7 @@ const projects = [
   },
   {
     tab: 'Web',
+    slug: 'sovimage',
     bg: 'linear-gradient(135deg,#0a0a0a,#2a2a2a)',
     titleText: 'SOViMAGE',
     titleSize: 18,
@@ -51,6 +54,7 @@ const projects = [
   },
   {
     tab: 'Branding',
+    slug: 'quartier-molson',
     bg: 'linear-gradient(135deg,#b8860b,#8b6914)',
     titleText: 'QUARTIER\nMOLSON',
     titleSize: 14,
@@ -61,6 +65,7 @@ const projects = [
   },
   {
     tab: 'Branding',
+    slug: 'maison-aurore',
     bg: 'linear-gradient(135deg,#6c5ce7,#a29bfe)',
     titleText: 'MAISON\nAUROE',
     titleSize: 20,
@@ -83,6 +88,7 @@ const projects = [
   },
   {
     tab: 'Web',
+    slug: 'soluna-labs',
     bg: 'linear-gradient(135deg,#0d1117,#1a237e)',
     titleText: 'SOLUNA LABS',
     titleSize: 13,
