@@ -4,6 +4,7 @@ import localFont from 'next/font/local'
 import './globals.css'
 import Sidebar from '@/components/Sidebar'
 import SmoothScroll from '@/components/SmoothScroll'
+import CrispChat from '@/components/CrispChat'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${inter.variable} ${helveticaNow.variable}`}>
       <body>
         <SmoothScroll />
+        <CrispChat />
         <Sidebar />
         <div id="main">
           {children}
