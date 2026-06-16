@@ -5,8 +5,15 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 export async function GET() {
-  const cases = await getCases()
-  return NextResponse.json({ cases })
+  try {
+    const cases = await getCases()
+    return NextResponse.json({ cases })
+  } catch (e) {
+    return NextResponse.json(
+      { error: e instanceof Error ? e.message : String(e) },
+      { status: 500 },
+    )
+  }
 }
 
 export async function POST(req: Request) {
