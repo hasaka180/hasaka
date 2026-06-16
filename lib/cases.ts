@@ -1,6 +1,6 @@
 import fs from 'fs/promises'
 import path from 'path'
-import { Client, Databases, Query } from 'node-appwrite'
+import { Client, TablesDB, Query } from 'node-appwrite'
 
 /* ── Section-based content model (the "builder" blocks) ── */
 export type Section =
@@ -40,15 +40,17 @@ const AW = {
   col: process.env.APPWRITE_COLLECTION_ID,
 }
 
-const databases =
+// TablesDB (rows) API — the modern Appwrite model. APPWRITE_COLLECTION_ID is
+// used as the table id (a collection and a table share the same id).
+const tables =
   AW.endpoint && AW.project && AW.apiKey && AW.db && AW.col
-    ? new Databases(
+    ? new TablesDB(
         new Client().setEndpoint(AW.endpoint).setProject(AW.project).setKey(AW.apiKey),
       )
     : null
 
-const parseDoc = (doc: Record<string, unknown>): CaseStudy =>
-  JSON.parse((doc.data as string) ?? '{}') as CaseStudy
+const parseRow = (row: Record<string, unknown>): CaseStudy =>
+  JSON.parse((row.data as string) ?? '{}') as CaseStudy
 
 /* ── file fallback (local dev) ── */
 async function readFileStore(): Promise<Store> {
@@ -67,18 +69,19 @@ async function writeFileStore(store: Store): Promise<void> {
    committed data/cases.json. Idempotent (upsert by slug) and cached per runtime. */
 let seedPromise: Promise<void> | null = null
 async function ensureSeeded(): Promise<void> {
-  if (!databases) return
+  if (!tables) return
   if (!seedPromise) {
     seedPromise = (async () => {
       try {
-        const res = await databases.listDocuments(AW.db!, AW.col!, [Query.limit(1)])
+        const res = await tables.listRows({ databaseId: AW.db!, tableId: AW.col!, queries: [Query.limit(1)] })
         if (res.total > 0) return
         const { cases } = await readFileStore()
         for (const c of cases) {
-          await databases.upsertDocument(AW.db!, AW.col!, c.slug, {
-            slug: c.slug,
-            title: c.title,
-            data: JSON.stringify(c),
+          await tables.upsertRow({
+            databaseId: AW.db!,
+            tableId: AW.col!,
+            rowId: c.slug,
+            data: { slug: c.slug, title: c.title, data: JSON.stringify(c) },
           })
         }
       } catch {
@@ -91,19 +94,19 @@ async function ensureSeeded(): Promise<void> {
 
 /* ── public API (used by the route handlers) ── */
 export async function getCases(): Promise<CaseStudy[]> {
-  if (databases) {
+  if (tables) {
     await ensureSeeded()
-    const res = await databases.listDocuments(AW.db!, AW.col!, [Query.limit(100)])
-    return res.documents.map((d) => parseDoc(d as Record<string, unknown>))
+    const res = await tables.listRows({ databaseId: AW.db!, tableId: AW.col!, queries: [Query.limit(100)] })
+    return res.rows.map((r) => parseRow(r as Record<string, unknown>))
   }
   return (await readFileStore()).cases
 }
 
 export async function getCase(slug: string): Promise<CaseStudy | null> {
-  if (databases) {
+  if (tables) {
     await ensureSeeded()
     try {
-      return parseDoc((await databases.getDocument(AW.db!, AW.col!, slug)) as Record<string, unknown>)
+      return parseRow((await tables.getRow({ databaseId: AW.db!, tableId: AW.col!, rowId: slug })) as Record<string, unknown>)
     } catch {
       return null
     }
@@ -113,11 +116,12 @@ export async function getCase(slug: string): Promise<CaseStudy | null> {
 }
 
 export async function upsertCase(input: CaseStudy): Promise<CaseStudy> {
-  if (databases) {
-    await databases.upsertDocument(AW.db!, AW.col!, input.slug, {
-      slug: input.slug,
-      title: input.title,
-      data: JSON.stringify(input),
+  if (tables) {
+    await tables.upsertRow({
+      databaseId: AW.db!,
+      tableId: AW.col!,
+      rowId: input.slug,
+      data: { slug: input.slug, title: input.title, data: JSON.stringify(input) },
     })
     return input
   }
@@ -130,9 +134,9 @@ export async function upsertCase(input: CaseStudy): Promise<CaseStudy> {
 }
 
 export async function deleteCase(slug: string): Promise<boolean> {
-  if (databases) {
+  if (tables) {
     try {
-      await databases.deleteDocument(AW.db!, AW.col!, slug)
+      await tables.deleteRow({ databaseId: AW.db!, tableId: AW.col!, rowId: slug })
       return true
     } catch {
       return false
