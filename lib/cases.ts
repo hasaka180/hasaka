@@ -1,6 +1,6 @@
 import fs from 'fs/promises'
 import path from 'path'
-import { kv } from '@vercel/kv'
+import { createClient } from '@vercel/kv'
 
 /* ── Section-based content model (the "builder" blocks) ── */
 export type Section =
@@ -28,14 +28,19 @@ type Store = { cases: CaseStudy[] }
 const FILE = path.join(process.cwd(), 'data', 'cases.json')
 const KV_KEY = 'hasaka:cases'
 
-// Use Vercel KV in production (filesystem is read-only there); fall back to the
-// local JSON file for development so the builder works without any setup.
-const useKV = !!process.env.KV_REST_API_URL
+// Accept either the Vercel KV (`KV_*`) or the Upstash (`UPSTASH_REDIS_REST_*`)
+// env var names — different Marketplace integrations inject different prefixes.
+const KV_URL = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL
+const KV_TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN
+
+// Use the Redis store in production (filesystem is read-only there); fall back to
+// the local JSON file for development so the builder works without any setup.
+const kv = KV_URL && KV_TOKEN ? createClient({ url: KV_URL, token: KV_TOKEN }) : null
 
 async function readStore(): Promise<Store> {
-  if (useKV) {
+  if (kv) {
     const cases = (await kv.get<CaseStudy[]>(KV_KEY)) ?? []
-    // first run on a fresh KV: seed from the committed JSON file
+    // first run on a fresh store: seed from the committed JSON file
     if (cases.length === 0) {
       const seeded = await readFileStore()
       if (seeded.cases.length) await kv.set(KV_KEY, seeded.cases)
@@ -47,7 +52,7 @@ async function readStore(): Promise<Store> {
 }
 
 async function writeStore(store: Store): Promise<void> {
-  if (useKV) {
+  if (kv) {
     await kv.set(KV_KEY, store.cases)
     return
   }
