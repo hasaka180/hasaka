@@ -28,20 +28,9 @@ const navItems = [
     ),
   },
   {
-    href: '/cases',
+    href: '/collections',
     label: 'Cases',
     short: 'Cases',
-    icon: (
-      <svg viewBox="0 0 20 20" fill="none">
-        <rect x="3" y="3" width="14" height="11" rx="2" fill="#111" />
-        <rect x="5" y="15.5" width="10" height="2" rx="1" fill="#111" opacity=".5" />
-      </svg>
-    ),
-  },
-  {
-    href: '/collections',
-    label: 'Collections',
-    short: 'Collect',
     icon: (
       <svg viewBox="0 0 20 20" fill="none">
         <rect x="2" y="2" width="7" height="7" rx="1.5" fill="#111" />
