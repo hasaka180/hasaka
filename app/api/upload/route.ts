@@ -4,9 +4,14 @@ import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-const ACCOUNT_ID = process.env.R2_ACCOUNT_ID
-const ACCESS_KEY = process.env.R2_ACCESS_KEY_ID
-const SECRET_KEY = process.env.R2_SECRET_ACCESS_KEY
+// Accept a few common env var names so it works with the values copied from
+// Cloudflare's R2 "S3 API" token screen.
+const ENDPOINT =
+  process.env.R2_S3_API_ENDPOINT ||
+  process.env.R2_ENDPOINT ||
+  (process.env.R2_ACCOUNT_ID ? `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com` : undefined)
+const ACCESS_KEY = process.env.R2_ACCESS_KEY_ID || process.env.ACCESS_KEY_ID
+const SECRET_KEY = process.env.R2_SECRET_ACCESS_KEY || process.env.SECRET_ACCESS_KEY
 const BUCKET = process.env.R2_BUCKET
 const PUBLIC_BASE = process.env.R2_PUBLIC_BASE_URL // e.g. https://pub-xxxx.r2.dev
 
@@ -16,11 +21,15 @@ const uid = () =>
   (globalThis.crypto?.randomUUID?.() ?? Math.random().toString(36).slice(2)).slice(0, 12)
 
 export async function POST(req: Request) {
-  if (!ACCOUNT_ID || !ACCESS_KEY || !SECRET_KEY || !BUCKET || !PUBLIC_BASE) {
-    return NextResponse.json(
-      { error: 'Uploads not configured. Set the R2_* environment variables.' },
-      { status: 503 },
-    )
+  if (!ENDPOINT || !ACCESS_KEY || !SECRET_KEY || !BUCKET || !PUBLIC_BASE) {
+    const missing = [
+      !ENDPOINT && 'R2_S3_API_ENDPOINT (or R2_ACCOUNT_ID)',
+      !ACCESS_KEY && 'R2_ACCESS_KEY_ID / ACCESS_KEY_ID',
+      !SECRET_KEY && 'R2_SECRET_ACCESS_KEY',
+      !BUCKET && 'R2_BUCKET',
+      !PUBLIC_BASE && 'R2_PUBLIC_BASE_URL',
+    ].filter(Boolean).join(', ')
+    return NextResponse.json({ error: `Uploads not configured. Missing: ${missing}` }, { status: 503 })
   }
 
   try {
@@ -40,7 +49,7 @@ export async function POST(req: Request) {
 
     const s3 = new S3Client({
       region: 'auto',
-      endpoint: `https://${ACCOUNT_ID}.r2.cloudflarestorage.com`,
+      endpoint: ENDPOINT,
       credentials: { accessKeyId: ACCESS_KEY, secretAccessKey: SECRET_KEY },
     })
 
@@ -55,6 +64,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ url, key })
   } catch (e) {
     console.error('R2 upload failed:', e)
-    return NextResponse.json({ error: 'Upload failed' }, { status: 500 })
+    // surfaced for debugging — this route is password-gated
+    return NextResponse.json({ error: e instanceof Error ? e.message : 'Upload failed' }, { status: 500 })
   }
 }
