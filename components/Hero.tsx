@@ -42,7 +42,7 @@ function MobileCarousel({ items, dir }: { items: MCard[]; dir: string }) {
             {card.video ? (
               <video src={card.video} autoPlay muted loop playsInline preload="auto" poster={card.img} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
             ) : (
-              <img src={card.img} alt={card.label} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src={card.img} alt={card.label} loading="lazy" decoding="async" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
             )}
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 55%)" }} />
             <div className={styles.carouselCardSub} style={{ color: "rgba(255,255,255,0.55)", position: "relative", zIndex: 1 }}>{card.sub}</div>

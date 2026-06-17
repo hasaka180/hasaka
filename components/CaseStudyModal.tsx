@@ -18,7 +18,7 @@ function SectionBlock({ section }: { section: Section }) {
       return (
         <figure className={`${styles.media} ${section.full ? styles.full : ''}`}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={section.src} alt={section.caption ?? ''} />
+          <img src={section.src} alt={section.caption ?? ''} loading="lazy" decoding="async" />
           {section.caption && <figcaption>{section.caption}</figcaption>}
         </figure>
       )
@@ -45,7 +45,7 @@ function SectionBlock({ section }: { section: Section }) {
           {section.items.map((it, i) => (
             <figure key={i} className={styles.gridItem}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={it.src} alt={it.caption ?? ''} />
+              <img src={it.src} alt={it.caption ?? ''} loading="lazy" decoding="async" />
               {it.caption && <figcaption>{it.caption}</figcaption>}
             </figure>
           ))}
