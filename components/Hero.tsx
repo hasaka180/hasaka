@@ -40,7 +40,7 @@ function MobileCarousel({ items, dir }: { items: MCard[]; dir: string }) {
         {[...items, ...items].map((card, i) => (
           <div key={i} className={styles.carouselCard} style={{ position: "relative", overflow: "hidden", background: "#111" }}>
             {card.video ? (
-              <video src={card.video} autoPlay muted loop playsInline preload="auto" poster={card.img} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+              <video src={card.video} autoPlay muted loop playsInline preload="none" poster={card.img} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
             ) : (
               <img src={card.img} alt={card.label} loading="lazy" decoding="async" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
             )}
@@ -379,7 +379,7 @@ export default function Hero() {
                     muted
                     loop
                     playsInline
-                    preload="auto"
+                    preload="none"
                     style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
                     src="/videos/realpha.mp4"
                   />
@@ -403,7 +403,7 @@ export default function Hero() {
             muted
             loop
             playsInline
-            preload="auto"
+            preload="none"
             style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
             src="/videos/hero_reel.mp4"
           />
@@ -431,7 +431,7 @@ export default function Hero() {
           muted
           loop
           playsInline
-          preload="auto"
+          preload="none"
           onCanPlay={(e) => e.currentTarget.play()}
           poster="/videos/brand-reel-poster.jpg"
         />
@@ -503,7 +503,7 @@ export default function Hero() {
                   </div>
                 </div>
                 <div className={`${styles.cc}`} style={{ flex: "0 0 calc(33% - 6px)", position: "relative", overflow: "hidden" }}>
-                  <video autoPlay muted loop playsInline preload="auto" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} src="/videos/cardo.mp4" />
+                  <video autoPlay muted loop playsInline preload="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} src="/videos/cardo.mp4" />
                   <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%)", zIndex: 1 }} />
                   <div style={{ position: "absolute", bottom: 12, left: 12, zIndex: 2 }}>
                     <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.55)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 4 }}>UI/UX</div>
@@ -511,7 +511,7 @@ export default function Hero() {
                   </div>
                 </div>
                 <div className={`${styles.cc}`} style={{ flex: "1 1 0", position: "relative", overflow: "hidden" }}>
-                  <video autoPlay muted loop playsInline preload="auto" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} src="/videos/osos.mp4" />
+                  <video autoPlay muted loop playsInline preload="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} src="/videos/osos.mp4" />
                   <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%)", zIndex: 1 }} />
                   <div style={{ position: "absolute", bottom: 12, left: 12, zIndex: 2 }}>
                     <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.55)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 4 }}>Brand Identity</div>
@@ -611,7 +611,7 @@ export default function Hero() {
             muted
             loop
             playsInline
-            preload="auto"
+            preload="none"
             onCanPlay={(e) => e.currentTarget.play()}
             poster="/videos/brand-reel-poster.jpg"
           />
