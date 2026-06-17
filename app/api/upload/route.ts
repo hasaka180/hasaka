@@ -1,19 +1,24 @@
 import { NextResponse } from 'next/server'
-import { Client, Storage, ID, Permission, Role } from 'node-appwrite'
-import { InputFile } from 'node-appwrite/file'
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-const ENDPOINT = process.env.APPWRITE_ENDPOINT
-const PROJECT = process.env.APPWRITE_PROJECT_ID
-const API_KEY = process.env.APPWRITE_API_KEY
-const BUCKET = process.env.APPWRITE_BUCKET_ID
+const ACCOUNT_ID = process.env.R2_ACCOUNT_ID
+const ACCESS_KEY = process.env.R2_ACCESS_KEY_ID
+const SECRET_KEY = process.env.R2_SECRET_ACCESS_KEY
+const BUCKET = process.env.R2_BUCKET
+const PUBLIC_BASE = process.env.R2_PUBLIC_BASE_URL // e.g. https://pub-xxxx.r2.dev
+
+const FOLDERS = new Set(['work', 'cases', 'journal', 'misc'])
+
+const uid = () =>
+  (globalThis.crypto?.randomUUID?.() ?? Math.random().toString(36).slice(2)).slice(0, 12)
 
 export async function POST(req: Request) {
-  if (!ENDPOINT || !PROJECT || !API_KEY || !BUCKET) {
+  if (!ACCOUNT_ID || !ACCESS_KEY || !SECRET_KEY || !BUCKET || !PUBLIC_BASE) {
     return NextResponse.json(
-      { error: 'Uploads not configured. Set APPWRITE_BUCKET_ID (and the other APPWRITE_* vars).' },
+      { error: 'Uploads not configured. Set the R2_* environment variables.' },
       { status: 503 },
     )
   }
@@ -25,22 +30,31 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 })
     }
 
-    const buffer = Buffer.from(await file.arrayBuffer())
-    const storage = new Storage(
-      new Client().setEndpoint(ENDPOINT).setProject(PROJECT).setKey(API_KEY),
-    )
+    // route into the work / cases / journal folder
+    const requested = String(form.get('folder') || 'misc')
+    const folder = FOLDERS.has(requested) ? requested : 'misc'
 
-    const created = await storage.createFile({
-      bucketId: BUCKET,
-      fileId: ID.unique(),
-      file: InputFile.fromBuffer(buffer, file.name || 'upload'),
-      permissions: [Permission.read(Role.any())], // public read for delivery
+    const ext = (file.name.split('.').pop() || 'bin').toLowerCase().replace(/[^a-z0-9]/g, '')
+    const key = `${folder}/${uid()}.${ext}`
+    const buffer = Buffer.from(await file.arrayBuffer())
+
+    const s3 = new S3Client({
+      region: 'auto',
+      endpoint: `https://${ACCOUNT_ID}.r2.cloudflarestorage.com`,
+      credentials: { accessKeyId: ACCESS_KEY, secretAccessKey: SECRET_KEY },
     })
 
-    const url = `${ENDPOINT}/storage/buckets/${BUCKET}/files/${created.$id}/view?project=${PROJECT}`
-    return NextResponse.json({ url, id: created.$id })
+    await s3.send(new PutObjectCommand({
+      Bucket: BUCKET,
+      Key: key,
+      Body: buffer,
+      ContentType: file.type || 'application/octet-stream',
+    }))
+
+    const url = `${PUBLIC_BASE.replace(/\/$/, '')}/${key}`
+    return NextResponse.json({ url, key })
   } catch (e) {
-    console.error('Upload failed:', e)
+    console.error('R2 upload failed:', e)
     return NextResponse.json({ error: 'Upload failed' }, { status: 500 })
   }
 }

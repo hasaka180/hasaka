@@ -39,6 +39,9 @@ function newSection(type: Section['type']): Section {
 
 const isJournal = (d: ContentItem): d is JournalPost => (d as JournalPost).type === 'journal'
 
+// R2 folder per content type
+const folderFor = (t: ContentType): string => (t === 'case' ? 'cases' : t)
+
 export default function CaseBuilder() {
   const [activeType, setActiveType] = useState<ContentType>('work')
   const [list, setList] = useState<{ slug: string; title: string }[]>([])
@@ -152,10 +155,10 @@ export default function CaseBuilder() {
             </div>
 
             {isJournal(draft)
-              ? <JournalEditor draft={draft} set={set} isNew={isNew} setSlug={setSlug} />
+              ? <JournalEditor draft={draft} set={set} isNew={isNew} setSlug={setSlug} folder="journal" />
               : (
                 <CaseEditor
-                  draft={draft} set={set} isNew={isNew} setSlug={setSlug} activeType={activeType}
+                  draft={draft} set={set} isNew={isNew} setSlug={setSlug} activeType={activeType} folder={folderFor(activeType)}
                   patchSection={patchSection} addSection={addSection} removeSection={removeSection} moveSection={moveSection}
                 />
               )}
@@ -170,9 +173,9 @@ export default function CaseBuilder() {
 
 /* ─────────────────────────────────────────── CASE / WORK editor ── */
 function CaseEditor({
-  draft, set, isNew, setSlug, activeType, patchSection, addSection, removeSection, moveSection,
+  draft, set, isNew, setSlug, activeType, folder, patchSection, addSection, removeSection, moveSection,
 }: {
-  draft: CaseStudy; set: (p: Partial<CaseStudy>) => void; isNew: boolean; setSlug: (v: string) => void; activeType: ContentType
+  draft: CaseStudy; set: (p: Partial<CaseStudy>) => void; isNew: boolean; setSlug: (v: string) => void; activeType: ContentType; folder: string
   patchSection: (id: string, p: Partial<Section>) => void; addSection: (t: Section['type']) => void
   removeSection: (id: string) => void; moveSection: (id: string, d: -1 | 1) => void
 }) {
@@ -195,7 +198,7 @@ function CaseEditor({
           <label>Accent (hero colour)<input type="color" value={draft.accent ?? '#1a1a1a'} onChange={(e) => set({ accent: e.target.value })} /></label>
           <label>Services (comma separated)<input value={(draft.services ?? []).join(', ')} onChange={(e) => set({ services: e.target.value.split(',').map((s) => s.trim()).filter(Boolean) })} /></label>
         </div>
-        <ImageField label="Cover image (optional)" value={draft.cover ?? ''} onChange={(v) => set({ cover: v })} />
+        <ImageField label="Cover image (optional)" value={draft.cover ?? ''} onChange={(v) => set({ cover: v })} folder={folder} />
         <label className={styles.full}>Intro<textarea rows={3} value={draft.intro ?? ''} onChange={(e) => set({ intro: e.target.value })} /></label>
       </section>
 
@@ -210,7 +213,7 @@ function CaseEditor({
               <button className={styles.x} onClick={() => removeSection(s.id)} aria-label="Remove">✕</button>
             </div>
           </div>
-          <SectionEditor section={s} patch={(p) => patchSection(s.id, p)} />
+          <SectionEditor section={s} patch={(p) => patchSection(s.id, p)} folder={folder} />
         </section>
       ))}
 
@@ -224,8 +227,8 @@ function CaseEditor({
 }
 
 /* ─────────────────────────────────────────── JOURNAL editor ── */
-function JournalEditor({ draft, set, isNew, setSlug }: {
-  draft: JournalPost; set: (p: Partial<JournalPost>) => void; isNew: boolean; setSlug: (v: string) => void
+function JournalEditor({ draft, set, isNew, setSlug, folder }: {
+  draft: JournalPost; set: (p: Partial<JournalPost>) => void; isNew: boolean; setSlug: (v: string) => void; folder: string
 }) {
   return (
     <section className={styles.card}>
@@ -244,7 +247,7 @@ function JournalEditor({ draft, set, isNew, setSlug }: {
         </label>
         <label className={styles.inline}><input type="checkbox" checked={!!draft.featured} onChange={(e) => set({ featured: e.target.checked })} /> Featured (homepage)</label>
       </div>
-      <ImageField label="Cover image" value={draft.cover ?? ''} onChange={(v) => set({ cover: v })} />
+      <ImageField label="Cover image" value={draft.cover ?? ''} onChange={(v) => set({ cover: v })} folder={folder} />
       <label className={styles.full}>Excerpt<textarea rows={2} value={draft.excerpt ?? ''} onChange={(e) => set({ excerpt: e.target.value })} /></label>
       <label className={styles.full}>Body (one paragraph per line)<textarea rows={8} value={draft.body ?? ''} onChange={(e) => set({ body: e.target.value })} /></label>
     </section>
@@ -252,7 +255,7 @@ function JournalEditor({ draft, set, isNew, setSlug }: {
 }
 
 /* ─────────────────────────────────────────── Section editor ── */
-function SectionEditor({ section, patch }: { section: Section; patch: (p: Partial<Section>) => void }) {
+function SectionEditor({ section, patch, folder }: { section: Section; patch: (p: Partial<Section>) => void; folder: string }) {
   if (section.type === 'text') {
     return (
       <div className={styles.fields}>
@@ -266,10 +269,10 @@ function SectionEditor({ section, patch }: { section: Section; patch: (p: Partia
   if (section.type === 'image' || section.type === 'video') {
     return (
       <div className={styles.fields}>
-        <ImageField label="Source" value={section.src} onChange={(v) => patch({ src: v })} accept={section.type === 'video' ? 'video/*' : 'image/*'} />
+        <ImageField label="Source" value={section.src} onChange={(v) => patch({ src: v })} folder={folder} accept={section.type === 'video' ? 'video/*' : 'image/*'} />
         {section.type === 'image'
           ? <label>Caption<input value={section.caption ?? ''} onChange={(e) => patch({ caption: e.target.value })} /></label>
-          : <ImageField label="Poster" value={section.poster ?? ''} onChange={(v) => patch({ poster: v })} />}
+          : <ImageField label="Poster" value={section.poster ?? ''} onChange={(v) => patch({ poster: v })} folder={folder} />}
         <label className={styles.inline}><input type="checkbox" checked={!!section.full} onChange={(e) => patch({ full: e.target.checked })} /> Full-bleed</label>
       </div>
     )
@@ -295,7 +298,7 @@ function SectionEditor({ section, patch }: { section: Section; patch: (p: Partia
       <label>Columns<input type="number" min={1} max={4} value={section.columns ?? 2} onChange={(e) => patch({ columns: Number(e.target.value) })} /></label>
       {items.map((it, i) => (
         <div key={i} className={styles.subRow}>
-          <ImageFieldInline value={it.src} onChange={(v) => patch({ items: items.map((x, j) => j === i ? { ...x, src: v } : x) })} />
+          <ImageFieldInline value={it.src} onChange={(v) => patch({ items: items.map((x, j) => j === i ? { ...x, src: v } : x) })} folder={folder} />
           <input placeholder="Caption" value={it.caption ?? ''} onChange={(e) => patch({ items: items.map((x, j) => j === i ? { ...x, caption: e.target.value } : x) })} />
           <button className={styles.x} onClick={() => patch({ items: items.filter((_, j) => j !== i) })}>✕</button>
         </div>
@@ -306,13 +309,14 @@ function SectionEditor({ section, patch }: { section: Section; patch: (p: Partia
 }
 
 /* ─────────────────────────────────────────── Image upload field ── */
-function useUpload() {
+function useUpload(folder: string) {
   const [busy, setBusy] = useState(false)
   const upload = async (file: File): Promise<string | null> => {
     setBusy(true)
     try {
       const fd = new FormData()
       fd.append('file', file)
+      fd.append('folder', folder)
       const res = await fetch('/api/upload', { method: 'POST', body: fd })
       if (!res.ok) return null
       const d = await res.json()
@@ -324,8 +328,8 @@ function useUpload() {
   return { busy, upload }
 }
 
-function ImageField({ label, value, onChange, accept = 'image/*' }: { label: string; value: string; onChange: (v: string) => void; accept?: string }) {
-  const { busy, upload } = useUpload()
+function ImageField({ label, value, onChange, folder, accept = 'image/*' }: { label: string; value: string; onChange: (v: string) => void; folder: string; accept?: string }) {
+  const { busy, upload } = useUpload(folder)
   return (
     <label className={styles.full}>{label}
       <div className={styles.uploadRow}>
@@ -344,8 +348,8 @@ function ImageField({ label, value, onChange, accept = 'image/*' }: { label: str
   )
 }
 
-function ImageFieldInline({ value, onChange }: { value: string; onChange: (v: string) => void }) {
-  const { busy, upload } = useUpload()
+function ImageFieldInline({ value, onChange, folder }: { value: string; onChange: (v: string) => void; folder: string }) {
+  const { busy, upload } = useUpload(folder)
   return (
     <div className={styles.uploadRow} style={{ flex: 1 }}>
       <input placeholder="Image URL" value={value} onChange={(e) => onChange(e.target.value)} />
