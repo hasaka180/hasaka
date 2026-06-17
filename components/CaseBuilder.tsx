@@ -318,9 +318,15 @@ function useUpload(folder: string) {
       fd.append('file', file)
       fd.append('folder', folder)
       const res = await fetch('/api/upload', { method: 'POST', body: fd })
-      if (!res.ok) return null
-      const d = await res.json()
+      const d = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        alert(d.error || `Upload failed (${res.status})`)
+        return null
+      }
       return d.url ?? null
+    } catch {
+      alert('Upload failed: network error')
+      return null
     } finally {
       setBusy(false)
     }
