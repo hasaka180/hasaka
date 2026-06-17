@@ -7,19 +7,20 @@ import type { CaseStudy } from '@/lib/cases'
 type Tab = 'Branding' | 'Web' | 'Content'
 const TABS: Tab[] = ['Branding', 'Web', 'Content']
 
-export default function ProjectGrid() {
+export default function ProjectGrid({ initialItems }: { initialItems?: CaseStudy[] }) {
   const [activeTab, setActiveTab] = useState<Tab>('Branding')
-  const [items, setItems] = useState<CaseStudy[]>([])
+  const [items, setItems] = useState<CaseStudy[]>(initialItems ?? [])
   const [openSlug, setOpenSlug] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(!initialItems)
 
   useEffect(() => {
+    if (initialItems) return // server-provided → no client fetch needed
     fetch('/api/cases?type=work')
       .then((r) => r.json())
       .then((d: { items?: CaseStudy[] }) => setItems(d.items ?? []))
       .catch(() => setItems([]))
       .finally(() => setLoading(false))
-  }, [])
+  }, [initialItems])
 
   const filtered = items.filter((p) => (p.tab ?? 'Branding') === activeTab)
 

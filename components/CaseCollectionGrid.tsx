@@ -7,18 +7,19 @@ import type { CaseStudy } from '@/lib/cases'
 // reuse the Collections palette classes so the layout stays identical
 const PALETTES = ['cb1', 'cb2', 'cb3', 'cb4', 'cb5', 'cb6']
 
-export default function CaseCollectionGrid() {
-  const [cases, setCases] = useState<CaseStudy[]>([])
+export default function CaseCollectionGrid({ initialItems }: { initialItems?: CaseStudy[] }) {
+  const [cases, setCases] = useState<CaseStudy[]>(initialItems ?? [])
   const [openSlug, setOpenSlug] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(!initialItems)
 
   useEffect(() => {
+    if (initialItems) return
     fetch('/api/cases?type=case')
       .then((r) => r.json())
       .then((d: { items?: CaseStudy[] }) => setCases(d.items ?? []))
       .catch(() => setCases([]))
       .finally(() => setLoading(false))
-  }, [])
+  }, [initialItems])
 
   return (
     <>

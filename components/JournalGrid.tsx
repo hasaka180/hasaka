@@ -82,18 +82,19 @@ function ArticleReader({ post, onClose }: { post: JournalPost; onClose: () => vo
   )
 }
 
-export default function JournalGrid() {
-  const [posts, setPosts] = useState<JournalPost[]>([])
+export default function JournalGrid({ initialItems }: { initialItems?: JournalPost[] }) {
+  const [posts, setPosts] = useState<JournalPost[]>(initialItems ?? [])
   const [open, setOpen] = useState<JournalPost | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(!initialItems)
 
   useEffect(() => {
+    if (initialItems) return
     fetch('/api/cases?type=journal')
       .then((r) => r.json())
       .then((d: { items?: JournalPost[] }) => setPosts(d.items ?? []))
       .catch(() => setPosts([]))
       .finally(() => setLoading(false))
-  }, [])
+  }, [initialItems])
 
   if (loading) return <div className={styles.state}>Loading the journal…</div>
   if (posts.length === 0) return <div className={styles.state}>No journal entries yet.</div>
