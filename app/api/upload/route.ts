@@ -13,7 +13,9 @@ const ENDPOINT =
 const ACCESS_KEY = process.env.R2_ACCESS_KEY_ID || process.env.ACCESS_KEY_ID
 const SECRET_KEY = process.env.R2_SECRET_ACCESS_KEY || process.env.SECRET_ACCESS_KEY
 const BUCKET = process.env.R2_BUCKET
-const PUBLIC_BASE = process.env.R2_PUBLIC_BASE_URL // e.g. https://pub-xxxx.r2.dev
+// Public bucket URL. Falls back to the known r2.dev address if the env var is unset.
+const PUBLIC_BASE =
+  process.env.R2_PUBLIC_BASE_URL || 'https://pub-4a897165e53a4f299d9edcba9b810de7.r2.dev'
 
 const FOLDERS = new Set(['work', 'cases', 'journal', 'misc'])
 
