@@ -1,6 +1,12 @@
 .overlay {
   position: fixed;
-  inset: 0; /* pins top/right/bottom/left → fills the real viewport (reliable in mobile in-app browsers) */
+  /* longhand edges — pins to the viewport in every Safari version (inset shorthand isn't honored < 14.1) */
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: 99999;
   display: flex;
   align-items: center;
