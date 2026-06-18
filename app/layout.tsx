@@ -33,9 +33,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <SmoothScroll />
         <CrispChat />
         <Sidebar />
-        <div id="main">
+        <main id="main">
           {children}
-        </div>
+        </main>
       </body>
     </html>
   )
