@@ -1,0 +1,50 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eeece9;
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.7s;
+}
+
+.leaving {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.word {
+  display: flex;
+  gap: clamp(4px, 1.4vw, 14px);
+}
+
+.letter {
+  font-family: var(--font-helvetica-now), var(--font-inter), sans-serif;
+  font-size: clamp(40px, 11vw, 130px);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: #111;
+  line-height: 1;
+  opacity: 0;
+  transform: translateY(18px);
+  filter: blur(8px);
+  animation: letterIn 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes letterIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .letter {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}

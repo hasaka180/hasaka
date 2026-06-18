@@ -6,7 +6,7 @@ const services = [
     name: "Brand Identity",
     desc: "Building memorable identities that stand out and stand for something.",
     icon: "⊕",
-    img: "/Brand-Identity.jpg",
+    img: "/brand-identity.jpg",
   },
   {
     num: "02",

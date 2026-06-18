@@ -5,6 +5,7 @@ import './globals.css'
 import Sidebar from '@/components/Sidebar'
 import SmoothScroll from '@/components/SmoothScroll'
 import CrispChat from '@/components/CrispChat'
+import Preloader from '@/components/Preloader'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${inter.variable} ${helveticaNow.variable}`}>
       <body>
+        <Preloader />
         <SmoothScroll />
         <CrispChat />
         <Sidebar />
