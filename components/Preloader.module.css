@@ -1,13 +1,18 @@
 .overlay {
   position: fixed;
-  inset: 0;
-  z-index: 9999;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh; /* fills mobile viewport incl. dynamic toolbars */
+  z-index: 99999;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: 28px;
+  box-sizing: border-box;
   background: #eeece9;
-  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.7s;
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s;
 }
 
 .leaving {
@@ -19,39 +24,40 @@
   max-width: 760px;
   text-align: center;
   font-family: var(--font-helvetica-now), var(--font-inter), sans-serif;
-  font-size: clamp(24px, 4.4vw, 48px);
+  font-size: clamp(22px, 5.2vw, 48px);
   font-weight: 500;
   letter-spacing: -0.02em;
-  line-height: 1.25;
+  line-height: 1.3;
   color: #111;
 }
 
-/* each word is a token that blurs in / out (same feel as the titles) */
+/* each word blurs in / out — dramatic, slow */
 .in,
 .out {
   display: inline-block;
   white-space: pre;
   opacity: 0;
+  will-change: opacity, transform, filter;
 }
 
 .in {
-  animation: wordBlurIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: wordBlurIn 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .out {
-  animation: wordBlurOut 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: wordBlurOut 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @keyframes wordBlurIn {
-  from { opacity: 0; transform: translateY(16px); filter: blur(8px); }
-  to   { opacity: 1; transform: translateY(0);   filter: blur(0); }
+  from { opacity: 0; transform: translateY(22px); filter: blur(14px); }
+  to   { opacity: 1; transform: translateY(0);    filter: blur(0); }
 }
 
 @keyframes wordBlurOut {
-  from { opacity: 1; transform: translateY(0);    filter: blur(0); }
-  to   { opacity: 0; transform: translateY(-12px); filter: blur(8px); }
+  from { opacity: 1; transform: translateY(0);     filter: blur(0); }
+  to   { opacity: 0; transform: translateY(-14px); filter: blur(14px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .in, .out { animation: none; opacity: 1; }
+  .in, .out { animation-duration: 0.4s; }
 }
