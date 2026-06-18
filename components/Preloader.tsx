@@ -3,11 +3,11 @@
 import { useEffect, useState } from 'react'
 import styles from './Preloader.module.css'
 
-const LETTERS = ['H', 'A', 'S', 'A', 'K', 'A']
+const WORDS = "Hi, I'm Hasaka. Welcome to a new dawn of creativity.".split(' ')
 
 export default function Preloader() {
-  // shown only on the very first load of a session
   const [done, setDone] = useState(false)
+  const [phase, setPhase] = useState<'in' | 'out'>('in')
   const [leaving, setLeaving] = useState(false)
   const [mounted, setMounted] = useState(false)
 
@@ -20,17 +20,18 @@ export default function Preloader() {
     setMounted(true)
     document.body.style.overflow = 'hidden'
 
-    // letters finish ~ 6 * 130ms + 0.5s ease ≈ 1.3s; hold, then exit
-    const exit = setTimeout(() => setLeaving(true), 1900)
-    const finish = setTimeout(() => {
+    const tOut = setTimeout(() => setPhase('out'), 2600)   // words blur out
+    const tLeave = setTimeout(() => setLeaving(true), 3350) // overlay fades
+    const tDone = setTimeout(() => {
       setDone(true)
       document.body.style.overflow = ''
       sessionStorage.setItem('hasaka-intro', '1')
-    }, 2700)
+    }, 4050)
 
     return () => {
-      clearTimeout(exit)
-      clearTimeout(finish)
+      clearTimeout(tOut)
+      clearTimeout(tLeave)
+      clearTimeout(tDone)
       document.body.style.overflow = ''
     }
   }, [])
@@ -39,13 +40,20 @@ export default function Preloader() {
 
   return (
     <div className={`${styles.overlay} ${leaving ? styles.leaving : ''}`} aria-hidden>
-      <div className={styles.word}>
-        {LETTERS.map((l, i) => (
-          <span key={i} className={styles.letter} style={{ animationDelay: `${0.25 + i * 0.13}s` }}>
-            {l}
+      <p className={styles.text}>
+        {WORDS.map((w, i) => (
+          <span
+            key={i}
+            className={phase === 'out' ? styles.out : styles.in}
+            style={{
+              animationDelay:
+                phase === 'out' ? `${i * 0.045}s` : `${0.25 + i * 0.085}s`,
+            }}
+          >
+            {w}&nbsp;
           </span>
         ))}
-      </div>
+      </p>
     </div>
   )
 }
