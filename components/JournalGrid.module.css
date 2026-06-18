@@ -112,7 +112,7 @@
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
 .sheet {
   position: relative; width: min(820px, 100%); min-height: 100dvh;
-  background: #f3f1ee; color: #161310;
+  background: var(--sb, #f3f1ee); color: var(--sf, #161310);
   animation: rise 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 @keyframes rise { from { transform: translateY(28px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -126,6 +126,6 @@
 .aBody { padding: clamp(28px, 6vw, 72px); max-width: 720px; margin: 0 auto; }
 .aPill { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #b0431f; margin-bottom: 18px; }
 .aTitle { font-family: var(--font-helvetica-now), Georgia, serif; font-weight: 500; font-size: clamp(30px, 5vw, 54px); line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 18px; }
-.aMeta { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: #9a948a; margin-bottom: 32px; }
-.aText { font-size: 18px; line-height: 1.75; color: #2e2a24; }
+.aMeta { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: currentColor; opacity: 0.5; margin-bottom: 32px; }
+.aText { font-size: 18px; line-height: 1.75; color: currentColor; opacity: 0.85; }
 .aText p { margin-bottom: 20px; }

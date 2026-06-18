@@ -25,6 +25,8 @@ export interface CaseStudy {
   cover?: string
   intro?: string
   services?: string[]
+  bg?: string // detail-view background colour
+  fg?: string // detail-view text colour
   sections: Section[]
 }
 
@@ -40,6 +42,8 @@ export interface JournalPost {
   size?: 'lg' | 'md' | 'sm'
   featured?: boolean
   body?: string
+  bg?: string // reader background colour
+  fg?: string // reader text colour
 }
 
 export type ContentItem = CaseStudy | JournalPost

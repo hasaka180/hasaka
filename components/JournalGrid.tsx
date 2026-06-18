@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode, type CSSProperties } from 'react'
 import styles from './JournalGrid.module.css'
 import type { JournalPost } from '@/lib/cases'
 
@@ -66,7 +66,14 @@ function ArticleReader({ post, onClose }: { post: JournalPost; onClose: () => vo
 
   return (
     <div className={styles.overlay} role="dialog" aria-modal="true" data-lenis-prevent onClick={onClose}>
-      <div className={styles.sheet} onClick={(e) => e.stopPropagation()}>
+      <div
+        className={styles.sheet}
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          ...(post.bg ? { ['--sb' as string]: post.bg } : {}),
+          ...(post.fg ? { ['--sf' as string]: post.fg } : {}),
+        } as CSSProperties}
+      >
         <button className={styles.close} onClick={onClose} aria-label="Close">✕</button>
         {post.cover && <div className={styles.aCover} style={{ backgroundImage: `url(${post.cover})` }} />}
         <div className={styles.aBody}>

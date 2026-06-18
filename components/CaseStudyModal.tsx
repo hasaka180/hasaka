@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type CSSProperties } from 'react'
 import styles from './CaseStudyModal.module.css'
 import type { CaseStudy, Section } from '@/lib/cases'
 
@@ -90,7 +90,14 @@ export default function CaseStudyModal({ slug, onClose }: { slug: string | null;
 
   return (
     <div className={styles.overlay} role="dialog" aria-modal="true" data-lenis-prevent onClick={onClose}>
-      <div className={styles.sheet} onClick={(e) => e.stopPropagation()}>
+      <div
+        className={styles.sheet}
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          ...(data?.bg ? { ['--sb' as string]: data.bg } : {}),
+          ...(data?.fg ? { ['--sf' as string]: data.fg } : {}),
+        } as CSSProperties}
+      >
         <button className={styles.close} onClick={onClose} aria-label="Close">✕</button>
 
         {loading && <div className={styles.state}>Loading…</div>}

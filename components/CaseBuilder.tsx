@@ -202,6 +202,8 @@ function CaseEditor({
           )}
           <label>Year<input value={draft.year ?? ''} onChange={(e) => set({ year: e.target.value })} /></label>
           <label>Accent (hero colour)<input type="color" value={draft.accent ?? '#1a1a1a'} onChange={(e) => set({ accent: e.target.value })} /></label>
+          <label>Page background<input type="color" value={draft.bg ?? '#f3f1ee'} onChange={(e) => set({ bg: e.target.value })} /></label>
+          <label>Page text colour<input type="color" value={draft.fg ?? '#161310'} onChange={(e) => set({ fg: e.target.value })} /></label>
           <label>Services (comma separated)<input value={(draft.services ?? []).join(', ')} onChange={(e) => set({ services: e.target.value.split(',').map((s) => s.trim()).filter(Boolean) })} /></label>
         </div>
         <ImageField label="Cover image (optional)" value={draft.cover ?? ''} onChange={(v) => set({ cover: v })} folder={folder} />
@@ -252,6 +254,8 @@ function JournalEditor({ draft, set, isNew, setSlug, folder }: {
           </select>
         </label>
         <label className={styles.inline}><input type="checkbox" checked={!!draft.featured} onChange={(e) => set({ featured: e.target.checked })} /> Featured (homepage)</label>
+        <label>Reader background<input type="color" value={draft.bg ?? '#f3f1ee'} onChange={(e) => set({ bg: e.target.value })} /></label>
+        <label>Reader text colour<input type="color" value={draft.fg ?? '#161310'} onChange={(e) => set({ fg: e.target.value })} /></label>
       </div>
       <ImageField label="Cover image" value={draft.cover ?? ''} onChange={(v) => set({ cover: v })} folder={folder} />
       <label className={styles.full}>Excerpt<textarea rows={2} value={draft.excerpt ?? ''} onChange={(e) => set({ excerpt: e.target.value })} /></label>
