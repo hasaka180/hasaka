@@ -65,7 +65,7 @@ function ArticleReader({ post, onClose }: { post: JournalPost; onClose: () => vo
   }, [onClose])
 
   return (
-    <div className={styles.overlay} role="dialog" aria-modal="true" onClick={onClose}>
+    <div className={styles.overlay} role="dialog" aria-modal="true" data-lenis-prevent onClick={onClose}>
       <div className={styles.sheet} onClick={(e) => e.stopPropagation()}>
         <button className={styles.close} onClick={onClose} aria-label="Close">✕</button>
         {post.cover && <div className={styles.aCover} style={{ backgroundImage: `url(${post.cover})` }} />}

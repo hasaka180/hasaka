@@ -89,7 +89,7 @@ export default function CaseStudyModal({ slug, onClose }: { slug: string | null;
   if (!slug) return null
 
   return (
-    <div className={styles.overlay} role="dialog" aria-modal="true" onClick={onClose}>
+    <div className={styles.overlay} role="dialog" aria-modal="true" data-lenis-prevent onClick={onClose}>
       <div className={styles.sheet} onClick={(e) => e.stopPropagation()}>
         <button className={styles.close} onClick={onClose} aria-label="Close">✕</button>
 

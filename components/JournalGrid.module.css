@@ -106,6 +106,7 @@
   position: fixed; inset: 0; z-index: 900;
   background: rgba(20, 18, 15, 0.55); backdrop-filter: blur(6px);
   display: flex; justify-content: center; align-items: flex-start;
+  overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain;
   animation: fade 0.25s ease;
 }
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }

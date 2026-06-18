@@ -9,6 +9,9 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   animation: fade 0.25s ease;
 }
 
