@@ -768,7 +768,7 @@ body.sb-open #main {
 }
 
 .pth2 {
-  height: 210px;
+  aspect-ratio: 3 / 2;
   display: flex;
   align-items: center;
   justify-content: center
@@ -1297,7 +1297,7 @@ body.sb-open #main {
 .cthumb {
   border-radius: 16px;
   overflow: hidden;
-  height: 220px;
+  aspect-ratio: 3 / 2;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

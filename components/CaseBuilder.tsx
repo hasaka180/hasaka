@@ -96,7 +96,13 @@ export default function CaseBuilder() {
     const res = isNew
       ? await fetch('/api/cases', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(draft) })
       : await fetch(`/api/cases/${draft.slug}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(draft) })
-    if (!res.ok) { setMsg('Save failed.'); return false }
+    if (!res.ok) {
+      const d = await res.json().catch(() => ({}))
+      const reason = d.error || `HTTP ${res.status}`
+      setMsg('Save failed')
+      alert(`Save failed: ${reason}`)
+      return false
+    }
     setMsg('Saved ✓'); setIsNew(false); await loadList(activeType); return true
   }
 

@@ -26,7 +26,12 @@ export async function POST(req: Request) {
   if (!body.slug || !body.title) {
     return NextResponse.json({ error: 'slug and title are required' }, { status: 400 })
   }
-  const created = await upsertItem(body as ContentItem)
-  revalidateContent()
-  return NextResponse.json(created, { status: 201 })
+  try {
+    const created = await upsertItem(body as ContentItem)
+    revalidateContent()
+    return NextResponse.json(created, { status: 201 })
+  } catch (e) {
+    console.error('POST /api/cases failed:', e)
+    return NextResponse.json({ error: e instanceof Error ? e.message : 'Save failed' }, { status: 500 })
+  }
 }

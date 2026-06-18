@@ -19,9 +19,14 @@ export async function GET(_req: Request, { params }: Ctx) {
 
 export async function PUT(req: Request, { params }: Ctx) {
   const body = (await req.json()) as Partial<ContentItem>
-  const saved = await upsertItem({ ...(body as ContentItem), slug: params.slug })
-  revalidateContent()
-  return NextResponse.json(saved)
+  try {
+    const saved = await upsertItem({ ...(body as ContentItem), slug: params.slug })
+    revalidateContent()
+    return NextResponse.json(saved)
+  } catch (e) {
+    console.error('PUT /api/cases failed:', e)
+    return NextResponse.json({ error: e instanceof Error ? e.message : 'Save failed' }, { status: 500 })
+  }
 }
 
 export async function DELETE(_req: Request, { params }: Ctx) {

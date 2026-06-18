@@ -33,7 +33,7 @@
 .jtop { display: grid; grid-template-columns: 1.7fr 1fr; gap: 14px; align-items: stretch; }
 
 .feature { display: flex; flex-direction: column; cursor: pointer; }
-.feature .cover { aspect-ratio: 16 / 9.5; }
+.feature .cover { aspect-ratio: 3 / 2; }
 .feature:hover .cover img { filter: grayscale(0); transform: scale(1.02); }
 .fbody { padding: 26px 28px 30px; display: flex; flex-direction: column; gap: 16px; flex: 1; }
 .ftitle {
@@ -72,7 +72,7 @@
 /* ── Tier 2: two medium cards ── */
 .jrow2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .mcard { display: flex; flex-direction: column; cursor: pointer; }
-.mcard .cover { aspect-ratio: 16 / 8.5; }
+.mcard .cover { aspect-ratio: 3 / 2; }
 .mcard:hover .cover img { filter: grayscale(0); transform: scale(1.02); }
 .mbody { padding: 18px 22px 22px; display: flex; flex-direction: column; gap: 11px; }
 .mtitle {
@@ -83,7 +83,7 @@
 
 /* ── Tier 3: three small text cards ── */
 .jrow3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
-.scard { padding: 22px; display: flex; flex-direction: column; gap: 11px; cursor: pointer; min-height: 180px; }
+.scard { padding: 22px; display: flex; flex-direction: column; gap: 11px; cursor: pointer; }
 .stitle {
   font-family: var(--font-helvetica-now), Georgia, serif;
   font-weight: 500; font-size: 18px; line-height: 1.14; letter-spacing: -0.01em; color: #161310;
@@ -121,7 +121,7 @@
   background: rgba(0, 0, 0, 0.5); color: #fff; font-size: 15px; cursor: pointer; backdrop-filter: blur(8px);
 }
 .close:hover { background: rgba(0, 0, 0, 0.78); }
-.aCover { width: 100%; aspect-ratio: 16 / 8; background-size: cover; background-position: center; background-color: #ddd9d3; }
+.aCover { width: 100%; aspect-ratio: 3 / 2; background-size: cover; background-position: center; background-color: #ddd9d3; }
 .aBody { padding: clamp(28px, 6vw, 72px); max-width: 720px; margin: 0 auto; }
 .aPill { display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #b0431f; margin-bottom: 18px; }
 .aTitle { font-family: var(--font-helvetica-now), Georgia, serif; font-weight: 500; font-size: clamp(30px, 5vw, 54px); line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 18px; }

@@ -177,7 +177,8 @@
 .media video {
   display: block;
   width: 100%;
-  height: auto;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
 }
 .media figcaption {
   margin-top: 12px;
@@ -199,6 +200,7 @@
 .columns {
   display: grid;
   gap: clamp(28px, 5vw, 64px);
+  align-items: start; /* each text column sizes to its own content */
 }
 .col h4 {
   font-size: 13px;
@@ -223,6 +225,7 @@
   margin: 0;
   border-radius: 12px;
   overflow: hidden;
+  aspect-ratio: 3 / 2;
 }
 .gridItem img {
   display: block;
