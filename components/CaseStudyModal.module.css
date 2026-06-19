@@ -232,7 +232,7 @@
   margin: 0;
   border-radius: 12px;
   overflow: hidden;
-  aspect-ratio: 3 / 2;
+  aspect-ratio: 3 / 4;
 }
 .gridItem img {
   display: block;
