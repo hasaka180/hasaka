@@ -25,7 +25,7 @@ function collectMedia(item: CaseStudy): Media[] {
 
 /** Work-card thumbnail that previews the media inside the case (auto-crossfade). */
 function CardPreview({ item }: { item: CaseStudy }) {
-  const media = useMemo(() => collectMedia(item), [item])
+  const media = useMemo(() => collectMedia(item).slice(0, 5), [item])
   const [i, setI] = useState(0)
 
   useEffect(() => {
