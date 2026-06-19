@@ -4,6 +4,8 @@ import { useEffect, useState, type CSSProperties } from 'react'
 import styles from './CaseStudyModal.module.css'
 import type { CaseStudy, Section } from '@/lib/cases'
 
+const VIDEO_RE = /\.(mp4|webm|mov|m4v)(\?|#|$)/i
+
 function SectionBlock({ section }: { section: Section }) {
   switch (section.type) {
     case 'text':
@@ -44,8 +46,12 @@ function SectionBlock({ section }: { section: Section }) {
         <div className={styles.grid} style={{ gridTemplateColumns: `repeat(${section.columns ?? 2}, 1fr)` }}>
           {section.items.map((it, i) => (
             <figure key={i} className={styles.gridItem}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={it.src} alt={it.caption ?? ''} loading="lazy" decoding="async" />
+              {VIDEO_RE.test(it.src) ? (
+                <video src={it.src} autoPlay muted loop playsInline preload="metadata" />
+              ) : (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img src={it.src} alt={it.caption ?? ''} loading="lazy" decoding="async" />
+              )}
               {it.caption && <figcaption>{it.caption}</figcaption>}
             </figure>
           ))}

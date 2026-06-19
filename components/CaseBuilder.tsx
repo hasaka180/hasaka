@@ -368,10 +368,10 @@ function ImageFieldInline({ value, onChange, folder }: { value: string; onChange
   const { busy, upload } = useUpload(folder)
   return (
     <div className={styles.uploadRow} style={{ flex: 1 }}>
-      <input placeholder="Image URL" value={value} onChange={(e) => onChange(e.target.value)} />
+      <input placeholder="Image / video URL" value={value} onChange={(e) => onChange(e.target.value)} />
       <label className={styles.uploadBtn}>
         {busy ? '…' : 'Upload'}
-        <input type="file" accept="image/*" hidden onChange={async (e) => {
+        <input type="file" accept="image/*,video/*" hidden onChange={async (e) => {
           const f = e.target.files?.[0]; if (!f) return
           const url = await upload(f); if (url) onChange(url)
           e.target.value = ''
