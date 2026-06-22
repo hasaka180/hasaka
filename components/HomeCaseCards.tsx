@@ -7,8 +7,8 @@ import CaseStudyModal from './CaseStudyModal'
 const CARDS = [
   { slug: 'nexera-robotics', thumb: '/nexera-thumb.jpg', logo: '/logos/nexera-ico.png', name: 'Nexera Robotics', cat: 'Tech Startup' },
   { slug: 'realpha', thumb: '/realpha-thumb.jpg', logo: '/logos/realpha-ico.png', name: 'Realpha', cat: 'Real Estate' },
-  { slug: 'lighthouse', thumb: '/lighthouse-thumb.jpg', logo: '/logos/lighthouse-ico.png', name: 'Lighthouse', cat: 'Tech Startup' },
-  { slug: 'somoturismo', thumb: '/somoturismo-thumb.jpg', logo: '/logos/somoturismo-ico.png', name: 'Somo Turismo', cat: 'Hospitality' },
+  { slug: 'lighthouse-app', thumb: '/lighthouse-thumb.jpg', logo: '/logos/lighthouse-ico.png', name: 'Lighthouse', cat: 'Tech Startup' },
+  { slug: 'somo-turismo-travel', thumb: '/somoturismo-thumb.jpg', logo: '/logos/somoturismo-ico.png', name: 'Somo Turismo', cat: 'Hospitality' },
 ]
 
 export default function HomeCaseCards() {
