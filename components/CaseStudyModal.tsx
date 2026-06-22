@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState, type CSSProperties } from 'react'
+import { createPortal } from 'react-dom'
 import styles from './CaseStudyModal.module.css'
 import type { CaseStudy, Section } from '@/lib/cases'
 
@@ -66,6 +67,9 @@ export default function CaseStudyModal({ slug, onClose }: { slug: string | null;
   const [data, setData] = useState<CaseStudy | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => setMounted(true), [])
 
   // lock body scroll + escape to close while open
   useEffect(() => {
@@ -92,9 +96,9 @@ export default function CaseStudyModal({ slug, onClose }: { slug: string | null;
       .finally(() => setLoading(false))
   }, [slug])
 
-  if (!slug) return null
+  if (!slug || !mounted) return null
 
-  return (
+  return createPortal(
     <div className={styles.overlay} role="dialog" aria-modal="true" data-lenis-prevent onClick={onClose}>
       <div
         className={styles.sheet}
@@ -147,6 +151,7 @@ export default function CaseStudyModal({ slug, onClose }: { slug: string | null;
           </>
         )}
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }
