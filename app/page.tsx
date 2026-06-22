@@ -7,6 +7,7 @@ import Reveal from '@/components/RevealWrapper'
 import DesignPractice from '@/components/DesignPractice'
 import TextAnimateBlur from '@/components/TextAnimateBlur'
 import JournalFeatured from '@/components/JournalFeatured'
+import HomeCaseCards from '@/components/HomeCaseCards'
 
 export default function HomePage() {
   return (
@@ -39,48 +40,7 @@ export default function HomePage() {
           <h2><TextAnimateBlur text="Selected brand cases" stagger={90} duration={650} /></h2>
           <Link href="/projects" className="al">All →</Link>
         </div>
-        <div className="pgrid4">
-          <Reveal delay={1} className="pc">
-            <div className="pth" style={{ backgroundImage: 'url(/nexera-thumb.jpg)' }} />
-            <div className="pme">
-              <div className="pio"><img src="/logos/nexera-ico.png" alt="Lumara Hotels logo" /></div>
-              <div>
-                <div className="pnm">Nexera Robotics</div>
-                <div className="pct">Tech Startup</div>
-              </div>
-            </div>
-          </Reveal>
-          <Reveal delay={2} className="pc">
-            <div className="pth" style={{ backgroundImage: 'url(/realpha-thumb.jpg)' }} />
-            <div className="pme">
-              <div className="pio"><img src="/logos/realpha-ico.png" alt="realpha logo" /></div>
-              <div>
-                <div className="pnm">Realpha</div>
-                <div className="pct">Real Estate</div>
-              </div>
-            </div>
-          </Reveal>
-          <Reveal delay={3} className="pc">
-            <div className="pth" style={{ backgroundImage: 'url(/lighthouse-thumb.jpg)' }} />
-            <div className="pme">
-              <div className="pio"><img src="/logos/lighthouse-ico.png" alt="lighthouse logo" /></div>
-              <div>
-                <div className="pnm">Lighthouse</div>
-                <div className="pct">Tech Startup</div>
-              </div>
-            </div>
-          </Reveal>
-          <Reveal delay={4} className="pc">
-            <div className="pth" style={{ backgroundImage: 'url(/somoturismo-thumb.jpg)' }} />
-            <div className="pme">
-              <div className="pio"><img src="/logos/somoturismo-ico.png" alt="somoturismo logo" /></div>
-              <div>
-                <div className="pnm">Somo Turismo</div>
-                <div className="pct">Hospitality</div>
-              </div>
-            </div>
-          </Reveal>
-        </div>
+        <HomeCaseCards />
       </Reveal>
 
       <Reveal className="sec svc-sec">
