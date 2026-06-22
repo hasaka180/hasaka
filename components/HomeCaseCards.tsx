@@ -18,7 +18,7 @@ export default function HomeCaseCards() {
     <>
       <div className="pgrid4">
         {CARDS.map((c, i) => (
-          <Reveal key={c.slug} delay={i + 1} className="pc">
+          <Reveal key={c.slug} delay={(i + 1) as 1 | 2 | 3 | 4} className="pc">
             <div onClick={() => setOpen(c.slug)} style={{ cursor: 'pointer' }}>
               <div className="pth" style={{ backgroundImage: `url(${c.thumb})` }} />
               <div className="pme">
