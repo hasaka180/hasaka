@@ -7,6 +7,10 @@ import styles from '@/components/JournalGrid.module.css'
 
 export const revalidate = 600
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://hasaka.io'
+
+const abs = (src?: string) => (!src ? undefined : src.startsWith('http') ? src : `${SITE_URL}${src.startsWith('/') ? '' : '/'}${src}`)
+
 export async function generateStaticParams() {
   const items = await getItems('journal')
   return items.map((i) => ({ slug: i.slug }))
@@ -39,10 +43,25 @@ export default async function JournalArticlePage({ params }: { params: { slug: s
   const data = await getItem(params.slug)
   if (!data || itemType(data) !== 'journal') notFound()
   const p = data as JournalPost
+  const url = `${SITE_URL}/journal/${p.slug}`
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: p.title,
+    description: p.excerpt || `${p.title} — from the Hasaka Sasaranga journal.`,
+    image: abs(p.cover) ? [abs(p.cover)] : undefined,
+    datePublished: p.date,
+    dateModified: p.date,
+    author: { '@type': 'Person', name: p.author || 'Hasaka Sasaranga' },
+    publisher: { '@type': 'Person', name: 'Hasaka Sasaranga' },
+    url,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': url },
+  }
   return (
     <div className={styles.pageWrap}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <ModalCloseButton className={styles.close} fallback="/journal" />
-      <JournalArticleView post={p} />
+      <JournalArticleView post={p} shareUrl={url} />
     </div>
   )
 }

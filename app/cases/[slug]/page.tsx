@@ -7,6 +7,10 @@ import styles from '@/components/CaseStudyModal.module.css'
 
 export const revalidate = 600
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://hasaka.io'
+
+const abs = (src?: string) => (!src ? undefined : src.startsWith('http') ? src : `${SITE_URL}${src.startsWith('/') ? '' : '/'}${src}`)
+
 export async function generateStaticParams() {
   const items = await getItems()
   return items.filter((i) => itemType(i) !== 'journal').map((i) => ({ slug: i.slug }))
@@ -38,10 +42,25 @@ export default async function CasePage({ params }: { params: { slug: string } })
   if (!data || itemType(data) === 'journal') notFound()
   const c = data as CaseStudy
   const back = c.type === 'work' ? '/projects' : '/collections'
+  const shareUrl = `${SITE_URL}/cases/${c.slug}`
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: c.title,
+    description: c.intro || `${c.title} — a brand case study by Hasaka Sasaranga.`,
+    image: abs(c.cover) ? [abs(c.cover)] : undefined,
+    datePublished: c.year ? `${c.year}-01-01` : undefined,
+    author: { '@type': 'Person', name: 'Hasaka Sasaranga' },
+    publisher: { '@type': 'Person', name: 'Hasaka Sasaranga' },
+    url: shareUrl,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': shareUrl },
+    about: c.client || undefined,
+  }
   return (
     <div className={styles.pageWrap}>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <ModalCloseButton className={styles.close} fallback={back} />
-      <CaseStudyView data={c} />
+      <CaseStudyView data={c} shareUrl={shareUrl} />
     </div>
   )
 }

@@ -136,3 +136,8 @@
 .aMeta { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: currentColor; opacity: 0.5; margin-bottom: 32px; }
 .aText { font-size: 18px; line-height: 1.75; color: currentColor; opacity: 0.85; }
 .aText p { margin-bottom: 20px; }
+.aShare {
+  margin-top: 40px;
+  padding-top: 28px;
+  border-top: 1px solid color-mix(in srgb, currentColor 16%, transparent);
+}

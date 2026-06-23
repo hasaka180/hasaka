@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react'
 import styles from './CaseStudyModal.module.css'
+import ShareButtons from './ShareButtons'
 import type { CaseStudy, Section } from '@/lib/cases'
 
 const VIDEO_RE = /\.(mp4|webm|mov|m4v)(\?|#|$)/i
@@ -61,7 +62,7 @@ function SectionBlock({ section }: { section: Section }) {
 }
 
 /** Presentational case-study sheet — used by both the route page and the modal. */
-export default function CaseStudyView({ data }: { data: CaseStudy }) {
+export default function CaseStudyView({ data, shareUrl }: { data: CaseStudy; shareUrl?: string }) {
   return (
     <article
       className={styles.sheet}
@@ -91,6 +92,7 @@ export default function CaseStudyView({ data }: { data: CaseStudy }) {
 
       <footer className={styles.footer}>
         <span>Hasaka™ — Selected Work</span>
+        {shareUrl && <ShareButtons url={shareUrl} title={data.title} />}
       </footer>
     </article>
   )

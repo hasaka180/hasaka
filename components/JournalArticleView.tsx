@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react'
 import styles from './JournalGrid.module.css'
+import ShareButtons from './ShareButtons'
 import type { JournalPost } from '@/lib/cases'
 
 const fmtDate = (iso?: string) => {
@@ -10,7 +11,7 @@ const fmtDate = (iso?: string) => {
 }
 
 /** Presentational journal article — used by the route page (and could back a modal). */
-export default function JournalArticleView({ post }: { post: JournalPost }) {
+export default function JournalArticleView({ post, shareUrl }: { post: JournalPost; shareUrl?: string }) {
   const meta = [post.author, fmtDate(post.date)].filter(Boolean).join(' · ')
   return (
     <article
@@ -28,6 +29,11 @@ export default function JournalArticleView({ post }: { post: JournalPost }) {
         <div className={styles.aText}>
           {(post.body ?? post.excerpt ?? '').split('\n').filter(Boolean).map((p, i) => <p key={i}>{p}</p>)}
         </div>
+        {shareUrl && (
+          <div className={styles.aShare}>
+            <ShareButtons url={shareUrl} title={post.title} />
+          </div>
+        )}
       </div>
     </article>
   )
