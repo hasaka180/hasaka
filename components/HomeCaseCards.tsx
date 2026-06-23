@@ -1,8 +1,5 @@
-'use client'
-
-import { useState } from 'react'
+import Link from 'next/link'
 import Reveal from './RevealWrapper'
-import CaseStudyModal from './CaseStudyModal'
 
 const CARDS = [
   { slug: 'nexera-robotics', thumb: '/nexera-thumb.jpg', logo: '/logos/nexera-ico.png', name: 'Nexera Robotics', cat: 'Tech Startup' },
@@ -12,31 +9,25 @@ const CARDS = [
 ]
 
 export default function HomeCaseCards() {
-  const [open, setOpen] = useState<string | null>(null)
-
   return (
-    <>
-      <div className="pgrid4">
-        {CARDS.map((c, i) => (
-          <Reveal key={c.slug} delay={(i + 1) as 1 | 2 | 3 | 4} className="pc">
-            <div onClick={() => setOpen(c.slug)} style={{ cursor: 'pointer' }}>
-              <div className="pth" style={{ backgroundImage: `url(${c.thumb})` }} />
-              <div className="pme">
-                <div className="pio">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={c.logo} alt={`${c.name} logo`} loading="lazy" decoding="async" />
-                </div>
-                <div>
-                  <div className="pnm">{c.name}</div>
-                  <div className="pct">{c.cat}</div>
-                </div>
+    <div className="pgrid4">
+      {CARDS.map((c, i) => (
+        <Reveal key={c.slug} delay={(i + 1) as 1 | 2 | 3 | 4} className="pc">
+          <Link href={`/cases/${c.slug}`}>
+            <div className="pth" style={{ backgroundImage: `url(${c.thumb})` }} />
+            <div className="pme">
+              <div className="pio">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={c.logo} alt={`${c.name} logo`} loading="lazy" decoding="async" />
+              </div>
+              <div>
+                <div className="pnm">{c.name}</div>
+                <div className="pct">{c.cat}</div>
               </div>
             </div>
-          </Reveal>
-        ))}
-      </div>
-
-      <CaseStudyModal slug={open} onClose={() => setOpen(null)} />
-    </>
+          </Link>
+        </Reveal>
+      ))}
+    </div>
   )
 }

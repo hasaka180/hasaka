@@ -20,6 +20,15 @@
   to { opacity: 1; }
 }
 
+/* standalone "modal page" wrapper (own URL, modal look) */
+.pageWrap {
+  min-height: 100vh;
+  background: #1c1916;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
 .sheet {
   position: relative;
   width: min(1100px, 100%);

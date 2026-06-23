@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useState, type ReactNode, type CSSProperties } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
+import Link from 'next/link'
 import styles from './JournalGrid.module.css'
 import type { JournalPost } from '@/lib/cases'
 
@@ -55,43 +56,8 @@ function NotesSidebar() {
   )
 }
 
-function ArticleReader({ post, onClose }: { post: JournalPost; onClose: () => void }) {
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
-    document.addEventListener('keydown', onKey)
-    const prev = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    return () => { document.removeEventListener('keydown', onKey); document.body.style.overflow = prev }
-  }, [onClose])
-
-  return (
-    <div className={styles.overlay} role="dialog" aria-modal="true" data-lenis-prevent onClick={onClose}>
-      <div
-        className={styles.sheet}
-        onClick={(e) => e.stopPropagation()}
-        style={{
-          ...(post.bg ? { ['--sb' as string]: post.bg } : {}),
-          ...(post.fg ? { ['--sf' as string]: post.fg } : {}),
-        } as CSSProperties}
-      >
-        <button className={styles.close} onClick={onClose} aria-label="Close">✕</button>
-        {post.cover && <div className={styles.aCover} style={{ backgroundImage: `url(${post.cover})` }} />}
-        <div className={styles.aBody}>
-          {post.category && <div className={styles.aPill}>{post.category}</div>}
-          <h1 className={styles.aTitle}>{post.title}</h1>
-          <div className={styles.aMeta}>{byline(post)}</div>
-          <div className={styles.aText}>
-            {(post.body ?? post.excerpt ?? '').split('\n').filter(Boolean).map((p, i) => <p key={i}>{p}</p>)}
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
 export default function JournalGrid({ initialItems }: { initialItems?: JournalPost[] }) {
   const [posts, setPosts] = useState<JournalPost[]>(initialItems ?? [])
-  const [open, setOpen] = useState<JournalPost | null>(null)
   const [loading, setLoading] = useState(!initialItems)
 
   useEffect(() => {
@@ -118,7 +84,7 @@ export default function JournalGrid({ initialItems }: { initialItems?: JournalPo
         {/* tier 1 */}
         <div className={styles.jtop}>
           {featured && (
-            <article className={`${styles.card} ${styles.feature}`} onClick={() => setOpen(featured)}>
+            <Link href={`/journal/${featured.slug}`} className={`${styles.card} ${styles.feature}`}>
               {featured.cover && (
                 <div className={styles.cover}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -131,7 +97,7 @@ export default function JournalGrid({ initialItems }: { initialItems?: JournalPo
                 {featured.excerpt && <p className={styles.fexcerpt}>{featured.excerpt}</p>}
                 <div className={styles.byline}>{byline(featured)}</div>
               </div>
-            </article>
+            </Link>
           )}
           <NotesSidebar />
         </div>
@@ -140,7 +106,7 @@ export default function JournalGrid({ initialItems }: { initialItems?: JournalPo
         {mediums.length > 0 && (
           <div className={styles.jrow2}>
             {mediums.map((p) => (
-              <article key={p.slug} className={`${styles.card} ${styles.mcard}`} onClick={() => setOpen(p)}>
+              <Link key={p.slug} href={`/journal/${p.slug}`} className={`${styles.card} ${styles.mcard}`}>
                 {p.cover && (
                   <div className={styles.cover}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -153,7 +119,7 @@ export default function JournalGrid({ initialItems }: { initialItems?: JournalPo
                   {p.excerpt && <p className={styles.mexcerpt}>{p.excerpt}</p>}
                   <div className={styles.byline}>{byline(p)}</div>
                 </div>
-              </article>
+              </Link>
             ))}
           </div>
         )}
@@ -162,7 +128,7 @@ export default function JournalGrid({ initialItems }: { initialItems?: JournalPo
         {smalls.length > 0 && (
           <div className={styles.jrow3}>
             {smalls.map((p) => (
-              <article key={p.slug} className={`${styles.card} ${styles.scard}`} onClick={() => setOpen(p)}>
+              <Link key={p.slug} href={`/journal/${p.slug}`} className={`${styles.card} ${styles.scard}`}>
                 {p.category && <span className={styles.pill}>{p.category}</span>}
                 <h3 className={styles.stitle}>{p.title}</h3>
                 {p.excerpt && <p className={styles.sexcerpt}>{p.excerpt}</p>}
@@ -170,13 +136,11 @@ export default function JournalGrid({ initialItems }: { initialItems?: JournalPo
                   <span className={styles.byline}>{byline(p)}</span>
                   <span className={styles.arrow}>→</span>
                 </div>
-              </article>
+              </Link>
             ))}
           </div>
         )}
       </div>
-
-      {open && <ArticleReader post={open} onClose={() => setOpen(null)} />}
     </>
   )
 }

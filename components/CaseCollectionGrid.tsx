@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import CaseStudyModal from './CaseStudyModal'
+import Link from 'next/link'
 import type { CaseStudy } from '@/lib/cases'
 
 // reuse the Collections palette classes so the layout stays identical
@@ -22,7 +22,6 @@ function coverImage(c: CaseStudy): string | undefined {
 
 export default function CaseCollectionGrid({ initialItems }: { initialItems?: CaseStudy[] }) {
   const [cases, setCases] = useState<CaseStudy[]>(initialItems ?? [])
-  const [openSlug, setOpenSlug] = useState<string | null>(null)
   const [loading, setLoading] = useState(!initialItems)
 
   useEffect(() => {
@@ -41,12 +40,7 @@ export default function CaseCollectionGrid({ initialItems }: { initialItems?: Ca
           const palette = PALETTES[i % PALETTES.length]
           const img = coverImage(c)
           return (
-            <div
-              key={c.slug}
-              className="ccard"
-              onClick={() => setOpenSlug(c.slug)}
-              style={{ cursor: 'pointer' }}
-            >
+            <Link key={c.slug} href={`/cases/${c.slug}`} className="ccard">
               <div
                 className={img ? 'cthumb' : `cthumb ${palette}`}
                 style={img ? { background: `linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.05) 55%), center / cover no-repeat url(${img})` } : undefined}
@@ -59,7 +53,7 @@ export default function CaseCollectionGrid({ initialItems }: { initialItems?: Ca
                 </div>
               </div>
               <div className="cdesc">{c.intro ?? ''}</div>
-            </div>
+            </Link>
           )
         })}
 
@@ -68,8 +62,6 @@ export default function CaseCollectionGrid({ initialItems }: { initialItems?: Ca
           <div style={{ padding: '40px 0', color: '#aaa', fontSize: 14 }}>No case studies yet.</div>
         )}
       </div>
-
-      <CaseStudyModal slug={openSlug} onClose={() => setOpenSlug(null)} />
     </>
   )
 }

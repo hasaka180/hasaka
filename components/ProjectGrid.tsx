@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import CaseStudyModal from './CaseStudyModal'
+import Link from 'next/link'
 import type { CaseStudy } from '@/lib/cases'
 
 type Tab = 'Branding' | 'Web' | 'Content'
@@ -65,7 +65,6 @@ function CardPreview({ item }: { item: CaseStudy }) {
 export default function ProjectGrid({ initialItems }: { initialItems?: CaseStudy[] }) {
   const [activeTab, setActiveTab] = useState<Tab>('Branding')
   const [items, setItems] = useState<CaseStudy[]>(initialItems ?? [])
-  const [openSlug, setOpenSlug] = useState<string | null>(null)
   const [loading, setLoading] = useState(!initialItems)
 
   useEffect(() => {
@@ -94,7 +93,7 @@ export default function ProjectGrid({ initialItems }: { initialItems?: CaseStudy
       </div>
       <div className="pgrid2">
         {filtered.map((p) => (
-          <div key={p.slug} className="pc2" onClick={() => setOpenSlug(p.slug)} style={{ cursor: 'pointer' }}>
+          <Link key={p.slug} href={`/cases/${p.slug}`} className="pc2">
             <CardPreview item={p} />
             <div className="pme2">
               <div className="pio2" style={{ background: p.accent ?? '#333' }}>{p.title.charAt(0).toUpperCase()}</div>
@@ -103,7 +102,7 @@ export default function ProjectGrid({ initialItems }: { initialItems?: CaseStudy
                 <div className="pct2">{p.category ?? 'Work'}</div>
               </div>
             </div>
-          </div>
+          </Link>
         ))}
         {loading && (
           <div style={{ padding: '40px 0', color: '#aaa', fontSize: 14 }}>Loading work…</div>
@@ -112,8 +111,6 @@ export default function ProjectGrid({ initialItems }: { initialItems?: CaseStudy
           <div style={{ padding: '40px 0', color: '#aaa', fontSize: 14 }}>No projects in this category yet.</div>
         )}
       </div>
-
-      <CaseStudyModal slug={openSlug} onClose={() => setOpenSlug(null)} />
     </div>
   )
 }

@@ -110,6 +110,13 @@
   animation: fade 0.25s ease;
 }
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+.pageWrap {
+  min-height: 100vh;
+  background: #1c1916;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
 .sheet {
   position: relative; width: min(820px, 100%); min-height: 100dvh;
   background: var(--sb, #f3f1ee); color: var(--sf, #161310);
