@@ -5,9 +5,8 @@ import Script from 'next/script'
 import './globals.css'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://hasaka.io'
-const GA_ID = process.env.NEXT_PUBLIC_GA_ID
 const GSC_VERIFICATION = process.env.GOOGLE_SITE_VERIFICATION
-const GTM_ID = 'GTM-NPFWHDRV'
+const GTM_ID = 'GTM-NPFWHDRV' // add GA4 + other tags inside the GTM container
 import Sidebar from '@/components/Sidebar'
 import SmoothScroll from '@/components/SmoothScroll'
 import CrispChat from '@/components/CrispChat'
@@ -62,15 +61,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main id="main">
           {children}
         </main>
-
-        {GA_ID && (
-          <>
-            <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
-            <Script id="ga4" strategy="afterInteractive">
-              {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');`}
-            </Script>
-          </>
-        )}
       </body>
     </html>
   )
