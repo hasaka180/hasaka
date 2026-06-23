@@ -2,7 +2,7 @@ import JournalGrid from '@/components/JournalGrid'
 import { getItems, type JournalPost } from '@/lib/cases'
 
 export const metadata = {
-  title: 'Journal — Hasaka Wijenarayana',
+  title: 'Journal — Hasaka Sasaranga',
   description: 'Essays, process notes and interviews on brand strategy, design systems, generative AI and creative craft.',
 }
 export const revalidate = 600

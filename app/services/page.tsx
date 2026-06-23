@@ -4,7 +4,7 @@ import ScrubVideo from '@/components/ScrubVideo'
 import TextAnimateBlur from '@/components/TextAnimateBlur'
 
 export const metadata = {
-  title: 'Services — Hasaka Wijenarayana',
+  title: 'Services — Hasaka Sasaranga',
   description: 'Brand strategy, identity, creative direction, visual systems and AI brand tools — from positioning to launch.',
 }
 

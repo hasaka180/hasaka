@@ -2,7 +2,7 @@ import CaseCollectionGrid from '@/components/CaseCollectionGrid'
 import { getItems, type CaseStudy } from '@/lib/cases'
 
 export const metadata = {
-  title: 'Case Studies — Hasaka Wijenarayana',
+  title: 'Case Studies — Hasaka Sasaranga',
   description: 'In-depth brand case studies — the strategy, identity systems and outcomes behind selected projects.',
 }
 export const revalidate = 600

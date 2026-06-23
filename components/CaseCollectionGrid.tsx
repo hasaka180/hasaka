@@ -7,6 +7,19 @@ import type { CaseStudy } from '@/lib/cases'
 // reuse the Collections palette classes so the layout stays identical
 const PALETTES = ['cb1', 'cb2', 'cb3', 'cb4', 'cb5', 'cb6']
 
+// the case's hero image: cover, else the first image found in its sections
+function coverImage(c: CaseStudy): string | undefined {
+  if (c.cover) return c.cover
+  for (const s of c.sections ?? []) {
+    if (s.type === 'image' && s.src) return s.src
+    if (s.type === 'grid') {
+      const g = s.items.find((x) => x.src)
+      if (g) return g.src
+    }
+  }
+  return undefined
+}
+
 export default function CaseCollectionGrid({ initialItems }: { initialItems?: CaseStudy[] }) {
   const [cases, setCases] = useState<CaseStudy[]>(initialItems ?? [])
   const [openSlug, setOpenSlug] = useState<string | null>(null)
@@ -26,6 +39,7 @@ export default function CaseCollectionGrid({ initialItems }: { initialItems?: Ca
       <div className="cgrid">
         {cases.map((c, i) => {
           const palette = PALETTES[i % PALETTES.length]
+          const img = coverImage(c)
           return (
             <div
               key={c.slug}
@@ -33,10 +47,13 @@ export default function CaseCollectionGrid({ initialItems }: { initialItems?: Ca
               onClick={() => setOpenSlug(c.slug)}
               style={{ cursor: 'pointer' }}
             >
-              <div className={`cthumb ${palette}`}>
+              <div
+                className={img ? 'cthumb' : `cthumb ${palette}`}
+                style={img ? { background: `linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.05) 55%), center / cover no-repeat url(${img})` } : undefined}
+              >
                 <div>
-                  <div className="cby">{c.category ?? 'Case study'}</div>
-                  <div className="ctit" style={palette === 'cb1' ? { color: '#1a3d1a' } : undefined}>
+                  <div className="cby" style={img ? { color: 'rgba(255,255,255,0.85)' } : undefined}>{c.category ?? 'Case study'}</div>
+                  <div className="ctit" style={img ? { color: '#fff' } : (palette === 'cb1' ? { color: '#1a3d1a' } : undefined)}>
                     {c.title}
                   </div>
                 </div>

@@ -27,7 +27,7 @@ const helveticaNow = localFont({
   display: 'swap',
 })
 
-const TITLE = 'Hasaka Wijenarayana — Creative Director'
+const TITLE = 'Hasaka Sasaranga — Creative Director'
 const DESCRIPTION =
   '8+ years of experience creating brands, digital products, campaigns, and visual experiences that connect strategy, design, and technology.'
 
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     url: SITE_URL,
-    siteName: 'Hasaka Wijenarayana',
+    siteName: 'Hasaka Sasaranga',
     title: TITLE,
     description: DESCRIPTION,
     images: [{ url: '/og.jpg', width: 1200, height: 630, alt: TITLE }],

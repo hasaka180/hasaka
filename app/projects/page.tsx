@@ -2,7 +2,7 @@ import ProjectGrid from '@/components/ProjectGrid'
 import { getItems, type CaseStudy } from '@/lib/cases'
 
 export const metadata = {
-  title: 'Work — Hasaka Wijenarayana',
+  title: 'Work — Hasaka Sasaranga',
   description: 'Selected brand work — identities, packaging, web and product design across hospitality, fintech, tech, FMCG and culture.',
 }
 export const revalidate = 600 // ISR: cache for 10 min; builder writes revalidate instantly
