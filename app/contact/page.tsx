@@ -1,7 +1,10 @@
 import ContactBento from '@/components/ContactBento'
 import SpotlightReveal from '@/components/SpotlightReveal'
 
-export const metadata = { title: 'Contact — Hasaka' }
+export const metadata = {
+  title: 'Contact — Hasaka Wijenarayana',
+  description: 'Get in touch with Hasaka — based in Dubai, available for brand projects worldwide.',
+}
 
 export default function ContactPage() {
   return (

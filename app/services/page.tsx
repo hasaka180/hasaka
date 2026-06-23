@@ -3,7 +3,10 @@ import ServiceCards from '@/components/ServiceCards'
 import ScrubVideo from '@/components/ScrubVideo'
 import TextAnimateBlur from '@/components/TextAnimateBlur'
 
-export const metadata = { title: 'Services — Hasaka' }
+export const metadata = {
+  title: 'Services — Hasaka Wijenarayana',
+  description: 'Brand strategy, identity, creative direction, visual systems and AI brand tools — from positioning to launch.',
+}
 
 export default function ServicesPage() {
   return (
