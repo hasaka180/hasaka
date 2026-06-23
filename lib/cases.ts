@@ -7,7 +7,7 @@ export type ContentType = 'work' | 'case' | 'journal'
 
 /* Section-based content model (the case-study "builder" blocks) */
 export type Section =
-  | { id: string; type: 'text'; eyebrow?: string; heading?: string; body?: string; align?: 'left' | 'center' }
+  | { id: string; type: 'text'; eyebrow?: string; heading?: string; body?: string; align?: 'left' | 'center'; note?: boolean }
   | { id: string; type: 'image'; src: string; caption?: string; full?: boolean }
   | { id: string; type: 'video'; src: string; poster?: string; full?: boolean }
   | { id: string; type: 'columns'; items: { heading?: string; body?: string }[] }

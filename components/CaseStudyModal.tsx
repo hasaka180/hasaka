@@ -11,7 +11,7 @@ function SectionBlock({ section }: { section: Section }) {
   switch (section.type) {
     case 'text':
       return (
-        <div className={`${styles.text} ${section.align === 'center' ? styles.center : ''}`}>
+        <div className={`${styles.text} ${section.align === 'center' ? styles.center : ''} ${section.note ? styles.noteBlock : ''}`}>
           {section.eyebrow && <div className={styles.eyebrow}>{section.eyebrow}</div>}
           {section.heading && <h3 className={styles.heading}>{section.heading}</h3>}
           {section.body && <p className={styles.body}>{section.body}</p>}
