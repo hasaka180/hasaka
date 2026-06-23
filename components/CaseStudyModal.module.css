@@ -96,9 +96,9 @@
   margin-bottom: 18px;
 }
 .heroTitle {
-  font-size: clamp(44px, 9vw, 116px);
+  font-size: clamp(26px, 3vw, 48px);
   font-weight: 500;
-  line-height: 0.95;
+  line-height: 1.02;
   letter-spacing: -0.03em;
   margin-bottom: 22px;
   font-family: var(--font-helvetica-now), var(--font-inter), sans-serif;
