@@ -27,11 +27,29 @@ const helveticaNow = localFont({
   display: 'swap',
 })
 
+const TITLE = 'Hasaka Wijenarayana — Creative Director'
+const DESCRIPTION =
+  '8+ years of experience creating brands, digital products, campaigns, and visual experiences that connect strategy, design, and technology.'
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: 'Hasaka — Creative Director',
-  description: 'Brand-first creative director. 8 years of building identities that outlive their moment.',
+  title: TITLE,
+  description: DESCRIPTION,
   icons: { icon: '/favicon.png', shortcut: '/favicon.png', apple: '/favicon.png' },
+  openGraph: {
+    type: 'website',
+    url: SITE_URL,
+    siteName: 'Hasaka Wijenarayana',
+    title: TITLE,
+    description: DESCRIPTION,
+    images: [{ url: '/og.jpg', width: 1200, height: 630, alt: TITLE }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: TITLE,
+    description: DESCRIPTION,
+    images: ['/og.jpg'],
+  },
   ...(GSC_VERIFICATION ? { verification: { google: GSC_VERIFICATION } } : {}),
 }
 
