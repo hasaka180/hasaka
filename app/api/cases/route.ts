@@ -17,10 +17,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ items })
   } catch (e) {
     console.error('GET /api/cases failed:', e)
-    return NextResponse.json(
-      { error: 'Failed to load content', detail: e instanceof Error ? e.message : String(e) },
-      { status: 500 },
-    )
+    return NextResponse.json({ error: 'Failed to load content' }, { status: 500 })
   }
 }
 
