@@ -159,6 +159,18 @@ export async function upsertItem(item: ContentItem): Promise<ContentItem> {
   return item
 }
 
+/** Lightweight liveness read — used by the keep-alive cron so Appwrite's
+    free tier doesn't auto-pause the project for inactivity. */
+export async function ping(): Promise<{ ok: boolean; total?: number; error?: string }> {
+  if (!tables) return { ok: true, total: (await readFileStore()).cases.length }
+  try {
+    const res = await tables.listRows({ databaseId: AW.db!, tableId: AW.col!, queries: [Query.limit(1)] })
+    return { ok: true, total: res.total }
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : String(e) }
+  }
+}
+
 export async function deleteItem(slug: string): Promise<boolean> {
   if (tables) {
     try {
