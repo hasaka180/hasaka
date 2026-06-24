@@ -90,8 +90,15 @@ async function writeFileStore(store: Store): Promise<void> {
 
 async function readAll(): Promise<ContentItem[]> {
   if (tables) {
-    const res = await tables.listRows({ databaseId: AW.db!, tableId: AW.col!, queries: [Query.limit(200)] })
-    return res.rows.map((r) => parseRow(r as Record<string, unknown>))
+    try {
+      const res = await tables.listRows({ databaseId: AW.db!, tableId: AW.col!, queries: [Query.limit(200)] })
+      return res.rows.map((r) => parseRow(r as Record<string, unknown>))
+    } catch (e) {
+      // Appwrite unreachable/misconfigured — don't crash the build or the API;
+      // fall back to the bundled seed file so the site stays readable.
+      console.error('Appwrite read failed, falling back to data/cases.json:', e)
+      return (await readFileStore()).cases
+    }
   }
   return (await readFileStore()).cases
 }
@@ -132,7 +139,8 @@ export async function getItem(slug: string): Promise<ContentItem | null> {
     try {
       return parseRow((await tables.getRow({ databaseId: AW.db!, tableId: AW.col!, rowId: slug })) as Record<string, unknown>)
     } catch {
-      return null
+      // row missing, or Appwrite down — fall back to the seed file before giving up
+      return (await readFileStore()).cases.find((c) => c.slug === slug) ?? null
     }
   }
   return (await readFileStore()).cases.find((c) => c.slug === slug) ?? null
