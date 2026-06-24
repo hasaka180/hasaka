@@ -23,6 +23,7 @@ export interface CaseStudy {
   year?: string
   accent?: string
   cover?: string
+  icon?: string // small card icon/logo (falls back to first letter on accent)
   intro?: string
   services?: string[]
   bg?: string // detail-view background colour

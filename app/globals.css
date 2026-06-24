@@ -681,6 +681,14 @@ body.sb-open #main {
   gap: 16px
 }
 
+/* card links (now <a>) must not show the default underline / link colour */
+.pc,
+.pc2,
+.ccard {
+  text-decoration: none;
+  color: inherit;
+}
+
 .pc {
   border-radius: 12px;
   overflow: hidden;
@@ -791,7 +799,15 @@ body.sb-open #main {
   justify-content: center;
   font-size: 11px;
   font-weight: 800;
-  color: #fff
+  color: #fff;
+  overflow: hidden
+}
+
+.pio2 img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px
 }
 
 .pnm2 {

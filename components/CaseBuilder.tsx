@@ -207,6 +207,7 @@ function CaseEditor({
           <label>Services (comma separated)<input value={(draft.services ?? []).join(', ')} onChange={(e) => set({ services: e.target.value.split(',').map((s) => s.trim()).filter(Boolean) })} /></label>
         </div>
         <ImageField label="Cover image (optional)" value={draft.cover ?? ''} onChange={(v) => set({ cover: v })} folder={folder} />
+        <ImageField label="Card icon / logo (optional)" value={draft.icon ?? ''} onChange={(v) => set({ icon: v })} folder={folder} />
         <label className={styles.full}>Intro<textarea rows={3} value={draft.intro ?? ''} onChange={(e) => set({ intro: e.target.value })} /></label>
       </section>
 

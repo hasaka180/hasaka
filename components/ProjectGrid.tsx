@@ -96,7 +96,11 @@ export default function ProjectGrid({ initialItems }: { initialItems?: CaseStudy
           <Link key={p.slug} href={`/cases/${p.slug}`} className="pc2">
             <CardPreview item={p} />
             <div className="pme2">
-              <div className="pio2" style={{ background: p.accent ?? '#333' }}>{p.title.charAt(0).toUpperCase()}</div>
+              <div className="pio2" style={{ background: p.icon ? 'transparent' : (p.accent ?? '#333') }}>
+                {p.icon
+                  ? /* eslint-disable-next-line @next/next/no-img-element */ <img src={p.icon} alt="" loading="lazy" decoding="async" />
+                  : p.title.charAt(0).toUpperCase()}
+              </div>
               <div>
                 <div className="pnm2">{p.title}</div>
                 <div className="pct2">{p.category ?? 'Work'}</div>
