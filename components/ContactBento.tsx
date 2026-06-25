@@ -35,11 +35,11 @@ export default function ContactBento() {
         {/* Social */}
         <div className="bn dk bso">
           <div className="sogr">
-            <div className="soi">Ig</div>
-            <div className="soi">Bē</div>
-            <div className="soi" style={{ fontSize: 10 }}>Git</div>
-            <div className="soi">in</div>
-            <div className="soi" style={{ fontSize: 10 }}>Dr.</div>
+            <a className="soi" href="https://instagram.com/thehasaka" target="_blank" rel="noopener noreferrer" aria-label="Instagram">Ig</a>
+            <a className="soi" href="https://www.behance.net/hasaka" target="_blank" rel="noopener noreferrer" aria-label="Behance">Bē</a>
+            <a className="soi" style={{ fontSize: 10 }} href="https://github.com/hasaka180" target="_blank" rel="noopener noreferrer" aria-label="GitHub">Git</a>
+            <a className="soi" href="https://www.linkedin.com/in/hasaka/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">in</a>
+            <a className="soi" style={{ fontSize: 10 }} href="https://dribbble.com/hasakasasaranga" target="_blank" rel="noopener noreferrer" aria-label="Dribbble">Dr.</a>
             <div className="soi" style={{ background: 'transparent' }}></div>
           </div>
           <div style={{ marginTop: 16, fontSize: 9, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
