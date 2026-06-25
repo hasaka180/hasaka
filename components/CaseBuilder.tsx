@@ -321,21 +321,49 @@ function SectionEditor({ section, patch, folder }: { section: Section; patch: (p
 }
 
 /* ─────────────────────────────────────────── Image upload field ── */
+// Vercel serverless functions cap the request body at ~4.5 MB, so anything
+// larger (video) is uploaded straight to R2 with a presigned URL instead.
+const DIRECT_UPLOAD_THRESHOLD = 4 * 1024 * 1024
+
 function useUpload(folder: string) {
   const [busy, setBusy] = useState(false)
+
+  // small files: proxy through the function (no R2 CORS needed)
+  const uploadViaFunction = async (file: File): Promise<string | null> => {
+    const fd = new FormData()
+    fd.append('file', file)
+    fd.append('folder', folder)
+    const res = await fetch('/api/upload', { method: 'POST', body: fd })
+    const d = await res.json().catch(() => ({}))
+    if (!res.ok) { alert(d.error || `Upload failed (${res.status})`); return null }
+    return d.url ?? null
+  }
+
+  // large files: presign, then PUT the bytes directly to R2 (bypasses Vercel)
+  const uploadDirect = async (file: File): Promise<string | null> => {
+    const presignRes = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename: file.name, folder, contentType: file.type }),
+    })
+    const d = await presignRes.json().catch(() => ({}))
+    if (!presignRes.ok || !d.uploadUrl) { alert(d.error || `Upload failed (${presignRes.status})`); return null }
+    const put = await fetch(d.uploadUrl, {
+      method: 'PUT',
+      body: file,
+      headers: { 'Content-Type': file.type || 'application/octet-stream' },
+    })
+    if (!put.ok) {
+      alert(`Upload failed (${put.status}). If this is a video, the R2 bucket needs a CORS policy allowing PUT from this site.`)
+      return null
+    }
+    return d.url ?? null
+  }
+
   const upload = async (file: File): Promise<string | null> => {
     setBusy(true)
     try {
-      const fd = new FormData()
-      fd.append('file', file)
-      fd.append('folder', folder)
-      const res = await fetch('/api/upload', { method: 'POST', body: fd })
-      const d = await res.json().catch(() => ({}))
-      if (!res.ok) {
-        alert(d.error || `Upload failed (${res.status})`)
-        return null
-      }
-      return d.url ?? null
+      return file.size > DIRECT_UPLOAD_THRESHOLD ? await uploadDirect(file) : await uploadViaFunction(file)
     } catch {
       alert('Upload failed: network error')
       return null
