@@ -19,6 +19,7 @@ const MD_TOOLS: MdCmd[] = [
   { label: '1.',   title: 'Numbered list',  line: '1. ',     placeholder: 'item' },
   { label: '`—`',  title: 'Inline code',    wrap: ['`', '`'],   placeholder: 'code' },
   { label: '🔗',  title: 'Link',           wrap: ['[', '](url)'], placeholder: 'link text' },
+  { label: '🖼',  title: 'Image',          wrap: ['![', '](image-url)'], placeholder: 'alt text' },
 ]
 
 function MarkdownEditor({ value, onChange }: { value: string; onChange: (v: string) => void }) {
@@ -103,7 +104,8 @@ const blankCase = (type: 'work' | 'case'): CaseStudy => ({
 })
 
 const blankJournal = (): JournalPost => ({
-  type: 'journal', slug: '', title: '', excerpt: '', category: '', author: '', date: '',
+  type: 'journal', slug: '', title: '', excerpt: '', category: '', author: '',
+  date: new Date().toISOString().slice(0, 10),
   cover: '', size: 'md', featured: false, body: '',
 })
 
@@ -349,6 +351,26 @@ function JournalEditor({ draft, set, isNew, setSlug, folder }: {
         <div className={styles.seoHd}>SEO overrides <span>(leave blank to use title / excerpt)</span></div>
         <label className={styles.full}>Meta title (Google headline)<input value={(draft as JournalPost & { metaTitle?: string }).metaTitle ?? ''} placeholder={`${draft.title} — Hasaka Sasaranga`} onChange={(e) => set({ metaTitle: e.target.value } as Partial<JournalPost>)} /></label>
         <label className={styles.full}>Meta description (Google snippet · 150–160 chars)<textarea rows={2} value={(draft as JournalPost & { metaDescription?: string }).metaDescription ?? ''} placeholder={draft.excerpt ?? 'Short summary shown in search results…'} onChange={(e) => set({ metaDescription: e.target.value } as Partial<JournalPost>)} /></label>
+      </div>
+
+      {/* ── FAQ editor ── */}
+      <div className={styles.seoBlock}>
+        <div className={styles.seoHd}>FAQ <span>(renders as accordion below the article)</span></div>
+        {(draft.faqs ?? []).map((faq, i) => {
+          const faqs = draft.faqs ?? []
+          const patchFaq = (patch: Partial<typeof faq>) => set({ faqs: faqs.map((f, j) => j === i ? { ...f, ...patch } : f) })
+          return (
+            <div key={i} className={styles.faqItem}>
+              <div className={styles.faqHd}>
+                <span className={styles.faqNum}>Q{i + 1}</span>
+                <button type="button" className={`${styles.secCtrls} ${styles.x}`} onClick={() => set({ faqs: faqs.filter((_, j) => j !== i) })}>✕</button>
+              </div>
+              <label className={styles.full}>Question<input value={faq.q} placeholder="What is…?" onChange={(e) => patchFaq({ q: e.target.value })} /></label>
+              <label className={styles.full}>Answer<textarea rows={3} value={faq.a} placeholder="Answer…" onChange={(e) => patchFaq({ a: e.target.value })} /></label>
+            </div>
+          )
+        })}
+        <button type="button" className={styles.addSub} onClick={() => set({ faqs: [...(draft.faqs ?? []), { q: '', a: '' }] })}>+ Add question</button>
       </div>
     </section>
   )

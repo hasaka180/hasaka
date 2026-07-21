@@ -3,6 +3,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import styles from './JournalGrid.module.css'
 import ShareButtons from './ShareButtons'
+import FaqAccordion from './FaqAccordion'
 import type { JournalPost } from '@/lib/cases'
 
 const fmtDate = (iso?: string) => {
@@ -33,6 +34,9 @@ export default function JournalArticleView({ post, shareUrl }: { post: JournalPo
             {post.body ?? post.excerpt ?? ''}
           </ReactMarkdown>
         </div>
+        {post.faqs && post.faqs.length > 0 && (
+          <FaqAccordion faqs={post.faqs} />
+        )}
         {shareUrl && (
           <div className={styles.aShare}>
             <ShareButtons url={shareUrl} title={post.title} />

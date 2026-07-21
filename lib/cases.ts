@@ -48,6 +48,8 @@ export interface JournalPost {
   // SEO overrides — leave blank to fall back to title / excerpt
   metaTitle?: string
   metaDescription?: string
+  // FAQ accordion
+  faqs?: { q: string; a: string }[]
 }
 
 export type ContentItem = CaseStudy | JournalPost
