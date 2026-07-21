@@ -19,11 +19,22 @@ const MD_TOOLS: MdCmd[] = [
   { label: '1.',   title: 'Numbered list',  line: '1. ',     placeholder: 'item' },
   { label: '`—`',  title: 'Inline code',    wrap: ['`', '`'],   placeholder: 'code' },
   { label: '🔗',  title: 'Link',           wrap: ['[', '](url)'], placeholder: 'link text' },
-  { label: '🖼',  title: 'Image',          wrap: ['![', '](image-url)'], placeholder: 'alt text' },
 ]
 
-function MarkdownEditor({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+function MarkdownEditor({ value, onChange, folder = 'journal' }: { value: string; onChange: (v: string) => void; folder?: string }) {
   const taRef = useRef<HTMLTextAreaElement>(null)
+  const imgInputRef = useRef<HTMLInputElement>(null)
+  const { busy: imgBusy, upload } = useUpload(folder)
+
+  function insertAtCursor(text: string) {
+    const ta = taRef.current
+    if (!ta) return
+    const start = ta.selectionStart
+    const next = value.slice(0, start) + text + value.slice(ta.selectionEnd)
+    onChange(next)
+    const cur = start + text.length
+    requestAnimationFrame(() => { ta.focus(); ta.setSelectionRange(cur, cur) })
+  }
 
   function applyCmd(cmd: MdCmd) {
     const ta = taRef.current
@@ -73,6 +84,27 @@ function MarkdownEditor({ value, onChange }: { value: string; onChange: (v: stri
             {cmd.label}
           </button>
         ))}
+        {/* Image upload button */}
+        <label
+          className={styles.mdBtn}
+          title="Insert image"
+          style={{ cursor: imgBusy ? 'wait' : 'pointer' }}
+          onMouseDown={(e) => e.preventDefault()}
+        >
+          {imgBusy ? '…' : '🖼'}
+          <input
+            ref={imgInputRef}
+            type="file"
+            accept="image/*"
+            hidden
+            onChange={async (e) => {
+              const f = e.target.files?.[0]; if (!f) return
+              const url = await upload(f)
+              if (url) insertAtCursor(`\n![image](${url})\n`)
+              e.target.value = ''
+            }}
+          />
+        </label>
       </div>
       <textarea
         ref={taRef}
