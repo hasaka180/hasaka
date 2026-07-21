@@ -20,8 +20,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const data = await getItem(params.slug)
   if (!data || itemType(data) !== 'journal') return {}
   const p = data as JournalPost
-  const title = `${p.title} — Hasaka Sasaranga`
-  const description = p.excerpt || `${p.title} — from the Hasaka Sasaranga journal.`
+  const title = p.metaTitle ?? `${p.title} — Hasaka Sasaranga`
+  const description = p.metaDescription ?? p.excerpt ?? `${p.title} — from the Hasaka Sasaranga journal.`
   return {
     title,
     description,

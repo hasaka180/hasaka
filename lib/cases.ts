@@ -45,6 +45,9 @@ export interface JournalPost {
   body?: string
   bg?: string // reader background colour
   fg?: string // reader text colour
+  // SEO overrides — leave blank to fall back to title / excerpt
+  metaTitle?: string
+  metaDescription?: string
 }
 
 export type ContentItem = CaseStudy | JournalPost

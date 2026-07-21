@@ -72,7 +72,7 @@ export default function JournalGrid({ initialItems }: { initialItems?: JournalPo
   if (loading) return <div className={styles.state}>Loading the journal…</div>
   if (posts.length === 0) return <div className={styles.state}>No journal entries yet.</div>
 
-  const featured = posts.find((p) => p.size === 'lg') ?? posts[0]
+  const featured = posts[0]
   const rest = posts.filter((p) => p !== featured)
   const mediums = (rest.filter((p) => p.size === 'md').length ? rest.filter((p) => p.size === 'md') : rest.slice(0, 2)).slice(0, 2)
   const usedMed = new Set(mediums)

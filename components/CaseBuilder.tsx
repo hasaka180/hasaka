@@ -1,9 +1,90 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import styles from './CaseBuilder.module.css'
 import CaseStudyModal from './CaseStudyModal'
 import type { CaseStudy, JournalPost, Section, ContentItem, ContentType } from '@/lib/cases'
+
+/* ── Markdown toolbar editor ── */
+type MdCmd = { label: string; title: string; wrap?: [string, string]; line?: string; placeholder?: string }
+const MD_TOOLS: MdCmd[] = [
+  { label: 'H1',   title: 'Heading 1',      line: '# ',      placeholder: 'Heading' },
+  { label: 'H2',   title: 'Heading 2',      line: '## ',     placeholder: 'Heading' },
+  { label: 'H3',   title: 'Heading 3',      line: '### ',    placeholder: 'Heading' },
+  { label: 'B',    title: 'Bold',           wrap: ['**', '**'], placeholder: 'bold text' },
+  { label: 'I',    title: 'Italic',         wrap: ['_', '_'],   placeholder: 'italic text' },
+  { label: '—',    title: 'Divider',        line: '\n---\n' },
+  { label: '❝',   title: 'Blockquote',     line: '> ',      placeholder: 'quote' },
+  { label: '• ',   title: 'Bullet list',    line: '- ',      placeholder: 'item' },
+  { label: '1.',   title: 'Numbered list',  line: '1. ',     placeholder: 'item' },
+  { label: '`—`',  title: 'Inline code',    wrap: ['`', '`'],   placeholder: 'code' },
+  { label: '🔗',  title: 'Link',           wrap: ['[', '](url)'], placeholder: 'link text' },
+]
+
+function MarkdownEditor({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const taRef = useRef<HTMLTextAreaElement>(null)
+
+  function applyCmd(cmd: MdCmd) {
+    const ta = taRef.current
+    if (!ta) return
+    const start = ta.selectionStart
+    const end = ta.selectionEnd
+    const sel = value.slice(start, end)
+    let next = value
+    let cursor = start
+
+    if (cmd.wrap) {
+      const [open, close] = cmd.wrap
+      const inner = sel || cmd.placeholder || ''
+      next = value.slice(0, start) + open + inner + close + value.slice(end)
+      cursor = start + open.length + inner.length + close.length
+    } else if (cmd.line) {
+      // insert at start of current line
+      const lineStart = value.lastIndexOf('\n', start - 1) + 1
+      const prefix = cmd.line
+      if (cmd.placeholder && !sel) {
+        next = value.slice(0, lineStart) + prefix + cmd.placeholder + value.slice(end)
+        cursor = lineStart + prefix.length + cmd.placeholder.length
+      } else {
+        next = value.slice(0, lineStart) + prefix + value.slice(lineStart)
+        cursor = start + prefix.length
+      }
+    }
+
+    onChange(next)
+    requestAnimationFrame(() => {
+      ta.focus()
+      ta.setSelectionRange(cursor, cursor)
+    })
+  }
+
+  return (
+    <div className={styles.mdWrap}>
+      <div className={styles.mdBar}>
+        {MD_TOOLS.map((cmd) => (
+          <button
+            key={cmd.title}
+            type="button"
+            title={cmd.title}
+            className={styles.mdBtn}
+            onMouseDown={(e) => { e.preventDefault(); applyCmd(cmd) }}
+          >
+            {cmd.label}
+          </button>
+        ))}
+      </div>
+      <textarea
+        ref={taRef}
+        className={styles.mdArea}
+        rows={14}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="Write your article in Markdown…&#10;&#10;## Heading&#10;**bold**, _italic_, - list item, > blockquote"
+        spellCheck
+      />
+    </div>
+  )
+}
 
 const uid = () =>
   typeof crypto !== 'undefined' && 'randomUUID' in crypto
@@ -260,7 +341,15 @@ function JournalEditor({ draft, set, isNew, setSlug, folder }: {
       </div>
       <ImageField label="Cover image" value={draft.cover ?? ''} onChange={(v) => set({ cover: v })} folder={folder} />
       <label className={styles.full}>Excerpt<textarea rows={2} value={draft.excerpt ?? ''} onChange={(e) => set({ excerpt: e.target.value })} /></label>
-      <label className={styles.full}>Body (one paragraph per line)<textarea rows={8} value={draft.body ?? ''} onChange={(e) => set({ body: e.target.value })} /></label>
+      <div className={styles.full}>
+        <span className={styles.fieldLbl}>Body</span>
+        <MarkdownEditor value={draft.body ?? ''} onChange={(v) => set({ body: v })} />
+      </div>
+      <div className={styles.seoBlock}>
+        <div className={styles.seoHd}>SEO overrides <span>(leave blank to use title / excerpt)</span></div>
+        <label className={styles.full}>Meta title (Google headline)<input value={(draft as JournalPost & { metaTitle?: string }).metaTitle ?? ''} placeholder={`${draft.title} — Hasaka Sasaranga`} onChange={(e) => set({ metaTitle: e.target.value } as Partial<JournalPost>)} /></label>
+        <label className={styles.full}>Meta description (Google snippet · 150–160 chars)<textarea rows={2} value={(draft as JournalPost & { metaDescription?: string }).metaDescription ?? ''} placeholder={draft.excerpt ?? 'Short summary shown in search results…'} onChange={(e) => set({ metaDescription: e.target.value } as Partial<JournalPost>)} /></label>
+      </div>
     </section>
   )
 }

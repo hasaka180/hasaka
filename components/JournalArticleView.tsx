@@ -1,4 +1,6 @@
 import type { CSSProperties } from 'react'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import styles from './JournalGrid.module.css'
 import ShareButtons from './ShareButtons'
 import type { JournalPost } from '@/lib/cases'
@@ -27,7 +29,9 @@ export default function JournalArticleView({ post, shareUrl }: { post: JournalPo
         <h1 className={styles.aTitle}>{post.title}</h1>
         {meta && <div className={styles.aMeta}>{meta}</div>}
         <div className={styles.aText}>
-          {(post.body ?? post.excerpt ?? '').split('\n').filter(Boolean).map((p, i) => <p key={i}>{p}</p>)}
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {post.body ?? post.excerpt ?? ''}
+          </ReactMarkdown>
         </div>
         {shareUrl && (
           <div className={styles.aShare}>
