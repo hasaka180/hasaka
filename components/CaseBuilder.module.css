@@ -214,6 +214,37 @@
   border-color: #161310;
 }
 
+.mdBtnActive {
+  background: #161310;
+  color: #fff;
+  border-color: #161310;
+}
+
+/* Live preview pane */
+.mdPreview {
+  padding: 14px 16px;
+  min-height: 360px;
+  font-size: 14px;
+  line-height: 1.72;
+  color: #161310;
+  background: #faf9f7;
+}
+.mdPreview h1 { font-size: 22px; font-weight: 700; line-height: 1.18; letter-spacing: 0; margin: 20px 0 8px; }
+.mdPreview h2 { font-size: 18px; font-weight: 700; line-height: 1.2; letter-spacing: 0; margin: 18px 0 6px; }
+.mdPreview h3 { font-size: 15px; font-weight: 600; line-height: 1.25; margin: 14px 0 4px; }
+.mdPreview p { margin-bottom: 14px; }
+.mdPreview strong { font-weight: 700; }
+.mdPreview em { font-style: italic; }
+.mdPreview a { color: inherit; text-decoration: underline; }
+.mdPreview ul, .mdPreview ol { margin: 0 0 14px 20px; }
+.mdPreview li { margin-bottom: 4px; line-height: 1.65; }
+.mdPreview blockquote { border-left: 3px solid rgba(0,0,0,0.15); margin: 16px 0; padding: 4px 0 4px 16px; font-style: italic; opacity: 0.65; }
+.mdPreview code { font-family: 'Courier New', monospace; font-size: 12px; background: rgba(0,0,0,0.07); border-radius: 3px; padding: 1px 5px; }
+.mdPreview pre { background: rgba(0,0,0,0.07); border-radius: 8px; padding: 12px; overflow-x: auto; margin-bottom: 14px; }
+.mdPreview pre code { background: none; padding: 0; }
+.mdPreview hr { border: none; border-top: 1px solid rgba(0,0,0,0.1); margin: 20px 0; }
+.mdPreview img { max-width: 100%; border-radius: 8px; margin: 8px 0; display: block; }
+
 .mdArea {
   width: 100%;
   font: inherit;

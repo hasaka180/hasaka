@@ -44,7 +44,7 @@ export default async function JournalArticlePage({ params }: { params: { slug: s
   if (!data || itemType(data) !== 'journal') notFound()
   const p = data as JournalPost
   const url = `${SITE_URL}/journal/${p.slug}`
-  const jsonLd = {
+  const blogSchema = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
     headline: p.title,
@@ -59,7 +59,8 @@ export default async function JournalArticlePage({ params }: { params: { slug: s
   }
   return (
     <div className={styles.pageWrap}>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(blogSchema) }} />
+      {p.jsonLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: p.jsonLd }} />}
       <ModalCloseButton className={styles.close} fallback="/journal" />
       <JournalArticleView post={p} shareUrl={url} />
     </div>

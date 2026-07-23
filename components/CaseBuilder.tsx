@@ -1,9 +1,44 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 import styles from './CaseBuilder.module.css'
 import CaseStudyModal from './CaseStudyModal'
 import type { CaseStudy, JournalPost, Section, ContentItem, ContentType } from '@/lib/cases'
+
+/* ── HTML clipboard → Markdown converter (for rich paste) ── */
+function htmlToMd(html: string): string {
+  const doc = new DOMParser().parseFromString(html, 'text/html')
+  function walk(node: Node): string {
+    if (node.nodeType === Node.TEXT_NODE) return node.textContent ?? ''
+    if (node.nodeType !== Node.ELEMENT_NODE) return ''
+    const el = node as Element
+    const tag = el.tagName.toLowerCase()
+    const inner = Array.from(el.childNodes).map(walk).join('')
+    switch (tag) {
+      case 'strong': case 'b': return inner.trim() ? `**${inner.trim()}**` : ''
+      case 'em': case 'i': return inner.trim() ? `_${inner.trim()}_` : ''
+      case 'h1': return `# ${inner.trim()}\n\n`
+      case 'h2': return `## ${inner.trim()}\n\n`
+      case 'h3': return `### ${inner.trim()}\n\n`
+      case 'h4': case 'h5': case 'h6': return `#### ${inner.trim()}\n\n`
+      case 'p': return inner.trim() ? `${inner.trim()}\n\n` : ''
+      case 'br': return '\n'
+      case 'a': return `[${inner}](${el.getAttribute('href') ?? ''})`
+      case 'ul': return Array.from(el.querySelectorAll(':scope > li')).map(li => `- ${walk(li).trim()}\n`).join('') + '\n'
+      case 'ol': return Array.from(el.querySelectorAll(':scope > li')).map((li, i) => `${i + 1}. ${walk(li).trim()}\n`).join('') + '\n'
+      case 'li': return inner
+      case 'blockquote': return `> ${inner.trim()}\n\n`
+      case 'code': return el.closest('pre') ? inner : `\`${inner}\``
+      case 'pre': return `\`\`\`\n${inner.trim()}\n\`\`\`\n\n`
+      case 'hr': return `---\n\n`
+      case 'div': case 'section': case 'article': return inner.endsWith('\n') ? inner : inner + '\n'
+      default: return inner
+    }
+  }
+  return walk(doc.body).replace(/\n{3,}/g, '\n\n').trim()
+}
 
 /* ── Markdown toolbar editor ── */
 type MdCmd = { label: string; title: string; wrap?: [string, string]; line?: string; placeholder?: string }
@@ -25,6 +60,7 @@ function MarkdownEditor({ value, onChange, folder = 'journal' }: { value: string
   const taRef = useRef<HTMLTextAreaElement>(null)
   const imgInputRef = useRef<HTMLInputElement>(null)
   const { busy: imgBusy, upload } = useUpload(folder)
+  const [preview, setPreview] = useState(false)
 
   function insertAtCursor(text: string) {
     const ta = taRef.current
@@ -37,8 +73,9 @@ function MarkdownEditor({ value, onChange, folder = 'journal' }: { value: string
   }
 
   function applyCmd(cmd: MdCmd) {
+    if (preview) setPreview(false)
     const ta = taRef.current
-    if (!ta) return
+    if (!ta) { setTimeout(() => applyCmd(cmd), 50); return }
     const start = ta.selectionStart
     const end = ta.selectionEnd
     const sel = value.slice(start, end)
@@ -51,7 +88,6 @@ function MarkdownEditor({ value, onChange, folder = 'journal' }: { value: string
       next = value.slice(0, start) + open + inner + close + value.slice(end)
       cursor = start + open.length + inner.length + close.length
     } else if (cmd.line) {
-      // insert at start of current line
       const lineStart = value.lastIndexOf('\n', start - 1) + 1
       const prefix = cmd.line
       if (cmd.placeholder && !sel) {
@@ -70,6 +106,21 @@ function MarkdownEditor({ value, onChange, folder = 'journal' }: { value: string
     })
   }
 
+  function handlePaste(e: React.ClipboardEvent<HTMLTextAreaElement>) {
+    const html = e.clipboardData.getData('text/html')
+    if (!html) return
+    const md = htmlToMd(html)
+    if (!md) return
+    e.preventDefault()
+    const ta = e.currentTarget
+    const start = ta.selectionStart
+    const end = ta.selectionEnd
+    const next = value.slice(0, start) + md + value.slice(end)
+    onChange(next)
+    const cur = start + md.length
+    requestAnimationFrame(() => { ta.focus(); ta.setSelectionRange(cur, cur) })
+  }
+
   return (
     <div className={styles.mdWrap}>
       <div className={styles.mdBar}>
@@ -84,7 +135,7 @@ function MarkdownEditor({ value, onChange, folder = 'journal' }: { value: string
             {cmd.label}
           </button>
         ))}
-        {/* Image upload button */}
+        {/* Image upload */}
         <label
           className={styles.mdBtn}
           title="Insert image"
@@ -105,16 +156,36 @@ function MarkdownEditor({ value, onChange, folder = 'journal' }: { value: string
             }}
           />
         </label>
+        {/* Preview toggle */}
+        <button
+          type="button"
+          className={`${styles.mdBtn} ${preview ? styles.mdBtnActive : ''}`}
+          style={{ marginLeft: 'auto' }}
+          onMouseDown={(e) => { e.preventDefault(); setPreview(p => !p) }}
+          title={preview ? 'Back to editing' : 'Preview'}
+        >
+          {preview ? 'Edit' : 'Preview'}
+        </button>
       </div>
-      <textarea
-        ref={taRef}
-        className={styles.mdArea}
-        rows={14}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder="Write your article in Markdown…&#10;&#10;## Heading&#10;**bold**, _italic_, - list item, > blockquote"
-        spellCheck
-      />
+      {preview ? (
+        <div className={styles.mdPreview}>
+          {value.trim()
+            ? <ReactMarkdown remarkPlugins={[remarkGfm]}>{value}</ReactMarkdown>
+            : <span style={{ color: '#bbb', fontSize: 13 }}>Nothing to preview yet.</span>
+          }
+        </div>
+      ) : (
+        <textarea
+          ref={taRef}
+          className={styles.mdArea}
+          rows={22}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onPaste={handlePaste}
+          placeholder="Write your article in Markdown…&#10;&#10;## Heading&#10;**bold**, _italic_, - list item, > blockquote"
+          spellCheck
+        />
+      )}
     </div>
   )
 }
@@ -385,6 +456,13 @@ function JournalEditor({ draft, set, isNew, setSlug, folder }: {
         <label className={styles.full}>Meta description (Google snippet · 150–160 chars)<textarea rows={2} value={(draft as JournalPost & { metaDescription?: string }).metaDescription ?? ''} placeholder={draft.excerpt ?? 'Short summary shown in search results…'} onChange={(e) => set({ metaDescription: e.target.value } as Partial<JournalPost>)} /></label>
       </div>
 
+      {/* ── Summary block ── */}
+      <div className={styles.seoBlock}>
+        <div className={styles.seoHd}>Summary <span>(optional intro block shown above the body)</span></div>
+        <label className={styles.full}>Summary heading<input value={(draft as JournalPost).summaryTitle ?? ''} placeholder="Key takeaway or section title…" onChange={(e) => set({ summaryTitle: e.target.value } as Partial<JournalPost>)} /></label>
+        <label className={styles.full}>Summary description<textarea rows={3} value={(draft as JournalPost).summaryDescription ?? ''} placeholder="A short intro paragraph that appears before the body…" onChange={(e) => set({ summaryDescription: e.target.value } as Partial<JournalPost>)} /></label>
+      </div>
+
       {/* ── FAQ editor ── */}
       <div className={styles.seoBlock}>
         <div className={styles.seoHd}>FAQ <span>(renders as accordion below the article)</span></div>
@@ -403,6 +481,22 @@ function JournalEditor({ draft, set, isNew, setSlug, folder }: {
           )
         })}
         <button type="button" className={styles.addSub} onClick={() => set({ faqs: [...(draft.faqs ?? []), { q: '', a: '' }] })}>+ Add question</button>
+      </div>
+
+      {/* ── JSON-LD ── */}
+      <div className={styles.seoBlock}>
+        <div className={styles.seoHd}>JSON-LD schema <span>(for AI engines — paste full {"{ … }"} object)</span></div>
+        <label className={styles.full}>
+          <textarea
+            className={styles.mdArea}
+            rows={10}
+            value={(draft as JournalPost).jsonLd ?? ''}
+            placeholder={'{\n  "@context": "https://schema.org",\n  "@type": "Person",\n  "name": "Hasaka Sasaranga",\n  ...\n}'}
+            onChange={(e) => set({ jsonLd: e.target.value } as Partial<JournalPost>)}
+            spellCheck={false}
+            style={{ fontFamily: "'Courier New', monospace", fontSize: 12 }}
+          />
+        </label>
       </div>
     </section>
   )

@@ -48,8 +48,13 @@ export interface JournalPost {
   // SEO overrides — leave blank to fall back to title / excerpt
   metaTitle?: string
   metaDescription?: string
+  // Summary block (renders above body)
+  summaryTitle?: string
+  summaryDescription?: string
   // FAQ accordion
   faqs?: { q: string; a: string }[]
+  // Custom JSON-LD (injected as additional <script type="application/ld+json">)
+  jsonLd?: string
 }
 
 export type ContentItem = CaseStudy | JournalPost

@@ -29,6 +29,12 @@ export default function JournalArticleView({ post, shareUrl }: { post: JournalPo
         {post.category && <div className={styles.aPill}>{post.category}</div>}
         <h1 className={styles.aTitle}>{post.title}</h1>
         {meta && <div className={styles.aMeta}>{meta}</div>}
+        {(post.summaryTitle || post.summaryDescription) && (
+          <div className={styles.aSummary}>
+            {post.summaryTitle && <h2 className={styles.aSummaryTitle}>{post.summaryTitle}</h2>}
+            {post.summaryDescription && <p className={styles.aSummaryDesc}>{post.summaryDescription}</p>}
+          </div>
+        )}
         <div className={styles.aText}>
           <ReactMarkdown remarkPlugins={[remarkGfm]}>
             {post.body ?? post.excerpt ?? ''}
