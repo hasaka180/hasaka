@@ -6,7 +6,8 @@ import './globals.css'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://hasaka.io'
 const GSC_VERIFICATION = process.env.GOOGLE_SITE_VERIFICATION
-const GTM_ID = 'GTM-NPFWHDRV' // add GA4 + other tags inside the GTM container
+const GTM_ID = 'GTM-NPFWHDRV'
+const GA_ID = 'G-K30RM5N9WF'
 import Sidebar from '@/components/Sidebar'
 import SmoothScroll from '@/components/SmoothScroll'
 import CrispChat from '@/components/CrispChat'
@@ -60,6 +61,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Google Tag Manager */}
         <Script id="gtm" strategy="afterInteractive">
           {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${GTM_ID}');`}
+        </Script>
+        {/* Google Analytics 4 */}
+        <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
+        <Script id="ga4" strategy="afterInteractive">
+          {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}');`}
         </Script>
       </head>
       <body>
