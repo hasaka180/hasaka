@@ -235,6 +235,8 @@ export default function CaseBuilder() {
   const [isNew, setIsNew] = useState(false)
   const [msg, setMsg] = useState('')
   const [preview, setPreview] = useState<string | null>(null)
+  const lastSavedRef = useRef('')
+  const autoTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const loadList = useCallback((type: ContentType) =>
     fetch(`/api/cases?type=${type}`)
@@ -243,6 +245,31 @@ export default function CaseBuilder() {
 
   useEffect(() => { loadList(activeType) }, [activeType, loadList])
 
+  // Autosave: fires 5 s after the last change, only for existing (non-new) articles
+  useEffect(() => {
+    if (!draft || isNew || !draft.slug || !draft.title) return
+    const serialized = JSON.stringify(draft)
+    if (serialized === lastSavedRef.current) return
+    if (autoTimerRef.current) clearTimeout(autoTimerRef.current)
+    autoTimerRef.current = setTimeout(async () => {
+      setMsg('Autosaving…')
+      const res = await fetch(`/api/cases/${draft.slug}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: serialized,
+      })
+      if (res.ok) {
+        lastSavedRef.current = serialized
+        const t = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
+        setMsg(`Autosaved · ${t}`)
+        await loadList(activeType)
+      } else {
+        setMsg('Autosave failed')
+      }
+    }, 5000)
+    return () => { if (autoTimerRef.current) clearTimeout(autoTimerRef.current) }
+  }, [draft, isNew, activeType, loadList])
+
   const switchType = (type: ContentType) => {
     setActiveType(type); setDraft(null); setIsNew(false); setMsg('')
   }
@@ -250,6 +277,7 @@ export default function CaseBuilder() {
   const selectItem = async (slug: string) => {
     const c = await fetch(`/api/cases/${slug}`).then((r) => r.json())
     setDraft(c); setIsNew(false); setMsg('')
+    lastSavedRef.current = JSON.stringify(c)
   }
 
   const startNew = () => {
@@ -289,7 +317,9 @@ export default function CaseBuilder() {
       alert(`Save failed: ${reason}`)
       return false
     }
-    setMsg('Saved ✓'); setIsNew(false); await loadList(activeType); return true
+    setMsg('Saved ✓'); setIsNew(false); await loadList(activeType)
+    lastSavedRef.current = JSON.stringify(draft)
+    return true
   }
 
   const remove = async () => {
