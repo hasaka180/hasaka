@@ -4,6 +4,7 @@ import { getItems, type JournalPost } from '@/lib/cases'
 export const metadata = {
   title: 'Journal — Hasaka Sasaranga',
   description: 'Essays, process notes and interviews on brand strategy, design systems, generative AI and creative craft.',
+  alternates: { canonical: '/journal' },
 }
 export const revalidate = 600
 

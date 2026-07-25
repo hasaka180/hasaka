@@ -4,6 +4,7 @@ import { getItems, type CaseStudy } from '@/lib/cases'
 export const metadata = {
   title: 'Case Studies — Hasaka Sasaranga',
   description: 'In-depth brand case studies — the strategy, identity systems and outcomes behind selected projects.',
+  alternates: { canonical: '/collections' },
 }
 export const revalidate = 600
 

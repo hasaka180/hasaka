@@ -4,6 +4,7 @@ import { getItems, type CaseStudy } from '@/lib/cases'
 export const metadata = {
   title: 'Work — Hasaka Sasaranga',
   description: 'Selected brand work — identities, packaging, web and product design across hospitality, fintech, tech, FMCG and culture.',
+  alternates: { canonical: '/projects' },
 }
 export const revalidate = 600 // ISR: cache for 10 min; builder writes revalidate instantly
 

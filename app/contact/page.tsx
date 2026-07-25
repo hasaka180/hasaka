@@ -4,6 +4,7 @@ import SpotlightReveal from '@/components/SpotlightReveal'
 export const metadata = {
   title: 'Contact — Hasaka Sasaranga',
   description: 'Get in touch with Hasaka — based in Dubai, available for brand projects worldwide.',
+  alternates: { canonical: '/contact' },
 }
 
 export default function ContactPage() {
