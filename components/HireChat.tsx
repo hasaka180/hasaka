@@ -1,100 +1,28 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useEffect } from 'react'
 
-type Msg = { from: 'you' | 'hasaka'; text: string }
-
-const GREETING = ['Hey there 👋', "Hope you're doing well today.", 'How may I help you?']
+const SERVER = process.env.NEXT_PUBLIC_CHAT_SERVER || 'wss://support.hasaka.io'
 
 export default function HireChat() {
-  const [input, setInput] = useState('')
-  const [messages, setMessages] = useState<Msg[]>([])
-  const [shown, setShown] = useState(0) // how many greeting bubbles are revealed
-  const endRef = useRef<HTMLDivElement>(null)
-
-  // reveal the greeting bubbles one after another on load
   useEffect(() => {
-    if (shown >= GREETING.length) return
-    const t = setTimeout(() => setShown((n) => n + 1), shown === 0 ? 400 : 900)
-    return () => clearTimeout(t)
-  }, [shown])
-
-  // keep the latest message in view
-  useEffect(() => {
-    if (messages.length) endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-  }, [messages])
-
-  // stream operator replies (sent from the Crisp iOS app) into this UI
-  useEffect(() => {
-    const c = typeof window !== 'undefined' ? window.$crisp : undefined
-    if (!c) return
-    const onReceived = (msg: { type?: string; content?: unknown } | undefined) => {
-      if (msg?.type === 'text' && typeof msg.content === 'string') {
-        setMessages((m) => [...m, { from: 'hasaka', text: msg.content as string }])
-      }
-    }
-    c.push(['on', 'message:received', onReceived])
-    return () => { try { c.push(['off', 'message:received']) } catch { /* noop */ } }
+    // Only add the script once per page load
+    if (document.getElementById('hasaka-chat-script')) return
+    const script = document.createElement('script')
+    script.id = 'hasaka-chat-script'
+    script.src = '/hasaka-chat-light.js'
+    script.dataset.server = SERVER
+    script.dataset.name = 'Hasaka'
+    script.dataset.role = 'Creative Director & Brand Architect'
+    script.dataset.mode = 'inline'
+    script.dataset.mount = '#hire-chat'
+    document.body.appendChild(script)
+    return () => { document.getElementById('hasaka-chat-script')?.remove() }
   }, [])
-
-  const send = () => {
-    const text = input.trim()
-    if (!text) return
-    setMessages((m) => [...m, { from: 'you', text }])
-    setInput('')
-
-    // Crisp (keeps existing live-chat flow)
-    const c = typeof window !== 'undefined' ? window.$crisp : undefined
-    if (c) c.push(['do', 'message:send', ['text', text]])
-
-    // Telegram notification
-    fetch('/api/telegram', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: `💬 *hasaka.io/hire*\n${text}` }),
-    }).catch(() => null)
-  }
 
   return (
     <div className="hirepg">
-      <div className="chatwrap">
-        <div className="chsend">
-          <div className="chav">H</div>
-          Hasaka <span className="crl">Creative Director &amp; Brand Architect</span>
-        </div>
-
-        {/* automated greeting — revealed one after another */}
-        <div className="bubs">
-          {GREETING.slice(0, shown).map((g, i) => (
-            <div key={i} className="bub bub-in">{g}</div>
-          ))}
-        </div>
-
-        {/* live conversation */}
-        {messages.map((m, i) => (
-          <div key={i} className="bubs">
-            <div className={`bub${m.from === 'you' ? ' r' : ''}`}>{m.text}</div>
-          </div>
-        ))}
-
-        {/* composer — visitor types and sends */}
-        <div ref={endRef} className="chcard" id="chcard">
-          <label htmlFor="chi">Message</label>
-          <input
-            className="chinp"
-            type="text"
-            id="chi"
-            placeholder="Type your message…"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && send()}
-            autoComplete="off"
-          />
-          <div className="chok" onClick={send}>Send &nbsp;⇥</div>
-        </div>
-
-        <div style={{ textAlign: 'right', fontSize: 26, marginTop: 8 }}>😊</div>
-      </div>
+      <div id="hire-chat" />
     </div>
   )
 }
