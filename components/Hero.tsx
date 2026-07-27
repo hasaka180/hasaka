@@ -42,7 +42,7 @@ function MobileCarousel({ items, dir }: { items: MCard[]; dir: string }) {
             {card.video ? (
               <video src={card.video} autoPlay muted loop playsInline preload="none" poster={card.img} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
             ) : (
-              <img src={card.img} alt={card.label} loading="lazy" decoding="async" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src={card.img} alt={card.label} loading="eager" decoding="async" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
             )}
             <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 55%)" }} />
             <div className={styles.carouselCardSub} style={{ color: "rgba(255,255,255,0.55)", position: "relative", zIndex: 1 }}>{card.sub}</div>
@@ -308,7 +308,7 @@ export default function Hero() {
             {[0, 1].map((k) => (
               <div key={k} className={styles.colStrip}>
                 <div className={`${styles.cc} ${styles.navy}`} style={{ height: "58%", position: "relative", overflow: "hidden" }}>
-                  <img loading="lazy" decoding="async" src="/nexe.jpg" alt="Nexera Robotics" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 1 }} />
+                  <img loading="eager" decoding="async" fetchPriority={k === 0 ? "high" : "auto"} src="/nexe.jpg" alt="Nexera Robotics" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 1 }} />
                   <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%)", zIndex: 1 }} />
                   <div style={{ position: "absolute", bottom: 12, left: 12, zIndex: 2 }}>
                     <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.55)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 4 }}>Tech Brand</div>
@@ -316,7 +316,7 @@ export default function Hero() {
                   </div>
                 </div>
                 <div className={`${styles.cc} ${styles.coral}`} style={{ height: "42%", position: "relative", overflow: "hidden" }}>
-                  <img loading="lazy" decoding="async" src="/lighthouse.jpg" alt="Lighthouse App" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 1 }} />
+                  <img loading="eager" decoding="async" fetchPriority={k === 0 ? "high" : "auto"} src="/lighthouse.jpg" alt="Lighthouse App" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 1 }} />
                   <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%)", zIndex: 1 }} />
                   <div style={{ position: "absolute", bottom: 12, left: 12, zIndex: 2 }}>
                     <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.55)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 4 }}>Tech Brand</div>
@@ -334,7 +334,7 @@ export default function Hero() {
             {[0, 1].map((k) => (
               <div key={k} className={styles.colStrip}>
                 <div className={`${styles.cc} ${styles.cream}`} style={{ flex: "0 0 calc(40% - 6px)", position: "relative", overflow: "hidden" }}>
-                  <img loading="lazy" decoding="async" src="/kaiju.jpg" alt="Cooking Guild" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+                  <img loading="eager" decoding="async" src="/kaiju.jpg" alt="Cooking Guild" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
                   <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%)", zIndex: 1 }} />
                   <div style={{ position: "absolute", bottom: 12, left: 12, zIndex: 2 }}>
                     <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.55)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 4 }}>Product Packaging</div>
@@ -350,7 +350,7 @@ export default function Hero() {
                   </div>
                 </div>
                 <div className={`${styles.cc} ${styles.char}`} style={{ flex: "1 1 0", position: "relative", overflow: "hidden" }}>
-                  <img loading="lazy" decoding="async" src="/rockypet.jpg" alt="Rocky Pet" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+                  <img loading="eager" decoding="async" src="/rockypet.jpg" alt="Rocky Pet" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
                   <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%)", zIndex: 1 }} />
                   <div style={{ position: "absolute", bottom: 12, left: 12, zIndex: 2 }}>
                     <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.55)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 4 }}>Brand Identity</div>
@@ -368,7 +368,7 @@ export default function Hero() {
             {[0, 1].map((k) => (
               <div key={k} className={styles.colStrip}>
                 <div className={`${styles.cc} ${styles.yell}`} style={{ height: "52%", position: "relative", overflow: "hidden" }}>
-                  <img loading="lazy" decoding="async" src="/summa-forte.jpg" alt="Summa Forte" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+                  <img loading="eager" decoding="async" src="/summa-forte.jpg" alt="Summa Forte" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
                   <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%)", zIndex: 1 }} />
                   <div style={{ position: "absolute", bottom: 12, left: 12, zIndex: 2 }}>
                     <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.55)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 4 }}>Product Packaging</div>
@@ -471,7 +471,7 @@ export default function Hero() {
             {[0, 1].map((k) => (
               <div key={k} className={styles.colStrip}>
                 <div className={`${styles.cc}`} style={{ flex: "0 0 calc(44% - 4px)", position: "relative", overflow: "hidden" }}>
-                  <img loading="lazy" decoding="async" src="/sadara.jpg" alt="Sadara" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+                  <img loading="eager" decoding="async" src="/sadara.jpg" alt="Sadara" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
                   <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%)", zIndex: 1 }} />
                   <div style={{ position: "absolute", bottom: 14, left: 14, zIndex: 2 }}>
                     <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.55)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 4 }}>Typography</div>
@@ -479,7 +479,7 @@ export default function Hero() {
                   </div>
                 </div>
                 <div className={`${styles.cc}`} style={{ flex: "1 1 0", position: "relative", overflow: "hidden" }}>
-                  <img loading="lazy" decoding="async" src="/steggys.jpg" alt="Steggys" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+                  <img loading="eager" decoding="async" src="/steggys.jpg" alt="Steggys" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
                   <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%)", zIndex: 1 }} />
                   <div style={{ position: "absolute", bottom: 14, left: 14, zIndex: 2 }}>
                     <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.55)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 4 }}>Brand Identity</div>
@@ -497,7 +497,7 @@ export default function Hero() {
             {[0, 1].map((k) => (
               <div key={k} className={styles.colStrip}>
                 <div className={`${styles.cc}`} style={{ flex: "0 0 calc(33% - 6px)", position: "relative", overflow: "hidden" }}>
-                  <img loading="lazy" decoding="async" src="/riixo.jpg" alt="Riixo" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+                  <img loading="eager" decoding="async" src="/riixo.jpg" alt="Riixo" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
                   <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%)", zIndex: 1 }} />
                   <div style={{ position: "absolute", bottom: 12, left: 12, zIndex: 2 }}>
                     <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.55)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 4 }}>Product Design</div>
@@ -531,7 +531,7 @@ export default function Hero() {
             {[0, 1].map((k) => (
               <div key={k} className={styles.colStrip}>
                 <div className={`${styles.cc}`} style={{ flex: "0 0 calc(42% - 6px)", position: "relative", overflow: "hidden" }}>
-                  <img loading="lazy" decoding="async" src="/gathr.jpg" alt="Gathr" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+                  <img loading="eager" decoding="async" src="/gathr.jpg" alt="Gathr" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
                   <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%)", zIndex: 1 }} />
                   <div style={{ position: "absolute", bottom: 12, left: 12, zIndex: 2 }}>
                     <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.55)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 4 }}>Packaging</div>
@@ -539,7 +539,7 @@ export default function Hero() {
                   </div>
                 </div>
                 <div className={`${styles.cc}`} style={{ flex: "0 0 calc(36% - 6px)", position: "relative", overflow: "hidden" }}>
-                  <img loading="lazy" decoding="async" src="/mazyon.jpg" alt="Mazyon Chocolate" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+                  <img loading="eager" decoding="async" src="/mazyon.jpg" alt="Mazyon Chocolate" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
                   <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%)", zIndex: 1 }} />
                   <div style={{ position: "absolute", bottom: 12, left: 12, zIndex: 2 }}>
                     <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.55)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 4 }}>Brand Identity</div>
@@ -547,7 +547,7 @@ export default function Hero() {
                   </div>
                 </div>
                 <div className={styles.cc} style={{ flex: "1 1 0", position: "relative", overflow: "hidden" }}>
-                  <img loading="lazy" decoding="async" src="/scoutx.jpg" alt="Scout" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+                  <img loading="eager" decoding="async" src="/scoutx.jpg" alt="Scout" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
                   <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%)", zIndex: 1 }} />
                   <div style={{ position: "absolute", bottom: 10, left: 12, zIndex: 2 }}>
                     <div style={{ fontSize: 9, fontWeight: 700, color: "rgba(255,255,255,0.55)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 4 }}>UI/UX</div>

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type ReactNode } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import styles from './JournalGrid.module.css'
 import type { JournalPost } from '@/lib/cases'
 
@@ -87,8 +88,7 @@ export default function JournalGrid({ initialItems }: { initialItems?: JournalPo
             <Link href={`/journal/${featured.slug}`} className={`${styles.card} ${styles.feature}`}>
               {featured.cover && (
                 <div className={styles.cover}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={featured.cover} alt="" decoding="async" />
+                  <Image src={featured.cover} alt="" fill sizes="(max-width: 768px) 100vw, 55vw" style={{ objectFit: 'cover' }} priority />
                 </div>
               )}
               <div className={styles.fbody}>
@@ -109,8 +109,7 @@ export default function JournalGrid({ initialItems }: { initialItems?: JournalPo
               <Link key={p.slug} href={`/journal/${p.slug}`} className={`${styles.card} ${styles.mcard}`}>
                 {p.cover && (
                   <div className={styles.cover}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={p.cover} alt="" loading="lazy" decoding="async" />
+                    <Image src={p.cover} alt="" fill sizes="(max-width: 768px) 100vw, 40vw" style={{ objectFit: 'cover' }} />
                   </div>
                 )}
                 <div className={styles.mbody}>

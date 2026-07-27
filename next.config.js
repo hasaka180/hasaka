@@ -1,7 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: {
+    formats: ['image/avif', 'image/webp'],
+    remotePatterns: [
+      { protocol: 'https', hostname: '**.r2.dev' },
+      { protocol: 'https', hostname: '**.r2.cloudflarestorage.com' },
+    ],
+    minimumCacheTTL: 2592000, // 30 days
+  },
   async headers() {
     return [
+      {
+        source: '/:path*\\.(jpg|jpeg|png|gif|svg|webp|avif|ico)',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
       {
         source: '/(.*)',
         headers: [
