@@ -1,0 +1,38 @@
+# fly.toml — deploy chat-server to Fly.io (free tier)
+app = "hasaka-chat"
+primary_region = "dxb"   # Dubai — closest to UAE
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT     = "3000"
+  DB_PATH  = "/data/data.db"
+
+[mounts]
+  source      = "chat_data"
+  destination = "/data"
+
+[[services]]
+  internal_port = 3000
+  protocol      = "tcp"
+
+  [[services.ports]]
+    port     = 80
+    handlers = ["http"]
+
+  [[services.ports]]
+    port     = 443
+    handlers = ["tls", "http"]
+
+  [services.concurrency]
+    type       = "connections"
+    hard_limit = 25
+    soft_limit = 20
+
+  [[services.http_checks]]
+    interval     = 30000
+    timeout      = 5000
+    grace_period = "10s"
+    method       = "GET"
+    path         = "/health"
