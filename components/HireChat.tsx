@@ -42,8 +42,17 @@ export default function HireChat() {
     if (!text) return
     setMessages((m) => [...m, { from: 'you', text }])
     setInput('')
+
+    // Crisp (keeps existing live-chat flow)
     const c = typeof window !== 'undefined' ? window.$crisp : undefined
     if (c) c.push(['do', 'message:send', ['text', text]])
+
+    // Telegram notification
+    fetch('/api/telegram', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: `💬 *hasaka.io/hire*\n${text}` }),
+    }).catch(() => null)
   }
 
   return (
