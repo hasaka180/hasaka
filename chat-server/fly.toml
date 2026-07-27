@@ -1,6 +1,6 @@
 # fly.toml — deploy chat-server to Fly.io (free tier)
 app = "hasaka-chat"
-primary_region = "dxb"   # Dubai — closest to UAE
+primary_region = "sin"   # Singapore
 
 [build]
   dockerfile = "Dockerfile"
