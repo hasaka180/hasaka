@@ -12,7 +12,9 @@ const TO_EMAIL = process.env.HIRE_TO_EMAIL || 'hasakasasaranga@gmail.com'
 // Resend allows this sender with no domain verification, but only to the
 // address the Resend account was created with. Swap it for an address on a
 // verified domain (e.g. 'Hasaka <hello@hasaka.io>') once DNS is set up.
-const FROM_EMAIL = process.env.HIRE_FROM_EMAIL || 'hasaka.io/hire <onboarding@resend.dev>'
+// The display name must be a plain RFC 5322 phrase — punctuation like "." or
+// "/" has to be quoted, and unquoted it gets rejected as a malformed address.
+const FROM_EMAIL = process.env.HIRE_FROM_EMAIL || 'Hasaka Hire <onboarding@resend.dev>'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
