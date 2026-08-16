@@ -81,7 +81,13 @@ export async function POST(req: Request) {
     // `code` carries only the upstream HTTP status — no key, no message body —
     // so a failure can be diagnosed without digging through platform logs.
     return NextResponse.json(
-      { error: 'Could not send that — please try again.', code: `upstream_${res.status}` },
+      {
+        error: 'Could not send that — please try again.',
+        code: `upstream_${res.status}`,
+        // TEMPORARY: provider validation message, to diagnose a rejected send.
+        // Remove once the cause is fixed. Never contains key material.
+        ...(payload.debug === true ? { detail } : {}),
+      },
       { status: 502 }
     )
   }
