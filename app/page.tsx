@@ -131,6 +131,7 @@ export default function HomePage() {
 
       <div className="hft">
         <span className="cp">© 2025 Hasaka™ — Creative Director</span>
+        <a href="https://thedarwin.co/" target="_blank" rel="noopener noreferrer" className="cp" style={{ textDecoration: 'none' }}>Powered by Darwin Corp</a>
         <div className="hft-ln">
           <a href="#">Behance</a>
           <a href="#">LinkedIn</a>
