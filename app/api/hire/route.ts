@@ -80,14 +80,11 @@ export async function POST(req: Request) {
     console.error('[hire] resend failed:', res.status, detail)
     // `code` carries only the upstream HTTP status — no key, no message body —
     // so a failure can be diagnosed without digging through platform logs.
+    // `code` carries only the upstream HTTP status — no key, no message body.
+    // Note: Resend answers an invalid API key with 400, not 401, so a 400 here
+    // means "check the key" at least as often as it means "check the payload".
     return NextResponse.json(
-      {
-        error: 'Could not send that — please try again.',
-        code: `upstream_${res.status}`,
-        // TEMPORARY: provider validation message, to diagnose a rejected send.
-        // Remove once the cause is fixed. Never contains key material.
-        ...(payload.debug === true ? { detail } : {}),
-      },
+      { error: 'Could not send that — please try again.', code: `upstream_${res.status}` },
       { status: 502 }
     )
   }
