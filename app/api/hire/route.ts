@@ -76,7 +76,12 @@ export async function POST(req: Request) {
   if (!res.ok) {
     const detail = await res.text().catch(() => '')
     console.error('[hire] resend failed:', res.status, detail)
-    return NextResponse.json({ error: 'Could not send that — please try again.' }, { status: 502 })
+    // `code` carries only the upstream HTTP status — no key, no message body —
+    // so a failure can be diagnosed without digging through platform logs.
+    return NextResponse.json(
+      { error: 'Could not send that — please try again.', code: `upstream_${res.status}` },
+      { status: 502 }
+    )
   }
 
   return NextResponse.json({ ok: true })
