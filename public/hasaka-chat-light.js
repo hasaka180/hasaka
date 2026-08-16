@@ -1,13 +1,15 @@
 /**
- * Hasaka support widget — light theme
- * -----------------------------------
- * Matches the interface design: soft gradient ground, white pill bubbles,
- * purple gradient avatar, composer card with an emoji picker.
+ * Hasaka hire widget — light theme
+ * --------------------------------
+ * Soft gradient ground, white pill bubbles, purple gradient avatar,
+ * composer card with an emoji picker.
  *
- * Same socket protocol as the dark build — drop-in swap.
+ * Messages are posted to an API route that emails them on, with the visitor's
+ * address in Reply-To — so replying from Gmail answers the visitor directly.
+ * There is no socket and no chat server to keep alive.
  *
  *   <script src="/hasaka-chat-light.js"
- *           data-server="wss://support.hasaka.io"
+ *           data-endpoint="/api/hire"
  *           data-name="Hasaka"
  *           data-role="Creative Director & Brand Architect"
  *           data-mode="inline"          <!-- inline | floating -->
@@ -20,30 +22,38 @@
   var script = document.currentScript;
   var d = (script && script.dataset) || {};
   var cfg = {
-    server: d.server || 'wss://support.hasaka.io',
+    endpoint: d.endpoint || '/api/hire',
     name: d.name || 'Hasaka',
     role: d.role || 'Creative Director & Brand Architect',
     mode: d.mode === 'inline' ? 'inline' : 'floating',
     mount: d.mount || null,
-    greeting: (d.greeting || 'Hey there 👋|Hope you\'re doing well today.|How may I help you?').split('|'),
+    greeting: (
+      d.greeting ||
+      "Hey there 👋|Tell me a little about what you're building.|Leave your email and I'll reply there."
+    ).split('|'),
   };
 
   var STORE_KEY = 'hasaka.visitor';
-  var visitorId;
-  try {
-    visitorId = localStorage.getItem(STORE_KEY);
-    if (!visitorId) {
-      visitorId = 'vis_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
-      localStorage.setItem(STORE_KEY, visitorId);
-    }
-  } catch (e) {
-    visitorId = 'vis_' + Math.random().toString(36).slice(2);
-  }
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   function esc(s) {
     return String(s).replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
+  }
+
+  /** Remembered so a returning visitor doesn't retype their details. */
+  function recall() {
+    try {
+      return JSON.parse(localStorage.getItem(STORE_KEY) || '{}');
+    } catch (e) {
+      return {};
+    }
+  }
+  function remember(who) {
+    try {
+      localStorage.setItem(STORE_KEY, JSON.stringify(who));
+    } catch (e) {}
   }
 
   // ------------------------------------------------------------------ mount
@@ -98,9 +108,9 @@
     '.panel{background:var(--ground);border-radius:28px;padding:26px 24px 22px;',
     '  box-shadow:var(--shadow);display:flex;flex-direction:column}',
     cfg.mode === 'floating'
-      ? '.panel{width:400px;max-width:100%;height:min(600px,76vh);display:none}' +
+      ? '.panel{width:400px;max-width:100%;height:min(640px,80vh);display:none}' +
         '.wrap[data-open="1"] .panel{display:flex;animation:rise .34s cubic-bezier(.2,.7,.3,1)}' +
-        '@media (max-width:560px){.panel{width:100%;height:min(600px,72vh);border-radius:22px;padding:20px 16px 16px}}'
+        '@media (max-width:560px){.panel{width:100%;height:min(640px,76vh);border-radius:22px;padding:20px 16px 16px}}'
       : '.panel{width:100%;min-height:420px}',
     '@keyframes rise{from{opacity:0;transform:translateY(12px) scale(.985)}to{opacity:1;transform:none}}',
 
@@ -145,15 +155,24 @@
     '  padding:18px 20px 14px;backdrop-filter:blur(8px)}',
     '.compose label{display:block;font-size:15px;font-weight:500;margin-bottom:12px}',
     '.box{background:#fff;border-radius:18px;padding:14px 18px;box-shadow:0 1px 2px rgba(74,58,110,.06)}',
-    'textarea{width:100%;resize:none;background:none;border:0;color:#16151A;font-size:16px;',
-    '  line-height:1.45;max-height:110px;font-family:inherit}',
-    'textarea::placeholder{color:#B9B5C7}',
-    'textarea:focus{outline:none}',
+    '.fields{display:flex;gap:10px;margin-bottom:10px}',
+    '.fields .box{flex:1;min-width:0;padding:12px 18px}',
+    '@media (max-width:420px){.fields{flex-direction:column;gap:8px}}',
+    'input,textarea{width:100%;background:none;border:0;color:#16151A;font-size:16px;',
+    '  line-height:1.45;font-family:inherit}',
+    'textarea{resize:none;max-height:110px}',
+    'input::placeholder,textarea::placeholder{color:#B9B5C7}',
+    'input:focus,textarea:focus{outline:none}',
+    '.box:focus-within{box-shadow:0 0 0 2px rgba(109,91,208,.35)}',
+    /* honeypot — off-screen, never seen by a person */
+    '.hp{position:absolute!important;left:-9999px!important;width:1px!important;height:1px!important;opacity:0!important}',
     '.bar{display:flex;align-items:center;justify-content:flex-end;gap:14px;margin-top:10px}',
     '.note{margin-right:auto;font-size:12px;color:#9A97A5}',
+    '.note[data-err="1"]{color:#C2410C}',
     '.send{background:none;border:0;cursor:pointer;font-size:15px;font-weight:600;color:#9A97A5;',
     '  display:flex;align-items:center;gap:7px;padding:4px 2px;border-radius:8px;transition:color .2s}',
     '.send[data-ready="1"]{color:var(--accent-a)}',
+    '.send[disabled]{cursor:default;opacity:.55}',
     '.send:focus-visible{outline:2px solid var(--accent-a);outline-offset:3px}',
 
     /* emoji */
@@ -172,14 +191,19 @@
     '</style>',
 
     '<div class="wrap" data-open="' + (cfg.mode === 'inline' ? '1' : '0') + '">',
-    '  <div class="panel" role="dialog" aria-label="Chat with ' + esc(cfg.name) + '">',
+    '  <div class="panel" role="dialog" aria-label="Message ' + esc(cfg.name) + '">',
     '    <div class="head">',
     '      <div class="avatar">' + esc(cfg.name.charAt(0).toUpperCase()) + '</div>',
     '      <div class="who"><b>' + esc(cfg.name) + '</b><span>' + esc(cfg.role) + '</span></div>',
-    '      <button class="x" aria-label="Close chat">&#215;</button>',
+    '      <button class="x" aria-label="Close">&#215;</button>',
     '    </div>',
     '    <div class="log" id="log" role="log" aria-live="polite"></div>',
     '    <div class="compose">',
+    '      <div class="fields">',
+    '        <div class="box"><input id="name" type="text" autocomplete="name" placeholder="Your name" aria-label="Your name"></div>',
+    '        <div class="box"><input id="email" type="email" autocomplete="email" placeholder="Your email" aria-label="Your email"></div>',
+    '      </div>',
+    '      <input class="hp" id="hp" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">',
     '      <label for="input">Message</label>',
     '      <div class="box">',
     '        <textarea id="input" rows="1" placeholder="Type your message…" aria-label="Message"></textarea>',
@@ -199,7 +223,7 @@
     '    </div>',
     '  </div>',
     cfg.mode === 'floating'
-      ? '  <button class="launch" aria-label="Open chat">' +
+      ? '  <button class="launch" aria-label="Open message panel">' +
         '<span class="av">' + esc(cfg.name.charAt(0).toUpperCase()) + '</span>' +
         'Message ' + esc(cfg.name) + '</button>'
       : '',
@@ -212,17 +236,21 @@
   var log = root.getElementById('log');
   var note = root.getElementById('note');
   var input = root.getElementById('input');
+  var nameEl = root.getElementById('name');
+  var emailEl = root.getElementById('email');
+  var hpEl = root.getElementById('hp');
   var sendBtn = root.getElementById('send');
   var picker = root.getElementById('picker');
-  var seen = Object.create(null);
   var typingEl = null;
-  var ws = null;
-  var retry = 0;
-  var greeted = false;
+  var sending = false;
+
+  var saved = recall();
+  if (saved.name) nameEl.value = saved.name;
+  if (saved.email) emailEl.value = saved.email;
 
   function open() {
     wrap.dataset.open = '1';
-    input.focus();
+    (nameEl.value ? input : nameEl).focus();
     scroll();
   }
   function close() {
@@ -243,9 +271,12 @@
     log.scrollTop = log.scrollHeight;
   }
 
+  function say(text, isError) {
+    note.textContent = text;
+    note.dataset.err = isError ? '1' : '0';
+  }
+
   function render(m) {
-    if (m.id && seen[m.id]) return;
-    if (m.id) seen[m.id] = 1;
     clearTyping();
     var el = document.createElement('div');
     el.className = 'msg ' + m.author;
@@ -261,7 +292,6 @@
     typingEl.innerHTML = '<i></i><i></i><i></i>';
     log.appendChild(typingEl);
     scroll();
-    setTimeout(clearTyping, 6000);
   }
   function clearTyping() {
     if (typingEl) {
@@ -279,78 +309,78 @@
     }, 520);
   }
 
-  // ------------------------------------------------------------------ socket
-
-  function connect() {
-    var url =
-      cfg.server.replace(/\/$/, '') +
-      '/ws?role=visitor&visitorId=' + encodeURIComponent(visitorId) +
-      '&page=' + encodeURIComponent(location.href) +
-      '&locale=' + encodeURIComponent(navigator.language || '');
-
-    try {
-      ws = new WebSocket(url);
-    } catch (e) {
-      return schedule();
-    }
-
-    ws.onopen = function () {
-      retry = 0;
-      note.textContent = '';
-    };
-
-    ws.onmessage = function (ev) {
-      var msg;
-      try {
-        msg = JSON.parse(ev.data);
-      } catch (e) {
-        return;
-      }
-
-      if (msg.type === 'session') {
-        log.innerHTML = '';
-        seen = Object.create(null);
-        (msg.messages || []).forEach(render);
-        if (!msg.messages.length && !greeted) {
-          greeted = true;
-          greet(cfg.greeting, 0);
-        }
-      }
-      if (msg.type === 'message') render(msg.message);
-      if (msg.type === 'typing' && msg.from === 'agent') showTyping();
-    };
-
-    ws.onclose = schedule;
-    ws.onerror = function () {
-      try { ws.close(); } catch (e) {}
-    };
-  }
-
-  function schedule() {
-    retry += 1;
-    note.textContent = retry > 2 ? 'Reconnecting…' : '';
-    setTimeout(connect, Math.min(1000 * Math.pow(2, retry), 20000));
-  }
-
-  // ------------------------------------------------------------------ input
-
-  var lastTyping = 0;
+  // ------------------------------------------------------------------ send
 
   function refreshSendState() {
-    sendBtn.dataset.ready = input.value.trim() ? '1' : '0';
+    sendBtn.dataset.ready = input.value.trim() && !sending ? '1' : '0';
   }
 
   function sendMessage() {
+    if (sending) return;
+
+    var who = { name: nameEl.value.trim(), email: emailEl.value.trim() };
     var body = input.value.trim();
-    if (!body) return;
-    if (!ws || ws.readyState !== 1) {
-      note.textContent = 'Not connected — try again in a moment.';
+
+    if (!who.name) {
+      say('Your name, first.', true);
+      nameEl.focus();
       return;
     }
-    ws.send(JSON.stringify({ type: 'message', body: body }));
-    input.value = '';
-    input.style.height = 'auto';
+    if (!EMAIL_RE.test(who.email)) {
+      say('That email address looks off.', true);
+      emailEl.focus();
+      return;
+    }
+    if (!body) {
+      say('Write a message to send.', true);
+      input.focus();
+      return;
+    }
+
+    sending = true;
+    sendBtn.disabled = true;
     refreshSendState();
+    say('Sending…');
+    render({ author: 'visitor', body: body });
+    showTyping();
+
+    fetch(cfg.endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: who.name,
+        email: who.email,
+        message: body,
+        company: hpEl.value,
+        page: location.href,
+      }),
+    })
+      .then(function (res) {
+        return res.json().catch(function () { return {}; }).then(function (data) {
+          if (!res.ok) throw new Error(data.error || 'Could not send that — please try again.');
+        });
+      })
+      .then(function () {
+        remember(who);
+        input.value = '';
+        input.style.height = 'auto';
+        say('');
+        render({
+          author: 'agent',
+          body:
+            'Thanks, ' + who.name + ' — that just landed in my inbox. ' +
+            'I\'ll reply to ' + who.email + ' shortly.',
+        });
+      })
+      .catch(function (e) {
+        clearTyping();
+        say(e.message || 'Could not send that — please try again.', true);
+      })
+      .then(function () {
+        sending = false;
+        sendBtn.disabled = false;
+        refreshSendState();
+      });
   }
 
   sendBtn.addEventListener('click', sendMessage);
@@ -362,15 +392,20 @@
     }
   });
 
+  [nameEl, emailEl].forEach(function (el) {
+    el.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        input.focus();
+      }
+    });
+  });
+
   input.addEventListener('input', function () {
     input.style.height = 'auto';
     input.style.height = Math.min(input.scrollHeight, 110) + 'px';
+    if (note.dataset.err === '1') say('');
     refreshSendState();
-    var t = Date.now();
-    if (ws && ws.readyState === 1 && t - lastTyping > 2000) {
-      lastTyping = t;
-      ws.send(JSON.stringify({ type: 'typing' }));
-    }
   });
 
   root.getElementById('emoji').addEventListener('click', function (e) {
@@ -394,11 +429,10 @@
     open: open,
     close: close,
     identify: function (who) {
-      if (ws && ws.readyState === 1) {
-        ws.send(JSON.stringify({ type: 'identify', name: who.name, email: who.email }));
-      }
+      if (who && who.name) nameEl.value = who.name;
+      if (who && who.email) emailEl.value = who.email;
     },
   };
 
-  connect();
+  greet(cfg.greeting, 0);
 })();

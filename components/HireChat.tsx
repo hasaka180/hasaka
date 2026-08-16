@@ -2,8 +2,6 @@
 
 import { useEffect } from 'react'
 
-const SERVER = process.env.NEXT_PUBLIC_CHAT_SERVER || 'wss://support.hasaka.io'
-
 export default function HireChat() {
   useEffect(() => {
     // Only add the script once per page load
@@ -11,7 +9,7 @@ export default function HireChat() {
     const script = document.createElement('script')
     script.id = 'hasaka-chat-script'
     script.src = '/hasaka-chat-light.js'
-    script.dataset.server = SERVER
+    script.dataset.endpoint = '/api/hire'
     script.dataset.name = 'Hasaka'
     script.dataset.role = 'Creative Director & Brand Architect'
     script.dataset.mode = 'inline'
