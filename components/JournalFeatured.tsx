@@ -13,7 +13,11 @@ export default function JournalFeatured() {
     fetch('/api/cases?type=journal')
       .then((r) => r.json())
       .then((d: { items?: JournalPost[] }) => {
-        const items = d.items ?? []
+        const items = (d.items ?? []).sort((a, b) => {
+          const da = a.date ? new Date(a.date).getTime() : 0
+          const db = b.date ? new Date(b.date).getTime() : 0
+          return db - da
+        })
         const featured = items.filter((p) => p.featured)
         setPosts((featured.length ? featured : items).slice(0, 6))
       })
@@ -23,7 +27,7 @@ export default function JournalFeatured() {
   return (
     <div className="blog-list">
       {posts.map((p) => (
-        <Link key={p.slug} href="/journal" className="btile">
+        <Link key={p.slug} href={`/journal/${p.slug}`} className="btile">
           {p.cover && <div className="bt-img" style={{ backgroundImage: `url(${p.cover})` }} />}
           {p.category && <span className="bt-pill">{p.category}</span>}
           <div className="bt-title">{p.title}</div>
