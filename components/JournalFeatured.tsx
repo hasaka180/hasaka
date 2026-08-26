@@ -19,7 +19,7 @@ export default function JournalFeatured() {
           return db - da
         })
         const featured = items.filter((p) => p.featured)
-        setPosts((featured.length ? featured : items).slice(0, 6))
+        setPosts((featured.length ? featured : items).slice(0, 4))
       })
       .catch(() => setPosts([]))
   }, [])
