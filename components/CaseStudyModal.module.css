@@ -181,6 +181,21 @@
   opacity: 0.78;
 }
 
+.ctaBtn {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 11px 26px;
+  background: #111;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  border-radius: 100px;
+  transition: background 0.15s, transform 0.15s;
+}
+.ctaBtn:hover { background: #333; transform: translateY(-1px); }
+
 /* small footer-style "note" text block (e.g. Credits) */
 .noteBlock {
   max-width: 100%;

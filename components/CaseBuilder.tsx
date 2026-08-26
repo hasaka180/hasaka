@@ -542,6 +542,8 @@ function SectionEditor({ section, patch, folder }: { section: Section; patch: (p
         <label>Body<textarea rows={3} value={section.body ?? ''} onChange={(e) => patch({ body: e.target.value })} /></label>
         <label className={styles.inline}><input type="checkbox" checked={section.align === 'center'} onChange={(e) => patch({ align: e.target.checked ? 'center' : 'left' })} /> Center</label>
         <label className={styles.inline}><input type="checkbox" checked={!!section.note} onChange={(e) => patch({ note: e.target.checked })} /> Small note / footer style</label>
+        <label>CTA label<input value={section.ctaLabel ?? ''} placeholder="e.g. Visit website" onChange={(e) => patch({ ctaLabel: e.target.value })} /></label>
+        <label>CTA URL<input value={section.ctaUrl ?? ''} placeholder="https://…" onChange={(e) => patch({ ctaUrl: e.target.value })} /></label>
       </div>
     )
   }

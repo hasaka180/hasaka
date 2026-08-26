@@ -13,6 +13,9 @@ function SectionBlock({ section }: { section: Section }) {
           {section.eyebrow && <div className={styles.eyebrow}>{section.eyebrow}</div>}
           {section.heading && <h2 className={styles.heading}>{section.heading}</h2>}
           {section.body && <p className={styles.body}>{section.body}</p>}
+          {section.ctaLabel && section.ctaUrl && (
+            <a href={section.ctaUrl} target="_blank" rel="noopener noreferrer" className={styles.ctaBtn}>{section.ctaLabel}</a>
+          )}
         </div>
       )
     case 'image':
