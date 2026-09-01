@@ -128,6 +128,11 @@ export default function JournalGrid({ initialItems }: { initialItems?: JournalPo
           <div className={styles.jrow3}>
             {smalls.map((p) => (
               <Link key={p.slug} href={`/journal/${p.slug}`} className={`${styles.card} ${styles.scard}`}>
+                {p.cover && (
+                  <div className={styles.sthumb}>
+                    <Image src={p.cover} alt="" fill sizes="(max-width: 768px) 100vw, 33vw" style={{ objectFit: 'cover' }} />
+                  </div>
+                )}
                 {p.category && <span className={styles.pill}>{p.category}</span>}
                 <h3 className={styles.stitle}>{p.title}</h3>
                 {p.excerpt && <p className={styles.sexcerpt}>{p.excerpt}</p>}
