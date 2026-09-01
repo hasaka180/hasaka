@@ -237,6 +237,7 @@ export default function CaseBuilder() {
   const [preview, setPreview] = useState<string | null>(null)
   const lastSavedRef = useRef('')
   const autoTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const originalSlugRef = useRef('')  // tracks slug at load/create time for PUT URL
 
   const loadList = useCallback((type: ContentType) =>
     fetch(`/api/cases?type=${type}`)
@@ -253,7 +254,7 @@ export default function CaseBuilder() {
     if (autoTimerRef.current) clearTimeout(autoTimerRef.current)
     autoTimerRef.current = setTimeout(async () => {
       setMsg('Autosaving…')
-      const res = await fetch(`/api/cases/${draft.slug}`, {
+      const res = await fetch(`/api/cases/${originalSlugRef.current || draft.slug}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: serialized,
@@ -278,11 +279,13 @@ export default function CaseBuilder() {
     const c = await fetch(`/api/cases/${slug}`).then((r) => r.json())
     setDraft(c); setIsNew(false); setMsg('')
     lastSavedRef.current = JSON.stringify(c)
+    originalSlugRef.current = slug
   }
 
   const startNew = () => {
     setDraft(activeType === 'journal' ? blankJournal() : blankCase(activeType))
     setIsNew(true); setMsg('')
+    originalSlugRef.current = ''
   }
 
   /* ── mutation ── */
@@ -307,9 +310,10 @@ export default function CaseBuilder() {
   const save = async (): Promise<boolean> => {
     if (!draft) return false
     if (!draft.slug || !draft.title) { setMsg('Slug and title are required.'); return false }
+    const putSlug = originalSlugRef.current || draft.slug
     const res = isNew
       ? await fetch('/api/cases', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(draft) })
-      : await fetch(`/api/cases/${draft.slug}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(draft) })
+      : await fetch(`/api/cases/${putSlug}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(draft) })
     if (!res.ok) {
       const d = await res.json().catch(() => ({}))
       const reason = d.error || `HTTP ${res.status}`
@@ -319,6 +323,7 @@ export default function CaseBuilder() {
     }
     setMsg('Saved ✓'); setIsNew(false); await loadList(activeType)
     lastSavedRef.current = JSON.stringify(draft)
+    originalSlugRef.current = draft.slug  // update so future saves use new slug
     return true
   }
 
@@ -406,7 +411,7 @@ function CaseEditor({
       <section className={styles.card}>
         <div className={styles.grid2}>
           <label>Title<input value={draft.title} onChange={(e) => set({ title: e.target.value })} /></label>
-          <label>Slug<input value={draft.slug} disabled={!isNew} placeholder="kebab-case" onChange={(e) => setSlug(e.target.value)} /></label>
+          <label>Slug<input value={draft.slug} placeholder="kebab-case" onChange={(e) => setSlug(e.target.value)} /></label>
           <label>Client<input value={draft.client ?? ''} onChange={(e) => set({ client: e.target.value })} /></label>
           <label>Category<input value={draft.category ?? ''} onChange={(e) => set({ category: e.target.value })} /></label>
           {activeType === 'work' && (
@@ -459,7 +464,7 @@ function JournalEditor({ draft, set, isNew, setSlug, folder }: {
     <section className={styles.card}>
       <div className={styles.grid2}>
         <label>Title<input value={draft.title} onChange={(e) => set({ title: e.target.value })} /></label>
-        <label>Slug<input value={draft.slug} disabled={!isNew} placeholder="kebab-case" onChange={(e) => setSlug(e.target.value)} /></label>
+        <label>Slug<input value={draft.slug} placeholder="kebab-case" onChange={(e) => setSlug(e.target.value)} /></label>
         <label>Category<input value={draft.category ?? ''} placeholder="Essay / Interview…" onChange={(e) => set({ category: e.target.value })} /></label>
         <label>Author<input value={draft.author ?? ''} onChange={(e) => set({ author: e.target.value })} /></label>
         <label>Date<input value={draft.date ?? ''} placeholder="2026-05-12" onChange={(e) => set({ date: e.target.value })} /></label>
