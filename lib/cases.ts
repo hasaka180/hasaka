@@ -86,6 +86,14 @@ const parseRow = (row: Record<string, unknown>): ContentItem =>
 
 const toRow = (item: ContentItem) => ({ slug: item.slug, title: item.title, data: JSON.stringify(item) })
 
+// Appwrite rowId rules: a-z A-Z 0-9 _ only, max 36 chars, no leading underscore.
+// The slug is stored inside the JSON payload so it is never lost.
+function slugToRowId(slug: string): string {
+  let id = slug.replace(/-/g, '_').replace(/[^a-zA-Z0-9_]/g, '').slice(0, 36)
+  if (id.startsWith('_')) id = 'r' + id.slice(1)
+  return id || 'item'
+}
+
 /* ── file fallback (local dev) ── */
 async function readFileStore(): Promise<Store> {
   try {
@@ -127,7 +135,7 @@ async function ensureSeeded(): Promise<void> {
         const seed = (await readFileStore()).cases
         const toSeed = seed.filter((s) => !haveTypes.has(itemType(s)))
         for (const it of toSeed) {
-          await tables.upsertRow({ databaseId: AW.db!, tableId: AW.col!, rowId: it.slug, data: toRow(it) })
+          await tables.upsertRow({ databaseId: AW.db!, tableId: AW.col!, rowId: slugToRowId(it.slug), data: toRow(it) })
         }
       } catch {
         seedPromise = null // allow retry next request
@@ -148,7 +156,7 @@ export async function getItem(slug: string): Promise<ContentItem | null> {
   if (tables) {
     await ensureSeeded()
     try {
-      return parseRow((await tables.getRow({ databaseId: AW.db!, tableId: AW.col!, rowId: slug })) as Record<string, unknown>)
+      return parseRow((await tables.getRow({ databaseId: AW.db!, tableId: AW.col!, rowId: slugToRowId(slug) })) as Record<string, unknown>)
     } catch {
       // row missing, or Appwrite down — fall back to the seed file before giving up
       return (await readFileStore()).cases.find((c) => c.slug === slug) ?? null
@@ -159,7 +167,7 @@ export async function getItem(slug: string): Promise<ContentItem | null> {
 
 export async function upsertItem(item: ContentItem): Promise<ContentItem> {
   if (tables) {
-    await tables.upsertRow({ databaseId: AW.db!, tableId: AW.col!, rowId: item.slug, data: toRow(item) })
+    await tables.upsertRow({ databaseId: AW.db!, tableId: AW.col!, rowId: slugToRowId(item.slug), data: toRow(item) })
     return item
   }
   const store = await readFileStore()
