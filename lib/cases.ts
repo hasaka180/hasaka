@@ -29,6 +29,8 @@ export interface CaseStudy {
   bg?: string // detail-view background colour
   fg?: string // detail-view text colour
   sections: Section[]
+  /* Storage metadata, supplied on read and stripped on write — see toRow. */
+  updatedAt?: string
 }
 
 export interface JournalPost {
@@ -55,6 +57,8 @@ export interface JournalPost {
   faqs?: { q: string; a: string }[]
   // Custom JSON-LD (injected as additional <script type="application/ld+json">)
   jsonLd?: string
+  /* Storage metadata, supplied on read and stripped on write — see toRow. */
+  updatedAt?: string
 }
 
 export type ContentItem = CaseStudy | JournalPost
@@ -81,10 +85,19 @@ const tables =
     ? new TablesDB(new Client().setEndpoint(AW.endpoint).setProject(AW.project).setKey(AW.apiKey))
     : null
 
-const parseRow = (row: Record<string, unknown>): ContentItem =>
-  JSON.parse((row.data as string) ?? '{}') as ContentItem
+/* Appwrite keeps $updatedAt/$createdAt outside the JSON payload, so surface it
+   on the item — the studio orders its list by it. */
+const parseRow = (row: Record<string, unknown>): ContentItem => {
+  const item = JSON.parse((row.data as string) ?? '{}') as ContentItem
+  const stamp = (row.$updatedAt ?? row.$createdAt) as string | undefined
+  return stamp ? { ...item, updatedAt: stamp } : item
+}
 
-const toRow = (item: ContentItem) => ({ slug: item.slug, title: item.title, data: JSON.stringify(item) })
+const toRow = (item: ContentItem) => {
+  /* Never bake the timestamp into data — Appwrite owns it. */
+  const { updatedAt: _drop, ...payload } = item
+  return { slug: item.slug, title: item.title, data: JSON.stringify(payload) }
+}
 
 // Appwrite rowId rules: a-z A-Z 0-9 _ only, max 36 chars, no leading underscore.
 // The slug is stored inside the JSON payload so it is never lost.

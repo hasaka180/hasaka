@@ -239,6 +239,14 @@ function MarkdownEditor({ value, onChange, folder = 'journal' }: { value: string
   )
 }
 
+/* Studio list order: most recently updated (or added) first. Appwrite supplies
+   updatedAt; the local file fallback has none, so fall back to the post date. */
+function recencyOf(c: ContentItem): number {
+  const stamp = c.updatedAt ?? ('date' in c ? c.date : undefined)
+  const ms = stamp ? Date.parse(stamp) : NaN
+  return Number.isNaN(ms) ? 0 : ms
+}
+
 const uid = () =>
   typeof crypto !== 'undefined' && 'randomUUID' in crypto
     ? crypto.randomUUID().slice(0, 8)
@@ -291,7 +299,12 @@ export default function CaseBuilder() {
   const loadList = useCallback((type: ContentType) =>
     fetch(`/api/cases?type=${type}`)
       .then((r) => r.json())
-      .then((d: { items?: ContentItem[] }) => setList((d.items ?? []).map((c) => ({ slug: c.slug, title: c.title })))), [])
+      .then((d: { items?: ContentItem[] }) =>
+        setList(
+          [...(d.items ?? [])]
+            .sort((a, b) => recencyOf(b) - recencyOf(a))
+            .map((c) => ({ slug: c.slug, title: c.title })),
+        )), [])
 
   useEffect(() => { loadList(activeType) }, [activeType, loadList])
 
