@@ -704,12 +704,25 @@ body.sb-open #main {
 
 .pth {
   height: 145px;
+  position: relative;
+  overflow: hidden;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: center
+}
+.pth::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--thumb);
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat
+  animation: kenBurns 8s ease-in-out infinite alternate;
+  will-change: transform
+}
+@keyframes kenBurns {
+  from { transform: scale(1); }
+  to   { transform: scale(1.09) translate(2%, 1%); }
 }
 
 .ptxt {

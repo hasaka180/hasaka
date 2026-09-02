@@ -1,3 +1,4 @@
+import type React from 'react'
 import Link from 'next/link'
 import Reveal from './RevealWrapper'
 
@@ -14,7 +15,7 @@ export default function HomeCaseCards() {
       {CARDS.map((c, i) => (
         <Reveal key={c.slug} delay={(i + 1) as 1 | 2 | 3 | 4} className="pc">
           <Link href={`/cases/${c.slug}`}>
-            <div className="pth" style={{ backgroundImage: `url(${c.thumb})` }} />
+            <div className="pth" style={{ '--thumb': `url(${c.thumb})` } as React.CSSProperties} />
             <div className="pme">
               <div className="pio">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
