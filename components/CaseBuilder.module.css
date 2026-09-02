@@ -245,6 +245,14 @@
 .mdPreview hr { border: none; border-top: 1px solid rgba(0,0,0,0.1); margin: 20px 0; }
 .mdPreview img { max-width: 100%; border-radius: 8px; margin: 8px 0; display: block; }
 
+/* Tables (GFM) */
+.mdTableWrap { margin: 18px 0; overflow-x: auto; }
+.mdPreview table { width: 100%; border-collapse: collapse; font-size: 13px; line-height: 1.5; }
+.mdPreview th, .mdPreview td { padding: 8px 12px; text-align: left; vertical-align: top; border-bottom: 1px solid rgba(0, 0, 0, 0.1); }
+.mdPreview th:first-child, .mdPreview td:first-child { padding-left: 0; }
+.mdPreview thead th { font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: #8a847a; white-space: nowrap; border-bottom-color: rgba(0, 0, 0, 0.22); }
+.mdPreview tbody tr:last-child td { border-bottom: none; }
+
 .mdArea {
   width: 100%;
   font: inherit;

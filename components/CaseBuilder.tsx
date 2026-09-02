@@ -10,6 +10,41 @@ import type { CaseStudy, JournalPost, Section, ContentItem, ContentType } from '
 /* ── HTML clipboard → Markdown converter (for rich paste) ── */
 function htmlToMd(html: string): string {
   const doc = new DOMParser().parseFromString(html, 'text/html')
+
+  /* A pipe-table cell must stay on one line — collapse breaks, escape pipes. */
+  function cellMd(cell: Element): string {
+    return Array.from(cell.childNodes).map(walk).join('')
+      .replace(/\|/g, '\\|')
+      .replace(/\s+/g, ' ')
+      .trim()
+  }
+
+  function alignOf(cell: Element): string {
+    const a = (cell.getAttribute('align') || (cell as HTMLElement).style?.textAlign || '').toLowerCase()
+    return a === 'center' ? ':---:' : a === 'right' ? '---:' : a === 'left' ? ':---' : '---'
+  }
+
+  /* <table> → GFM pipe table. First row becomes the header row. */
+  function tableToMd(table: Element): string {
+    const grid = Array.from(table.querySelectorAll('tr'))
+      .filter((tr) => tr.closest('table') === table)
+      .map((tr) => Array.from(tr.children).filter((c) => /^(td|th)$/i.test(c.tagName)))
+      .filter((cells) => cells.length > 0)
+    if (!grid.length) return ''
+
+    const cols = Math.max(...grid.map((r) => r.length))
+    const row = (cells: string[]) => `| ${[...cells, ...Array(cols - cells.length).fill('')].join(' | ')} |`
+    const rule = [...grid[0].map(alignOf), ...Array(cols - grid[0].length).fill('---')]
+
+    const lines = [
+      row(grid[0].map(cellMd)),
+      `| ${rule.join(' | ')} |`,
+      ...grid.slice(1).map((cells) => row(cells.map(cellMd))),
+    ]
+    const caption = table.querySelector('caption')?.textContent?.trim()
+    return `\n${caption ? `**${caption}**\n\n` : ''}${lines.join('\n')}\n\n`
+  }
+
   function walk(node: Node): string {
     if (node.nodeType === Node.TEXT_NODE) return node.textContent ?? ''
     if (node.nodeType !== Node.ELEMENT_NODE) return ''
@@ -33,6 +68,8 @@ function htmlToMd(html: string): string {
       case 'code': return el.closest('pre') ? inner : `\`${inner}\``
       case 'pre': return `\`\`\`\n${inner.trim()}\n\`\`\`\n\n`
       case 'hr': return `---\n\n`
+      case 'table': return tableToMd(el)
+      case 'caption': return ''
       case 'div': case 'section': case 'article': return inner.endsWith('\n') ? inner : inner + '\n'
       default: return inner
     }
@@ -109,12 +146,17 @@ function MarkdownEditor({ value, onChange, folder = 'journal' }: { value: string
   function handlePaste(e: React.ClipboardEvent<HTMLTextAreaElement>) {
     const html = e.clipboardData.getData('text/html')
     if (!html) return
-    const md = htmlToMd(html)
+    let md = htmlToMd(html)
     if (!md) return
     e.preventDefault()
     const ta = e.currentTarget
     const start = ta.selectionStart
     const end = ta.selectionEnd
+    /* Block content (tables, headings, lists) needs a blank line before it. */
+    const before = value.slice(0, start)
+    if (before.trim() && !/\n\n$/.test(before)) md = (before.endsWith('\n') ? '\n' : '\n\n') + md
+    const after = value.slice(end)
+    if (after.trim() && !/^\n\n/.test(after)) md += after.startsWith('\n') ? '\n' : '\n\n'
     const next = value.slice(0, start) + md + value.slice(end)
     onChange(next)
     const cur = start + md.length
@@ -170,7 +212,14 @@ function MarkdownEditor({ value, onChange, folder = 'journal' }: { value: string
       {preview ? (
         <div className={styles.mdPreview}>
           {value.trim()
-            ? <ReactMarkdown remarkPlugins={[remarkGfm]}>{value}</ReactMarkdown>
+            ? <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={{
+                  table: ({ node, ...props }) => (
+                    <div className={styles.mdTableWrap}><table {...props} /></div>
+                  ),
+                }}
+              >{value}</ReactMarkdown>
             : <span style={{ color: '#bbb', fontSize: 13 }}>Nothing to preview yet.</span>
           }
         </div>

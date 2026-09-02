@@ -36,7 +36,14 @@ export default function JournalArticleView({ post, shareUrl }: { post: JournalPo
           </div>
         )}
         <div className={styles.aText}>
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            components={{
+              table: ({ node, ...props }) => (
+                <div className={styles.aTableWrap}><table {...props} /></div>
+              ),
+            }}
+          >
             {post.body ?? post.excerpt ?? ''}
           </ReactMarkdown>
         </div>
