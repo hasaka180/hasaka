@@ -23,7 +23,7 @@
 /* standalone "modal page" wrapper (own URL, modal look) */
 .pageWrap {
   min-height: 100vh;
-  background: #d8d4cf;
+  background: #1c1916;
   display: flex;
   justify-content: center;
   align-items: flex-start;
