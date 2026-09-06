@@ -171,8 +171,11 @@ export async function getItem(slug: string): Promise<ContentItem | null> {
     try {
       return parseRow((await tables.getRow({ databaseId: AW.db!, tableId: AW.col!, rowId: slugToRowId(slug) })) as Record<string, unknown>)
     } catch {
-      // row missing, or Appwrite down — fall back to the seed file before giving up
-      return (await readFileStore()).cases.find((c) => c.slug === slug) ?? null
+      // The row id is derived from the slug, so a row stored under any other id
+      // — created outside this code path, or renamed after creation — is missed
+      // here even though listRows returns it. Match on the slug field before
+      // giving up. readAll falls back to the seed file if Appwrite is down.
+      return (await readAll()).find((c) => c.slug === slug) ?? null
     }
   }
   return (await readFileStore()).cases.find((c) => c.slug === slug) ?? null
@@ -206,7 +209,7 @@ export async function ping(): Promise<{ ok: boolean; total?: number; error?: str
 export async function deleteItem(slug: string): Promise<boolean> {
   if (tables) {
     try {
-      await tables.deleteRow({ databaseId: AW.db!, tableId: AW.col!, rowId: slug })
+      await tables.deleteRow({ databaseId: AW.db!, tableId: AW.col!, rowId: slugToRowId(slug) })
       return true
     } catch {
       return false
