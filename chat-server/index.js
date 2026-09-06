@@ -11,21 +11,46 @@ const AGENT_EMAIL     = process.env.AGENT_EMAIL     || 'hasaka@hasaka.io'
 const AGENT_PASSWORD  = process.env.AGENT_PASSWORD  || 'change-me'
 const AGENT_NAME      = process.env.AGENT_NAME      || 'Hasaka'
 const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS || 'https://hasaka.io,http://localhost:3000').split(',').map(s => s.trim())
-const TG_TOKEN        = process.env.TELEGRAM_BOT_TOKEN
-const TG_CHAT         = process.env.TELEGRAM_CHAT_ID
+const TG_TOKEN          = process.env.TELEGRAM_BOT_TOKEN
+const TG_CHAT           = process.env.TELEGRAM_CHAT_ID
+const TG_WEBHOOK_SECRET = process.env.TG_WEBHOOK_SECRET || ''
+const PUBLIC_URL        = process.env.PUBLIC_URL || 'https://support.hasaka.io'
 
 const uid = (prefix) => `${prefix}_${Math.random().toString(36).slice(2)}${Date.now().toString(36)}`
 const now = () => Date.now()
 
-async function notifyTelegram(text) {
+// Maps telegram message_id → conversation_id so replies route correctly
+const tgMsgToConv = new Map()
+
+async function notifyTelegram(text, convId) {
   if (!TG_TOKEN || !TG_CHAT) return
   try {
-    await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+    const res = await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ chat_id: TG_CHAT, text, parse_mode: 'Markdown' }),
     })
+    const data = await res.json()
+    if (data.ok && convId) tgMsgToConv.set(data.result.message_id, convId)
   } catch {}
+}
+
+async function setupTelegramWebhook() {
+  if (!TG_TOKEN) return
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${TG_TOKEN}/setWebhook`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        url: `${PUBLIC_URL}/telegram-webhook`,
+        ...(TG_WEBHOOK_SECRET ? { secret_token: TG_WEBHOOK_SECRET } : {}),
+      }),
+    })
+    const data = await res.json()
+    console.log('[telegram] webhook:', data.ok ? 'registered' : data.description)
+  } catch (e) {
+    console.error('[telegram] webhook setup failed:', e.message)
+  }
 }
 
 // ── Shape helpers ─────────────────────────────────────────────────────────────
@@ -150,6 +175,39 @@ app.delete('/api/devices/:token', requireAgent, (req, res) => {
 
 app.get('/health', (_, res) => res.json({ ok: true, at: now() }))
 
+app.post('/telegram-webhook', (req, res) => {
+  if (TG_WEBHOOK_SECRET && req.headers['x-telegram-bot-api-secret-token'] !== TG_WEBHOOK_SECRET) {
+    return res.sendStatus(403)
+  }
+  const message = req.body?.message
+  if (!message?.text) return res.sendStatus(200)
+
+  // Map reply → conversation, fallback to latest open conversation
+  let convId = message.reply_to_message?.message_id
+    ? tgMsgToConv.get(message.reply_to_message.message_id)
+    : null
+  if (!convId) {
+    const latest = db.prepare(`SELECT id FROM conversations WHERE status='open' ORDER BY last_message_at DESC LIMIT 1`).get()
+    if (latest) convId = latest.id
+  }
+  if (!convId) return res.sendStatus(200)
+
+  const conv = db.prepare(`SELECT * FROM conversations WHERE id=?`).get(convId)
+  if (!conv) return res.sendStatus(200)
+
+  const m = {
+    id: uid('msg'), conversation_id: convId, author: 'agent',
+    author_name: AGENT_NAME, body: message.text, created_at: now(),
+  }
+  db.prepare(`INSERT INTO messages VALUES (@id,@conversation_id,@author,@author_name,@body,@created_at)`).run(m)
+  db.prepare(`UPDATE conversations SET last_message=?,last_message_at=? WHERE id=?`).run(message.text, m.created_at, convId)
+  const updated = rowToConv(db.prepare(`SELECT * FROM conversations WHERE id=?`).get(convId))
+  broadcastToAgents({ type: 'message', message: rowToMsg(m), conversation: updated })
+  broadcastToVisitor(conv.visitor_id, { type: 'message', message: rowToMsg(m) })
+
+  res.sendStatus(200)
+})
+
 // ── WebSocket ─────────────────────────────────────────────────────────────────
 const server = createServer(app)
 const wss = new WebSocketServer({ server, path: '/ws' })
@@ -248,7 +306,7 @@ wss.on('connection', (ws, req) => {
         db.prepare(`UPDATE conversations SET last_message=?,last_message_at=?,unread_count=unread_count+1 WHERE id=?`).run(msg.body, m.created_at, conv.id)
         const updated = rowToConv(db.prepare(`SELECT * FROM conversations WHERE id=?`).get(conv.id))
         broadcastToAgents({ type: 'message', message: rowToMsg(m), conversation: updated })
-        notifyTelegram(`💬 *hasaka.io/hire*\n${msg.body}`)
+        notifyTelegram(`💬 *hasaka.io/hire*\n${msg.body}`, conv.id)
 
       } else if (msg.type === 'typing') {
         broadcastToAgents({ type: 'typing', conversationId: conv.id, from: 'visitor' })
@@ -277,4 +335,7 @@ const ping = setInterval(() => {
 }, 25000)
 wss.on('close', () => clearInterval(ping))
 
-server.listen(PORT, () => console.log(`[chat] listening on :${PORT}`))
+server.listen(PORT, () => {
+  console.log(`[chat] listening on :${PORT}`)
+  setupTelegramWebhook()
+})
