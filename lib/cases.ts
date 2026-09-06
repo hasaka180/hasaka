@@ -158,6 +158,27 @@ async function ensureSeeded(): Promise<void> {
   return seedPromise
 }
 
+/** The row id is derived from the slug, but rows created outside this module —
+    added in the Appwrite console, imported, or written under an older scheme —
+    sit under some other id. Resolve the real id by matching the slug column so
+    writes reach the existing row instead of missing it or duplicating it. */
+async function resolveRowId(slug: string): Promise<string | null> {
+  if (!tables) return null
+  const derived = slugToRowId(slug)
+  try {
+    await tables.getRow({ databaseId: AW.db!, tableId: AW.col!, rowId: derived })
+    return derived
+  } catch {
+    try {
+      const res = await tables.listRows({ databaseId: AW.db!, tableId: AW.col!, queries: [Query.limit(200)] })
+      const hit = res.rows.find((r) => (r as Record<string, unknown>).slug === slug)
+      return hit ? ((hit as unknown as Record<string, unknown>).$id as string) : null
+    } catch {
+      return null
+    }
+  }
+}
+
 /* ── public API ── */
 export async function getItems(type?: ContentType): Promise<ContentItem[]> {
   await ensureSeeded()
@@ -183,7 +204,8 @@ export async function getItem(slug: string): Promise<ContentItem | null> {
 
 export async function upsertItem(item: ContentItem): Promise<ContentItem> {
   if (tables) {
-    await tables.upsertRow({ databaseId: AW.db!, tableId: AW.col!, rowId: slugToRowId(item.slug), data: toRow(item) })
+    const rowId = (await resolveRowId(item.slug)) ?? slugToRowId(item.slug)
+    await tables.upsertRow({ databaseId: AW.db!, tableId: AW.col!, rowId, data: toRow(item) })
     return item
   }
   const store = await readFileStore()
@@ -208,8 +230,10 @@ export async function ping(): Promise<{ ok: boolean; total?: number; error?: str
 
 export async function deleteItem(slug: string): Promise<boolean> {
   if (tables) {
+    const rowId = await resolveRowId(slug)
+    if (!rowId) return false
     try {
-      await tables.deleteRow({ databaseId: AW.db!, tableId: AW.col!, rowId: slugToRowId(slug) })
+      await tables.deleteRow({ databaseId: AW.db!, tableId: AW.col!, rowId })
       return true
     } catch {
       return false
