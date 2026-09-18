@@ -65,6 +65,7 @@ export default function Hero() {
   const narrowPlayRef = useRef<HTMLDivElement>(null);
   const scrollArrowRef = useRef<HTMLAnchorElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const fullReelRef = useRef<HTMLVideoElement>(null);
   const mobileVideoRef = useRef<HTMLVideoElement>(null);
   const ctxRef = useRef<gsap.Context | null>(null);
   const captionPlayedRef = useRef(false);
@@ -146,6 +147,15 @@ export default function Hero() {
         if (st.trigger === hero) st.kill(true);
       });
 
+      // A rebuild (resize) starts from the preview again; the timeline's
+      // onUpdate below re-shows the full reel if the block is still expanded.
+      const preview = videoRef.current;
+      const fullReel = fullReelRef.current;
+      if (fullReel) {
+        fullReel.pause();
+        fullReel.style.opacity = "0";
+      }
+
       ctxRef.current = gsap.context(() => {
         const tl = gsap.timeline({ defaults: { ease: "none" } });
 
@@ -180,6 +190,37 @@ export default function Hero() {
             setCaptionPlay(true);
           }
         }, [], 0.5);
+
+        // Swap the looping preview for the full reel once the block reaches its
+        // final size, and back again when scrolling up. Driven by the
+        // timeline's own progress (not scroll position) so it follows the
+        // scrubbed animation rather than running ahead of it.
+        let reelShown = false;
+        let reelLoading = false;
+        tl.eventCallback("onUpdate", () => {
+          if (!fullReel) return;
+          const p = tl.progress();
+          // Start fetching (~4 MB) while the block is still growing so the
+          // reel is ready when it lands, without costing visitors who never
+          // scroll this far.
+          if (p > 0.5 && !reelLoading) {
+            reelLoading = true;
+            fullReel.preload = "auto";
+            fullReel.load();
+          }
+          const expanded = p >= 0.98;
+          if (expanded === reelShown) return;
+          reelShown = expanded;
+          if (expanded) {
+            fullReel.style.opacity = "1";
+            fullReel.play().catch(() => {});
+            preview?.pause();
+          } else {
+            fullReel.style.opacity = "0";
+            fullReel.pause();
+            preview?.play().catch(() => {});
+          }
+        });
 
         ScrollTrigger.create({
           animation: tl,
@@ -436,6 +477,19 @@ export default function Hero() {
           preload="none"
           onCanPlay={(e) => e.currentTarget.play()}
           poster="/videos/brand-reel-poster.jpg"
+        />
+
+        {/* Full reel — faded in over the preview once the block has expanded
+            to its final size (see the timeline's onUpdate). */}
+        <video
+          ref={fullReelRef}
+          className={styles.reelVideo}
+          src="/videos/reel-web.mp4"
+          muted
+          loop
+          playsInline
+          preload="none"
+          style={{ opacity: 0, transition: "opacity 0.6s ease" }}
         />
 
         <div className={styles.reelPlayNarrow} ref={narrowPlayRef}>
