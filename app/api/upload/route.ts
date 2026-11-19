@@ -51,7 +51,7 @@ const isConfigured = () => ENDPOINT && ACCESS_KEY && SECRET_KEY && BUCKET && PUB
 
 /**
  * Presign mode (JSON body): returns a short-lived PUT URL so the browser uploads
- * the file straight to R2, bypassing Vercel's ~4.5 MB function body limit.
+ * the file straight to R2, bypassing the host's function body limit (Netlify: 6 MB, base64-inflated).
  * Used for large files (e.g. video). Requires a CORS policy on the R2 bucket.
  */
 async function presign(req: Request) {

@@ -657,7 +657,7 @@ function SectionEditor({ section, patch, folder }: { section: Section; patch: (p
 }
 
 /* ─────────────────────────────────────────── Image upload field ── */
-// Vercel serverless functions cap the request body at ~4.5 MB, so anything
+// Serverless functions (Netlify: 6 MB, less once base64-encoded) cap the request body, so anything
 // larger (video) is uploaded straight to R2 with a presigned URL instead.
 const DIRECT_UPLOAD_THRESHOLD = 4 * 1024 * 1024
 
@@ -675,7 +675,7 @@ function useUpload(folder: string) {
     return d.url ?? null
   }
 
-  // large files: presign, then PUT the bytes directly to R2 (bypasses Vercel)
+  // large files: presign, then PUT the bytes directly to R2 (bypasses the function)
   const uploadDirect = async (file: File): Promise<string | null> => {
     const presignRes = await fetch('/api/upload', {
       method: 'POST',

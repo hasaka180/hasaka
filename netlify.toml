@@ -1,0 +1,13 @@
+# Netlify detects Next.js and installs its Next.js runtime (OpenNext adapter)
+# automatically, so no [[plugins]] entry is needed. That runtime handles SSR,
+# ISR/revalidatePath, middleware (as an edge function) and next/image.
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Scheduled functions live here (see netlify/functions/keepalive.mjs).
+[functions]
+  directory = "netlify/functions"

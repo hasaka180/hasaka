@@ -2,11 +2,12 @@ import { NextResponse } from 'next/server'
 import { ping } from '@/lib/cases'
 
 /**
- * Keep-alive endpoint hit by the Vercel cron (see vercel.json). Performs one
+ * Keep-alive endpoint hit daily by the Netlify scheduled function
+ * (netlify/functions/keepalive.mjs). Performs one
  * tiny Appwrite read so the free-tier project registers activity and is not
  * auto-paused for inactivity. Safe to call manually too.
  *
- * If CRON_SECRET is set in the environment, Vercel's cron sends it as a Bearer
+ * If CRON_SECRET is set in the environment, the scheduled function sends it as a Bearer
  * token and we require it; otherwise the route is open (the read is harmless).
  */
 export const runtime = 'nodejs'

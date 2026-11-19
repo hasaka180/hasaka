@@ -7,8 +7,8 @@ import type { NextRequest } from 'next/server'
  * - /api/cases write requests (POST/PUT/DELETE) require it too.
  * - GET /api/cases stays public so the case popups can read content.
  *
- * Set STUDIO_PASSWORD in your environment (e.g. Vercel → Project → Settings →
- * Environment Variables). Locally, if it's unset the gate is skipped.
+ * Set STUDIO_PASSWORD in your environment (e.g. Netlify → Site configuration →
+ * Environment variables). Locally, if it's unset the gate is skipped.
  */
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
