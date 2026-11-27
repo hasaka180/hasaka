@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import styles from './Preloader.module.css'
 
-const WORDS = "Hi, I'm Hasaka. Welcome to a new dawn of creativity.".split(' ')
+const WORDS = "Yo, what's good? Welcome to the crib.".split(' ')
 
 export default function Preloader() {
   const [done, setDone] = useState(false)
